@@ -1,0 +1,20 @@
+{
+  "is_train": true,
+  "batch_size": 8,
+  "max_epochs": 20,
+  "lr": 2e-05,
+  "crf_lr": 0.1,
+  "dropout": 0.2,
+  "optimizer": "Adam",
+  "use_bert": true,
+  "use_crf": true,
+  "train_path": "./../data/train/duee_fin_train.json",
+  "dev_path": "./../data/dev/duee_fin_dev.json",
+  "schema_path": "./../data/schema/duee_fin_event_schema.json",
+  "test_path": "./../data/test/duee_fin_test1.json",
+  "ner_result_path": "./result",
+  "ner_save_path": "./weights",
+  "pretrained_path": "./../pretrain/chinese-roberta-wwm-ext",
+  "ckpt_name": "###",
+  "test_ckpt_name": "###_epoch=12_val_pre=76.0.ckpt"
+}
