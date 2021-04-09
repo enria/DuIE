@@ -39,20 +39,20 @@ if __name__ == '__main__':
                         help="whether to use crf layer training or not (default: True)")
 
     # 下面参数基本默认
-    parser.add_argument("--train_path", type=str, default="{}/../data/train/duee_train.json".format(WORKING_DIR),
+    parser.add_argument("--train_path", type=str, default="{}/data/duee_train.json".format(WORKING_DIR),
                         help="train_path")
-    parser.add_argument("--dev_path", type=str, default="{}/../data/dev/duee_dev.json".format(WORKING_DIR),
+    parser.add_argument("--dev_path", type=str, default="{}/data/duee_dev.json".format(WORKING_DIR),
                         help="dev_path")
-    parser.add_argument("--schema_path", type=str, default="{}/../data/schema/duee_event_schema.json".format(WORKING_DIR),
+    parser.add_argument("--schema_path", type=str, default="{}/data/duee_event_schema.json".format(WORKING_DIR),
                         help="schema_path")
-    parser.add_argument("--test_path", type=str, default="{}/../data/test/duee_test1.json".format(WORKING_DIR),
+    parser.add_argument("--test_path", type=str, default="{}/data/duee_test1.json".format(WORKING_DIR),
                         help="test_path")
     parser.add_argument("--ner_result_path", type=str, default="{}/result".format(WORKING_DIR),
                         help="ner_result_path")
     parser.add_argument("--ner_save_path", type=str,
                         default="{}/weights".format(WORKING_DIR), help="ner_save_path")
     parser.add_argument("--pretrained_path", type=str,
-                        default="{}/../pretrain/chinese-roberta-wwm-ext".format(WORKING_DIR), help="pretrained_path")
+                        default="/storage/public/models/chinese-roberta-wwm-ext".format(WORKING_DIR), help="pretrained_path")
 
     parser.add_argument("--ckpt_name",  type=str, default="###", help="ckpt save name")
     parser.add_argument("--test_ckpt_name",  type=str, default="###_epoch=13_val_f1=70.7.ckpt", help="ckpt name for test")

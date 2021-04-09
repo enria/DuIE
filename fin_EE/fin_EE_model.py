@@ -17,6 +17,7 @@ from transformers import (
 import numpy as np
 import re
 import json
+import time
 # from model_layers import LSTM_attention, multihead_attention
 
 # from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
@@ -118,6 +119,9 @@ class NERModel(pl.LightningModule):
         train_data = self.processor.get_train_data()
         val_data=self.processor.get_dev_data()
 
+        # train_data=self.processor.process_long_text(train_data,700)
+        # val_data=self.processor.process_long_text(val_data,700)
+
         print("train_length:", len(train_data))
         print("valid_length:", len(val_data))
 
@@ -127,13 +131,6 @@ class NERModel(pl.LightningModule):
             self.valid_loader = self.processor.create_dataloader(
                 val_data, batch_size=self.batch_size, shuffle=False)
             # self.test_loader = self.processor.create_dataloader(val_data, batch_size=self.batch_size, shuffle=False)
-        else:
-            # self.processor.get_embedding(train_data)
-            # self.embeds = nn.Embedding.from_pretrained(torch.FloatTensor(self.processor.wordEmbedding), freeze=False)
-            self.train_loader = self.processor.create_dataloader_with_pretrain_embedding(
-                train_data, batch_size=self.batch_size, shuffle=True)
-            self.valid_loader = self.processor.create_dataloader_with_pretrain_embedding(
-                val_data, batch_size=self.batch_size, shuffle=False)
 
     def validation_epoch_end(self, outputs):
 
@@ -145,6 +142,12 @@ class NERModel(pl.LightningModule):
 
         true_seqs = [self.processor.event_schema.id2labels[int(g)] for g in gold]
         pred_seqs = [self.processor.event_schema.id2labels[int(g)] for g in pre]
+
+        for i in range(len(true_seqs)):
+            if true_seqs[i].endswith(":TRG"):
+                true_seqs[i]="O"
+            if pred_seqs[i].endswith(":TRG"):
+                pred_seqs[i]="O"
 
         print('\n')
         prec, rec, f1 = evaluate(true_seqs, pred_seqs)
@@ -190,6 +193,7 @@ class NERPredictor:
         self.model = NERModel.load_from_checkpoint(checkpoint_path, config=config)
 
         self.test_data = self.model.processor.get_test_data()
+        # self.test_data=self.model.processor.process_long_text(self.test_data,700)
         if config.use_bert:
             self.tokenizer = self.model.tokenizer
             self.dataloader = self.model.processor.create_dataloader(
@@ -198,9 +202,13 @@ class NERPredictor:
 
         print("The TEST num is:", len(self.test_data))
         print('load checkpoint:', checkpoint_path)
+        
+        # 保存每一条数据的事件
+        self.item_events={}
 
-    def extract_events(self,text,offset_mapping,preds):
-        events_dict={}
+    def extract_events(self,item_id,text,offset_mapping,preds):
+        self.item_events.setdefault(item_id,{})
+        events_dict=self.item_events[item_id]
         index=1 #直接跳过CLS
         last_B,last_B_index=0,0
         while index<len(preds):
@@ -209,25 +217,14 @@ class NERPredictor:
                     argument=text[offset_mapping[last_B_index][0]:offset_mapping[index-1][1]]
                     label=self.model.processor.event_schema.id2labels[last_B]
                     label=re.match("B-(.+):(.+)",label).groups()
-                    events_dict.setdefault(label[0],[])
-                    events_dict[label[0]].append((label[1],argument))
-                    
+                    events_dict.setdefault(label[0],set())
+                    if argument:
+                        events_dict[label[0]].add((label[1],argument))
                     last_B,last_B_index=0,0
 
             if preds[index]!=0 and preds[index]%2:
                 last_B,last_B_index=preds[index],index
             index+=1
-        events=[]
-        for event_type,roles in events_dict.items():
-            events.append({
-                "event_type":event_type,
-                "arguments":[{
-                    "role":role[0],
-                    "argument":role[1]
-                } for role in roles]
-            })
-        return events
-
 
     def generate_result(self, outfile_txt):
         device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -253,10 +250,24 @@ class NERPredictor:
 
                 for offset,pred in zip(offset_mapping,preds):
                     item=dict(self.test_data[cnt].items())
-                    events=self.extract_events(item["text"],offset,pred)
-                    item["event_list"]=events
-            
-                    fout.write(json.dumps(item,ensure_ascii=False)+"\n")
+                    self.extract_events(item["id"],item["text"],offset,pred)
                     cnt+=1
-
+                
+        with open(outfile_txt, 'w') as fout:
+            for item in tqdm.tqdm(self.test_data):
+                    events_dict=self.item_events.get(item["id"],{})
+                    events=[]
+                    for event_type,roles in events_dict.items():
+                        if len(roles)==1 and list(roles)[0][0].endswith("TRG"):
+                            continue
+                        events.append({
+                            "event_type":event_type,
+                            "arguments":[{
+                                "role":role[0],
+                                "argument":role[1]
+                            } for role in roles if not role[0].endswith("TRG")]
+                        })
+                    item=dict(item.items())
+                    item["event_list"]=events
+                    fout.write(json.dumps(item,ensure_ascii=False)+"\n")
         print('done--all %d tokens.' % cnt)

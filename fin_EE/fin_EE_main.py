@@ -17,7 +17,7 @@ import utils
 
 utils.set_random_seed(20200819)
 os.environ["TOKENIZERS_PARALLELISM"] = "True"
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 if __name__ == '__main__':
 
@@ -39,23 +39,23 @@ if __name__ == '__main__':
                         help="whether to use crf layer training or not (default: True)")
 
     # 下面参数基本默认
-    parser.add_argument("--train_path", type=str, default="{}/../data/train/duee_fin_train.json".format(WORKING_DIR),
+    parser.add_argument("--train_path", type=str, default="{}/data/duee_fin_train.json".format(WORKING_DIR),
                         help="train_path")
-    parser.add_argument("--dev_path", type=str, default="{}/../data/dev/duee_fin_dev.json".format(WORKING_DIR),
+    parser.add_argument("--dev_path", type=str, default="{}/data/duee_fin_dev.json".format(WORKING_DIR),
                         help="dev_path")
-    parser.add_argument("--schema_path", type=str, default="{}/../data/schema/duee_fin_event_schema.json".format(WORKING_DIR),
+    parser.add_argument("--schema_path", type=str, default="{}/data/duee_fin_event_schema.json".format(WORKING_DIR),
                         help="ner_data_path")
-    parser.add_argument("--test_path", type=str, default="{}/../data/test/duee_fin_test1.json".format(WORKING_DIR),
+    parser.add_argument("--test_path", type=str, default="{}/data/duee_fin_test1.json".format(WORKING_DIR),
                         help="ner_test_path")
     parser.add_argument("--ner_result_path", type=str, default="{}/result".format(WORKING_DIR),
                         help="ner_result_path")
     parser.add_argument("--ner_save_path", type=str,
                         default="{}/weights".format(WORKING_DIR), help="ner_save_path")
     parser.add_argument("--pretrained_path", type=str,
-                        default="{}/../pretrain/chinese-roberta-wwm-ext".format(WORKING_DIR), help="pretrained_path")
+                        default="/storage/public/models/chinese-roberta-wwm-ext".format(WORKING_DIR), help="pretrained_path")
 
     parser.add_argument("--ckpt_name",  type=str, default="###", help="ckpt save name")
-    parser.add_argument("--test_ckpt_name",  type=str, default="###_epoch=14_val_f1=77.2.ckpt", help="ckpt name for test")
+    parser.add_argument("--test_ckpt_name",  type=str, default="nosplit_val_f1=77.8_epoch=5.ckpt", help="ckpt name for test")
 
     args = parser.parse_args()
 
@@ -82,7 +82,7 @@ if __name__ == '__main__':
         # 设置保存模型的路径及参数
         ckpt_callback = ModelCheckpoint(
             dirpath=config.ner_save_path,                           # 模型保存路径
-            filename=config.ckpt_name + "_{epoch}_{val_f1:.1f}",   # 模型保存名称，参数ckpt_name后加入epoch信息以及验证集分数
+            filename="{val_f1:.1f}_{epoch}",   # 模型保存名称，参数ckpt_name后加入epoch信息以及验证集分数
             monitor='val_f1',                                      # 根据验证集上的准确率评估模型优劣
             mode='max',
             save_top_k=2,                                           # 保存得分最高的前两个模型
@@ -92,7 +92,7 @@ if __name__ == '__main__':
         # 设置训练器
         trainer = pl.Trainer(
             progress_bar_refresh_rate=1,
-            resume_from_checkpoint = config.ner_save_path + '/###_epoch=12_val_pre=76.0.ckpt',  # 加载已保存的模型继续训练
+            # resume_from_checkpoint = config.ner_save_path + '/val_f1=74.6_epoch=5.ckpt',  # 加载已保存的模型继续训练
             max_epochs=config.max_epochs,
             callbacks=[ckpt_callback],
             checkpoint_callback=True,

@@ -30,14 +30,35 @@ class NERProcessor(DataProcessor):
         self.test_path=config.test_path
         self.tokenizer = BertTokenizerFast.from_pretrained(config.pretrained_path)
         self.event_schema=EventSchemaDict(config.schema_path)
-
-    def read_json_data(self, filename):
+    
+    def read_json_data(self,filename,add_title=False):
         data = []
         with open(filename, 'r') as fjson:
             for line in fjson:
                 item = json.loads(line)
                 data.append(item)
         return data
+    
+    def process_long_text(self,data,split_max_length):
+        if split_max_length<=512:
+            return data
+        
+        new_dataset=[]
+
+        for item in data:
+            if len(item["text"])<=512:
+                new_dataset.append(item)
+            else:
+                pre_item=dict(item)
+                pre_item["text"]=item["text"][:512]
+                new_dataset.append(pre_item)
+                post_item=dict(item)
+                last_index=min(split_max_length,len(item["text"]))
+                title=f"原标题：{item['title']}\n"
+                post_item["text"]=title+item["text"][last_index-(512-len(title)):last_index]
+                new_dataset.append(post_item)
+        
+        return new_dataset
 
     def get_train_data(self):
         data = self.read_json_data(self.train_path)
@@ -74,16 +95,15 @@ class NERProcessor(DataProcessor):
             if offset_index>=len(offset):
                 break
         else:
-            pass #  TODO 统计覆盖
+            pass #  TODO 统计重叠
         return label_index_list
-
+    
     def create_dataloader(self, data, batch_size, shuffle=False, max_length=512):
         tokenizer = self.tokenizer
 
         # 2. 分别对句子和公司进行编码表示
         text = [d["text"] for d in data]
         max_length = min(max_length, max([len(s) for s in text]))
-        print("max sentence length: ", max_length)
 
         inputs = tokenizer(     # 得到文本的编码表示（句子前后会加入<cls>和<sep>特殊字符，并且将句子统一补充到最大句子长度
             text,
@@ -134,6 +154,10 @@ class EventSchemaDict(object):
                     continue
                 event_schema=json.loads(line)
                 event_type=event_schema["event_type"]
+
+                #添加事件触发词
+                role_list.append(event_type+":"+"TRG") 
+
                 for role in event_schema["role_list"]:
                     role_list.append(event_type+":"+role["role"])
 
@@ -149,8 +173,10 @@ class EventSchemaDict(object):
         label_index=[]
         for event_index,event in enumerate(label):
             event_type=event["event_type"]
-            for role in event["arguments"]:
+            for role in event["arguments"]+[{"role":"TRG","argument":event["trigger"]}]:# 将trigger也作为角色
                 role_start=text.find(role["argument"])
+                if role_start<0:
+                    continue
                 role_end=role_start+len(role["argument"])
                 B_label_id=self.label2ids["B-"+event_type+":"+role["role"]]
                 I_label_id=self.label2ids["I-"+event_type+":"+role["role"]]
@@ -159,6 +185,23 @@ class EventSchemaDict(object):
         return label_index
     
 
+def text_length_hist(train_data):
+    text_length=[len(item["text"]) for item in train_data]
+    exceed=list(filter(lambda x: x>=550,text_length))
+    print(len(exceed)/len(text_length))
+
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import matplotlib
+
+    matplotlib.rcParams['font.sans-serif']=['SimHei']   # 用黑体显示中文
+    matplotlib.rcParams['axes.unicode_minus']=False     # 正常显示负号
+    data = np.random.randn(10000)
+    plt.hist(text_length, bins=40, facecolor="blue", edgecolor="black", alpha=0.7)
+    plt.xlabel("区间")
+    plt.ylabel("频数/频率")
+    plt.title("频数/频率分布直方图")
+    plt.savefig("hist.png")
 
 
 if __name__ == '__main__':
@@ -166,42 +209,9 @@ if __name__ == '__main__':
     from collections import namedtuple
 
     config_class = namedtuple('config',['train_path','dev_path','test_path','pretrained_path','schema_path'])
-    config = config_class("../data/train/duee_fin_train.json","../data/dev/duee_fin_dev.json","../data/test/duee_fin_test1.json","../pretrain/bert-base-chinese","../data/schema/duee_fin_event_schema.json")
+    config = config_class("data/duee_fin_train.json","data/duee_fin_dev.json","data/duee_fin_test1.json","/storage/public/models/bert-base-chinese","data/duee_fin_event_schema.json")
 
     processor=NERProcessor(config)
     train_data=processor.get_train_data()
-
-    text_length=[len(item["text"]) for item in train_data]
-
-    exceed=list(filter(lambda x: x>=550,text_length))
-
-    print(len(exceed)/len(text_length))
-
-    import matplotlib.pyplot as plt
-    import numpy as np
-    import matplotlib
-
-    # 设置matplotlib正常显示中文和负号
-    matplotlib.rcParams['font.sans-serif']=['SimHei']   # 用黑体显示中文
-    matplotlib.rcParams['axes.unicode_minus']=False     # 正常显示负号
-    # 随机生成（10000,）服从正态分布的数据
-    data = np.random.randn(10000)
-    """
-    绘制直方图
-    data:必选参数，绘图数据
-    bins:直方图的长条形数目，可选项，默认为10
-    normed:是否将得到的直方图向量归一化，可选项，默认为0，代表不归一化，显示频数。normed=1，表示归一化，显示频率。
-    facecolor:长条形的颜色
-    edgecolor:长条形边框的颜色
-    alpha:透明度
-    """
-    plt.hist(text_length, bins=40, facecolor="blue", edgecolor="black", alpha=0.7)
-    # 显示横轴标签
-    plt.xlabel("区间")
-    # 显示纵轴标签
-    plt.ylabel("频数/频率")
-    # 显示图标题
-    plt.title("频数/频率分布直方图")
-    # plt.show()
-    plt.savefig("hist.png")
-        
+    processor.create_dataloader(train_data,8,max_length=700)
+    

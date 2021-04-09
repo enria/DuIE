@@ -15,13 +15,10 @@ import csv
 import numpy as np
 import json
 
-surpass_role_cnt=0
-overlap_role_cnt=0
-
 
 class NERProcessor(DataProcessor):
     """
-        从NER数据文件/data/NER_data下读取数据，生成NER训练数据dataloader，返回给模型
+       从NER数据文件/data/NER_data下读取数据，生成NER训练数据dataloader，返回给模型
     """
 
     def __init__(self, config, tokenizer=None):
@@ -161,7 +158,7 @@ class EventSchemaDict(object):
             label_index.append(((trg_start,trg_end),(B_label_id,I_label_id),event_index))
 
             for role in event["arguments"]:
-                role_start=text.find(role["argument"])
+                role_start=int(role["argument_start_index"])
                 role_end=role_start+len(role["argument"])
                 B_label_id=self.label2ids["B-"+event_type+":"+role["role"]]
                 I_label_id=self.label2ids["I-"+event_type+":"+role["role"]]
@@ -169,6 +166,22 @@ class EventSchemaDict(object):
         label_index.sort(key=lambda x:(x[0][0],x[2]))
         return label_index
     
+from collections import Counter
+def overlap_stat(data):
+    all_event,contain2event=0,0
+    all_role_cnt,distinct_role_cnt=0,0
+    for item in data:
+        roles=[(role["argument_start_index"],len(role["argument"])) for event in item["event_list"] for role in event["arguments"]]
+        if len(item["event_list"])>=2:
+            contain2event+=1
+            cnter=Counter(roles)
+            distinct_role_cnt+=len(cnter.values())
+        else:
+            distinct_role_cnt+=len(roles)
+        all_role_cnt+=len(roles)
+        all_event+=1
+    
+    print(f"events:{contain2event}/{all_event}={contain2event/all_event:.2f},roles={distinct_role_cnt}/{all_event}={distinct_role_cnt/all_role_cnt:.2f}")
 
 
 
@@ -176,9 +189,9 @@ if __name__ == '__main__':
 
     from collections import namedtuple
 
-    config_class = namedtuple('config',['train_path','pretrained_path','schema_path'])
-    config = config_class("data/train/duee_fin_train.json","pretrain/bert-base-chinese","data/schema/duee_fin_event_schema.json")
+    config_class = namedtuple('config',['train_path','dev_path','test_path','pretrained_path','schema_path'])
+    config = config_class("data/duee_train.json","data/duee_dev.json","data/duee_test1.json","/storage/public/models/bert-base-chinese","data/duee_event_schema.json")
 
     processor=NERProcessor(config)
-    train_data,val_data=processor.get_train_data()
-    dataloader=processor.create_dataloader(train_data,1)
+    train_data=processor.get_train_data()
+    overlap_stat(train_data)

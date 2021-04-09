@@ -209,8 +209,8 @@ class NERPredictor:
                     label=self.model.processor.event_schema.id2labels[last_B]
                     label=re.match("B-(.+):(.+)",label).groups()
                     events_dict.setdefault(label[0],[])
-                    events_dict[label[0]].append((label[1],argument))
-                    
+                    if argument:
+                        events_dict[label[0]].append((label[1],argument))
                     last_B,last_B_index=0,0
 
             if preds[index]!=0 and preds[index]%2:
