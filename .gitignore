@@ -2,4 +2,5 @@ __pycache__
 .vscode
 *.ckpt
 lightning_logs
-**/result/*.json
+**/weights/*
+**/result/*
