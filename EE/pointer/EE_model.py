@@ -8,7 +8,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchcrf import CRF
 import csv
-from conlleval import evaluate
 from transformers import (
     BertTokenizerFast,
     BertForTokenClassification,
@@ -140,7 +139,7 @@ class NERPredictor:
 
         self.model = NERModel.load_from_checkpoint(checkpoint_path, config=config)
 
-        self.test_data = self.model.processor.get_test_data()
+        self.test_data = self.model.processor.get_dev_data()
         self.tokenizer = self.model.tokenizer
         self.dataloader = self.model.processor.create_dataloader(
             self.test_data, batch_size=config.batch_size, shuffle=False)
@@ -193,7 +192,7 @@ class NERPredictor:
                 for offset,pred in zip(offset_mapping,preds):
                     item=dict(self.test_data[cnt].items())
                     events=self.extract_events(item["text"],offset,pred)
-                    item["event_list"]=events
+                    item["pred_list"]=events
             
                     fout.write(json.dumps(item,ensure_ascii=False)+"\n")
                     cnt+=1

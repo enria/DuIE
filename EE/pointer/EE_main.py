@@ -25,7 +25,7 @@ if __name__ == '__main__':
 
     # 设置参数
     parser = argparse.ArgumentParser()
-    parser.add_argument("--is_train", type=utils.str2bool, default=True, help="train the NER model or not (default: False)")
+    parser.add_argument("--is_train", type=utils.str2bool, default=False, help="train the NER model or not (default: False)")
     parser.add_argument("--batch_size", type=int, default=2, help="input batch size for training and test (default: 8)")
     parser.add_argument("--max_epochs", type=int, default=20, help="the max epochs for training and test (default: 5)")
     parser.add_argument("--lr", type=float, default=2e-5, help="learning rate (default: 2e-5)")
@@ -52,7 +52,7 @@ if __name__ == '__main__':
     parser.add_argument("--ner_save_path", type=str,
                         default="{}/weights".format(WORKING_DIR), help="ner_save_path")
     parser.add_argument("--pretrained_path", type=str,
-                        default="/storage/public/models/chinese-roberta-wwm-ext-large".format(WORKING_DIR), help="pretrained_path")
+                        default="/storage/public/models/chinese-roberta-wwm-ext".format(WORKING_DIR), help="pretrained_path")
 
     parser.add_argument("--ckpt_name",  type=str, default="###", help="ckpt save name")
     parser.add_argument("--test_ckpt_name",  type=str, default="val_f1=0.7611_epoch=13.ckpt", help="ckpt name for test")
@@ -94,7 +94,7 @@ if __name__ == '__main__':
         # 设置训练器
         trainer = pl.Trainer(
             progress_bar_refresh_rate=1,
-            # resume_from_checkpoint = config.ner_save_path + '/###_epoch=8_val_loss=15461.3.ckpt',  # 加载已保存的模型继续训练
+            resume_from_checkpoint = config.ner_save_path + '/val_f1=0.7500_epoch=6_large.ckpt',  # 加载已保存的模型继续训练
             max_epochs=config.max_epochs,
             callbacks=[ckpt_callback],
             checkpoint_callback=True,
