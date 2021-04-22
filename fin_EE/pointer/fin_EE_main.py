@@ -27,7 +27,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--is_train", type=utils.str2bool, default=False, help="train the NER model or not (default: False)")
     parser.add_argument("--batch_size", type=int, default=8, help="input batch size for training and test (default: 8)")
-    parser.add_argument("--max_epochs", type=int, default=20, help="the max epochs for training and test (default: 5)")
+    parser.add_argument("--max_epochs", type=int, default=40, help="the max epochs for training and test (default: 5)")
     parser.add_argument("--lr", type=float, default=2e-5, help="learning rate (default: 2e-5)")
     parser.add_argument("--crf_lr", type=float, default=0.1, help="crf learning rate (default: 0.1)")
     parser.add_argument("--dropout", type=float, default=0.2, help="dropout (default: 0.2)")
@@ -37,13 +37,15 @@ if __name__ == '__main__':
                         help="whether to use bert training or not (default: True)")
     parser.add_argument("--use_crf", type=utils.str2bool, default=True,
                         help="whether to use crf layer training or not (default: True)")
+    parser.add_argument("--split_long", type=utils.str2bool, default=True,
+                        help="whether to split long text to multi")
 
     # 下面参数基本默认
     parser.add_argument("--train_path", type=str, default="{}/duee_fin_train.json".format(DATA_DIR),
                         help="train_path")
     parser.add_argument("--dev_path", type=str, default="{}/duee_fin_dev.json".format(DATA_DIR),
                         help="dev_path")
-    parser.add_argument("--schema_path", type=str, default="{}/duee_fin_event_schema.json".format(DATA_DIR),
+    parser.add_argument("--schema_path", type=str, default="{}/duee_fin_event_schema_sub.json".format(DATA_DIR),
                         help="schema_path")
     parser.add_argument("--test_path", type=str, default="{}/duee_fin_test1.json".format(DATA_DIR),
                         help="test_path")
@@ -55,7 +57,7 @@ if __name__ == '__main__':
                         default="/storage/public/models/chinese-roberta-wwm-ext".format(WORKING_DIR), help="pretrained_path")
 
     parser.add_argument("--ckpt_name",  type=str, default="###", help="ckpt save name")
-    parser.add_argument("--test_ckpt_name",  type=str, default="val_f1=0.7414_epoch=7.ckpt", help="ckpt name for test")
+    parser.add_argument("--test_ckpt_name",  type=str, default="val_f1=0.7437_epoch=37.ckpt", help="ckpt name for test")
 
     args = parser.parse_args()
     
@@ -87,20 +89,19 @@ if __name__ == '__main__':
             filename="{val_f1:.4f}_{epoch}",   # 模型保存名称，参数ckpt_name后加入epoch信息以及验证集分数
             monitor='val_f1',                                      # 根据验证集上的准确率评估模型优劣
             mode='max',
-            save_top_k=3,                                           # 保存得分最高的前两个模型
-            verbose=True,
+            save_top_k=3,                                           # 保存得分最高的前三个模型
+            verbose=True
         )
 
         # 设置训练器
         trainer = pl.Trainer(
             progress_bar_refresh_rate=1,
-            # resume_from_checkpoint = config.ner_save_path + '/val_f1=0.7500_epoch=6_large.ckpt',  # 加载已保存的模型继续训练
+            # resume_from_checkpoint = config.ner_save_path + '/val_f1=0.3991_epoch=19.ckpt',  # 加载已保存的模型继续训练
             max_epochs=config.max_epochs,
             callbacks=[ckpt_callback],
             checkpoint_callback=True,
             gpus=1,
-            distributed_backend='dp',
-            profiler=True,
+            distributed_backend='dp'
         )
 
         # 开始训练模型
@@ -113,28 +114,6 @@ if __name__ == '__main__':
         # ============= test 测试模型==============
         print("\n\nstart test model...")
 
-        '''
-        设置输出文件名 得到结果为 
-            1).txt 测试数据的字符输出文件 
-            共三列，分别是：字符token， 真实BIO标签， 模型预测BIO标签
-                eg:
-                    浙 B-COM B-COM
-                    江 I-COM I-COM
-                    龙 I-COM I-COM
-                    盛 I-COM I-COM
-                    于 O O
-                    2020 O O
-                    年 O O
-                    8 O O
-                    月 O O
-                    18 O O
-                    日 O O
-                    
-            2).tsv 根据txt内容，整理得到句子+公司名文件，与训练输入文件保持一致
-            共两列，以制表符分割，分别是 句子 公司名列表
-                eg:
-                浙江龙盛于2020年8月18日披露中报，公司2020上半年实现营业总收入75.9亿	['浙江龙盛']
-        '''
         outfile_txt = os.path.join(config.ner_result_path, config.test_ckpt_name[:-5] + ".json")
 
         # 开始测试，将结果保存至输出文件
