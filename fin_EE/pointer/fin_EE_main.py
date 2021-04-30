@@ -57,7 +57,7 @@ if __name__ == '__main__':
                         default="/storage/public/models/chinese-roberta-wwm-ext".format(WORKING_DIR), help="pretrained_path")
 
     parser.add_argument("--ckpt_name",  type=str, default="###", help="ckpt save name")
-    parser.add_argument("--test_ckpt_name",  type=str, default="val_f1=0.7437_epoch=37.ckpt", help="ckpt name for test")
+    parser.add_argument("--test_ckpt_name",  type=str, default="val_f1=0.6885_epoch=21_large.ckpt", help="ckpt name for test")
 
     args = parser.parse_args()
     
@@ -86,7 +86,7 @@ if __name__ == '__main__':
         # 设置保存模型的路径及参数
         ckpt_callback = ModelCheckpoint(
             dirpath=config.ner_save_path,                           # 模型保存路径
-            filename="{val_f1:.4f}_{epoch}",   # 模型保存名称，参数ckpt_name后加入epoch信息以及验证集分数
+            filename="{val_f1:.4f}_{epoch}_large",   # 模型保存名称，参数ckpt_name后加入epoch信息以及验证集分数
             monitor='val_f1',                                      # 根据验证集上的准确率评估模型优劣
             mode='max',
             save_top_k=3,                                           # 保存得分最高的前三个模型

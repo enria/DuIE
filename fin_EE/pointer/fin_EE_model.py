@@ -107,8 +107,8 @@ class NERModel(pl.LightningModule):
         pointer,concurrence = self(input_ids, token_type_ids=token_type_ids, attention_mask=attention_mask)
 
         pointer_loss = self.criterion(pointer[attention_mask!=0,:], label_tensors[attention_mask!=0])
-        concurrence_loss= self.criterion(concurrence[attention_mask!=0,:], concurrence_tensors[attention_mask!=0])
-        # concurrence_loss=0
+        # concurrence_loss= self.criterion(concurrence[attention_mask!=0,:], concurrence_tensors[attention_mask!=0])
+        concurrence_loss=torch.tensor(0)
         loss=pointer_loss+concurrence_loss
 
         self.log('pointer_loss', pointer_loss.item(),prog_bar=True)
@@ -122,10 +122,11 @@ class NERModel(pl.LightningModule):
         pointer,concurrence = self(input_ids, token_type_ids=token_type_ids, attention_mask=attention_mask)
 
         pointer_loss = self.criterion(pointer[attention_mask!=0,:], label_tensors[attention_mask!=0])
-        concurrence_loss= self.criterion(concurrence[attention_mask!=0,:], concurrence_tensors[attention_mask!=0])
+        # concurrence_loss= self.criterion(concurrence[attention_mask!=0,:], concurrence_tensors[attention_mask!=0])
+        concurrence_loss=torch.tensor(0)
         loss=pointer_loss+concurrence_loss
 
-        pointer_pred=self.processor.from_label_tensor_to_label_index(pointer,offset_mapping)
+        pointer_pred=self.processor.from_label_tensor_to_label_index(pointer,concurrence,offset_mapping)
         pointer_pred,_=zip(*pointer_pred)
         concurrence_pred=torch.where(concurrence > 0.5, 1, 0)
 
@@ -223,27 +224,27 @@ class NERPredictor:
             subjects=[]
             assist_roles={}
 
-            for role in roles:
-                if role[0] in self.model.processor.event_schema.event_subject[event_type]:
-                    subjects.append(role)
-                else:
-                    assist_roles.setdefault(role[0],[])
-                    assist_roles[role[0]].append(role)
+            # for role in roles:
+            #     if role[0] in self.model.processor.event_schema.event_subject[event_type]:
+            #         subjects.append(role)
+            #     else:
+            #         assist_roles.setdefault(role[0],[])
+            #         assist_roles[role[0]].append(role)
                     
-            event_role_cluster=[]
-            if len(subjects)>1:
-                for subject in subjects:
-                    clusetr=[subject]
-                    for role_type,roles in assist_roles.items():
-                        for role in roles:
-                            if role[-1][0] in concurrence.get(subject[-1][0],set()):
-                                clusetr.append(role)
-                    event_role_cluster.append(clusetr)
-            else:
-                event_role_cluster.append(roles)
+            # event_role_cluster=[]
+            # if len(subjects)>1:
+            #     for subject in subjects:
+            #         clusetr=[subject]
+            #         for role_type,roles in assist_roles.items():
+            #             for role in roles:
+            #                 if role[-1][0] in concurrence.get(subject[-1][0],set()):
+            #                     clusetr.append(role)
+            #         event_role_cluster.append(clusetr)
+            # else:
+            #     event_role_cluster.append(roles)
             
             # TODO 
-            # event_role_cluster=[roles]
+            event_role_cluster=[roles]
             
             for role_cluster in event_role_cluster:
                 new_events.append({

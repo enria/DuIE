@@ -1,0 +1,4337 @@
+{
+    "text": "据猛龙随队记者Josh Lewenberg报道，消息人士透露，猛龙已将前锋萨加巴-科纳特裁掉。此前他与猛龙签下了一份Exhibit 10合同。在被裁掉后，科纳特下赛季大概率将前往猛龙的发展联盟球队效力。",
+    "id": "8a440ade8a8bac469e0357cc519ec9c0",
+    "event_list": [
+        {
+            "event_type": "组织关系-裁员",
+            "trigger": "裁掉",
+            "trigger_start_index": 44,
+            "arguments": [
+                {
+                    "argument_start_index": 31,
+                    "role": "裁员方",
+                    "argument": "猛龙",
+                    "alias": []
+                }
+            ],
+            "class": "组织关系"
+        },
+        {
+            "event_type": "组织关系-加盟",
+            "trigger": "签下",
+            "trigger_start_index": 53,
+            "arguments": [
+                {
+                    "argument_start_index": 35,
+                    "role": "加盟者",
+                    "argument": "前锋萨加巴-科纳特",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 51,
+                    "role": "所加盟组织",
+                    "argument": "猛龙",
+                    "alias": []
+                }
+            ],
+            "class": "组织关系"
+        },
+        {
+            "event_type": "组织关系-裁员",
+            "trigger": "裁掉",
+            "trigger_start_index": 73,
+            "arguments": [
+                {
+                    "argument_start_index": 31,
+                    "role": "裁员方",
+                    "argument": "猛龙",
+                    "alias": []
+                }
+            ],
+            "class": "组织关系"
+        }
+    ]
+}
+{
+    "text": "有多名魅族员工表示，从6月份开始，魅族开始了新一轮裁员，重点裁员区域是营销和线下。裁员占比超过30%，剩余员工将不过千余人，魅族的知名工程师，爱讲真话的洪汉生已经从钉钉里退出了，外界传言说他去了OPPO。",
+    "id": "c288ea56951e058c7d5d26b3d7b6a55f",
+    "event_list": [
+        {
+            "event_type": "组织关系-裁员",
+            "trigger": "裁员",
+            "trigger_start_index": 25,
+            "arguments": [
+                {
+                    "argument_start_index": 17,
+                    "role": "裁员方",
+                    "argument": "魅族",
+                    "alias": []
+                }
+            ],
+            "class": "组织关系"
+        },
+        {
+            "event_type": "组织关系-裁员",
+            "trigger": "裁员",
+            "trigger_start_index": 41,
+            "arguments": [
+                {
+                    "argument_start_index": 17,
+                    "role": "裁员方",
+                    "argument": "魅族",
+                    "alias": []
+                }
+            ],
+            "class": "组织关系"
+        },
+        {
+            "event_type": "组织关系-退出",
+            "trigger": "退出",
+            "trigger_start_index": 85,
+            "arguments": [
+                {
+                    "argument_start_index": 71,
+                    "role": "退出方",
+                    "argument": "爱讲真话的洪汉生",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 82,
+                    "role": "原所属组织",
+                    "argument": "钉钉",
+                    "alias": []
+                }
+            ],
+            "class": "组织关系"
+        }
+    ]
+}
+{
+    "text": "8月1日，国务院安委会办公室约谈河南省三门峡市人民政府主要负责人，河南省应急管理厅及河南能源化工集团有限公司主要负责人。国务院安委会办公室副主任，应急管理部党组成员王浩水主约谈。",
+    "id": "da68151f2f82fdb810f33d2e2c4eedda",
+    "event_list": [
+        {
+            "event_type": "司法行为-约谈",
+            "trigger": "约谈",
+            "trigger_start_index": 14,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "8月1日",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 5,
+                    "role": "约谈发起方",
+                    "argument": "国务院安委会办公室",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 16,
+                    "role": "约谈对象",
+                    "argument": "河南省三门峡市人民政府主要负责人，河南省应急管理厅及河南能源化工集团有限公司主要负责人",
+                    "alias": []
+                }
+            ],
+            "class": "司法行为"
+        },
+        {
+            "event_type": "司法行为-约谈",
+            "trigger": "约谈",
+            "trigger_start_index": 86,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "8月1日",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 5,
+                    "role": "约谈发起方",
+                    "argument": "国务院安委会办公室",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 16,
+                    "role": "约谈对象",
+                    "argument": "河南省三门峡市人民政府主要负责人，河南省应急管理厅及河南能源化工集团有限公司主要负责人",
+                    "alias": []
+                }
+            ],
+            "class": "司法行为"
+        }
+    ]
+}
+{
+    "text": "当地时间6月7日，瑞典林雪平市发生爆炸，一些居民楼的玻璃和阳台遭到破坏。爆炸造成19人受伤，一个排弹小组正前往事发现场。",
+    "id": "b87fb9d7226eedfae1c2854fcb071eb3",
+    "event_list": [
+        {
+            "event_type": "灾害/意外-爆炸",
+            "trigger": "爆炸",
+            "trigger_start_index": 36,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "当地时间6月7日",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 9,
+                    "role": "地点",
+                    "argument": "瑞典林雪平市",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 40,
+                    "role": "受伤人数",
+                    "argument": "19人受伤",
+                    "alias": []
+                }
+            ],
+            "class": "灾害/意外"
+        },
+        {
+            "event_type": "灾害/意外-爆炸",
+            "trigger": "爆炸",
+            "trigger_start_index": 17,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "当地时间6月7日",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 9,
+                    "role": "地点",
+                    "argument": "瑞典林雪平市",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 40,
+                    "role": "受伤人数",
+                    "argument": "19人受伤",
+                    "alias": []
+                }
+            ],
+            "class": "灾害/意外"
+        }
+    ]
+}
+{
+    "text": "近年来，中国男篮处于青蓝交接的时期，继2008年北京奥运会之后，如姚明、王治郅、王仕鹏、朱芳雨、李楠、杜锋等国手纷纷退役，中国男篮在国际赛事上战绩一度跌入谷底，曾经在主场大败给哈达迪带领的伊朗男篮，在2013年亚锦赛爆冷输给中华台北无缘四强，直至姚明近几年的改革之后，男篮的战绩才有所起色。",
+    "id": "c5d18740d99b3bbeba58514dd04a6219",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-退役",
+            "trigger": "退役",
+            "trigger_start_index": 58,
+            "arguments": [
+                {
+                    "argument_start_index": 33,
+                    "role": "退役者",
+                    "argument": "姚明",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 36,
+                    "role": "退役者",
+                    "argument": "王治郅",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 40,
+                    "role": "退役者",
+                    "argument": "王仕鹏",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 44,
+                    "role": "退役者",
+                    "argument": "朱芳雨",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 48,
+                    "role": "退役者",
+                    "argument": "李楠",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 51,
+                    "role": "退役者",
+                    "argument": "杜锋",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "败给",
+            "trigger_start_index": 86,
+            "arguments": [
+                {
+                    "argument_start_index": 61,
+                    "role": "败者",
+                    "argument": "中国男篮",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 94,
+                    "role": "胜者",
+                    "argument": "伊朗男篮",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "输给",
+            "trigger_start_index": 110,
+            "arguments": [
+                {
+                    "argument_start_index": 100,
+                    "role": "时间",
+                    "argument": "2013年",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 100,
+                    "role": "赛事名称",
+                    "argument": "2013年亚锦赛",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 61,
+                    "role": "败者",
+                    "argument": "中国男篮",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 112,
+                    "role": "胜者",
+                    "argument": "中华台北",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "苹果要停产的机型分别是iPhone 6S、iPhone 6S Plus、iPhone 6、iPhone 6 Plus和iPhone SE，这些机型最老的是2014年发布的，距离现在已经过去了5年，而最新的也是2016年发布的。",
+    "id": "baf3c2b1cc2b60ec87148ad660eda728",
+    "event_list": [
+        {
+            "event_type": "产品行为-发布",
+            "trigger": "发布",
+            "trigger_start_index": 82,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "发布方",
+                    "argument": "苹果",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 11,
+                    "role": "发布产品",
+                    "argument": "iPhone 6S",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 21,
+                    "role": "发布产品",
+                    "argument": "iPhone 6S Plus",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 36,
+                    "role": "发布产品",
+                    "argument": "iPhone 6",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 45,
+                    "role": "发布产品",
+                    "argument": "iPhone 6 Plus",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 59,
+                    "role": "发布产品",
+                    "argument": "iPhone SE",
+                    "alias": []
+                }
+            ],
+            "class": "产品行为"
+        },
+        {
+            "event_type": "产品行为-发布",
+            "trigger": "发布",
+            "trigger_start_index": 109,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "发布方",
+                    "argument": "苹果",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 11,
+                    "role": "发布产品",
+                    "argument": "iPhone 6S",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 21,
+                    "role": "发布产品",
+                    "argument": "iPhone 6S Plus",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 36,
+                    "role": "发布产品",
+                    "argument": "iPhone 6",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 45,
+                    "role": "发布产品",
+                    "argument": "iPhone 6 Plus",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 59,
+                    "role": "发布产品",
+                    "argument": "iPhone SE",
+                    "alias": []
+                }
+            ],
+            "class": "产品行为"
+        }
+    ]
+}
+{
+    "text": "高圆圆千里迢迢赶赴横店看望拍戏的赵又廷，这一回她不再是孤身一人去了，带着他们爱的结晶，他们的女儿Rhea去看望爸爸。",
+    "id": "9642ffc83870bbfd6e75277e07bcda95",
+    "event_list": [
+        {
+            "event_type": "交往-探班",
+            "trigger": "看望",
+            "trigger_start_index": 11,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "探班主体",
+                    "argument": "高圆圆",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 16,
+                    "role": "探班对象",
+                    "argument": "赵又廷",
+                    "alias": []
+                }
+            ],
+            "class": "交往"
+        },
+        {
+            "event_type": "交往-探班",
+            "trigger": "看望",
+            "trigger_start_index": 53,
+            "arguments": [
+                {
+                    "argument_start_index": 46,
+                    "role": "探班主体",
+                    "argument": "女儿Rhea",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 16,
+                    "role": "探班对象",
+                    "argument": "赵又廷",
+                    "alias": []
+                }
+            ],
+            "class": "交往"
+        }
+    ]
+}
+{
+    "text": "香港警方：上周末拘捕159人 6月来共拘捕1117人",
+    "id": "359c6eedc4efaf8b7efca13184556bed",
+    "event_list": [
+        {
+            "event_type": "司法行为-拘捕",
+            "trigger": "拘捕",
+            "trigger_start_index": 8,
+            "arguments": [
+                {
+                    "argument_start_index": 5,
+                    "role": "时间",
+                    "argument": "上周末",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "拘捕者",
+                    "argument": "香港警方",
+                    "alias": []
+                }
+            ],
+            "class": "司法行为"
+        },
+        {
+            "event_type": "司法行为-拘捕",
+            "trigger": "拘捕",
+            "trigger_start_index": 19,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "拘捕者",
+                    "argument": "香港警方",
+                    "alias": []
+                }
+            ],
+            "class": "司法行为"
+        }
+    ]
+}
+{
+    "text": "近日，俄罗斯突然大规模爆发反普京游行示威，数万人参加，地点就在首都莫斯科。这次游行示威跟以往不同，首次发现有美国人明目张胆的支持游行示威，而且这些美国人还是主要策划者。超过5万人要求总统普京下台，他们对俄罗斯现状非常不满，主要是民生问题和经济问题。在8月10日的游行示威中，俄罗斯警方抓捕了一大批游行示威人员，现场还抓获美国间谍，俄罗斯政府对美国的相关举动大为不满。",
+    "id": "85be15275b66242e073afc979f716fe2",
+    "event_list": [
+        {
+            "event_type": "组织行为-游行",
+            "trigger": "游行示威",
+            "trigger_start_index": 16,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "近日",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 31,
+                    "role": "地点",
+                    "argument": "首都莫斯科",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 21,
+                    "role": "游行人数",
+                    "argument": "数万人",
+                    "alias": []
+                }
+            ],
+            "class": "组织行为"
+        },
+        {
+            "event_type": "组织行为-游行",
+            "trigger": "游行示威",
+            "trigger_start_index": 39,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "近日",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 31,
+                    "role": "地点",
+                    "argument": "首都莫斯科",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 21,
+                    "role": "游行人数",
+                    "argument": "数万人",
+                    "alias": []
+                }
+            ],
+            "class": "组织行为"
+        },
+        {
+            "event_type": "组织行为-游行",
+            "trigger": "游行示威",
+            "trigger_start_index": 64,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "近日",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 31,
+                    "role": "地点",
+                    "argument": "首都莫斯科",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 21,
+                    "role": "游行人数",
+                    "argument": "数万人",
+                    "alias": []
+                }
+            ],
+            "class": "组织行为"
+        },
+        {
+            "event_type": "组织行为-游行",
+            "trigger": "游行示威",
+            "trigger_start_index": 131,
+            "arguments": [
+                {
+                    "argument_start_index": 125,
+                    "role": "时间",
+                    "argument": "8月10日",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 31,
+                    "role": "地点",
+                    "argument": "首都莫斯科",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 84,
+                    "role": "游行人数",
+                    "argument": "超过5万人",
+                    "alias": []
+                }
+            ],
+            "class": "组织行为"
+        },
+        {
+            "event_type": "司法行为-拘捕",
+            "trigger": "抓捕",
+            "trigger_start_index": 142,
+            "arguments": [
+                {
+                    "argument_start_index": 137,
+                    "role": "拘捕者",
+                    "argument": "俄罗斯警方",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 145,
+                    "role": "被拘捕者",
+                    "argument": "一大批游行示威人员",
+                    "alias": []
+                }
+            ],
+            "class": "司法行为"
+        },
+        {
+            "event_type": "司法行为-拘捕",
+            "trigger": "抓获",
+            "trigger_start_index": 158,
+            "arguments": [
+                {
+                    "argument_start_index": 137,
+                    "role": "拘捕者",
+                    "argument": "俄罗斯警方",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 160,
+                    "role": "被拘捕者",
+                    "argument": "美国间谍",
+                    "alias": []
+                }
+            ],
+            "class": "司法行为"
+        }
+    ]
+}
+{
+    "text": "第七届世界军人运动会开幕式10月18日晚20时在武汉体育中心举行，中共中央总书记、国家主席、中央军委主席习近平将出席开幕式并宣布运动会开幕。",
+    "id": "8cad69dc91af523eccdc1a6617b8c08f",
+    "event_list": [
+        {
+            "event_type": "组织行为-开幕",
+            "trigger": "开幕式",
+            "trigger_start_index": 10,
+            "arguments": [
+                {
+                    "argument_start_index": 13,
+                    "role": "时间",
+                    "argument": "10月18日晚20时",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "活动名称",
+                    "argument": "第七届世界军人运动会",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 24,
+                    "role": "地点",
+                    "argument": "武汉体育中心",
+                    "alias": []
+                }
+            ],
+            "class": "组织行为"
+        },
+        {
+            "event_type": "组织行为-开幕",
+            "trigger": "开幕式",
+            "trigger_start_index": 58,
+            "arguments": [
+                {
+                    "argument_start_index": 13,
+                    "role": "时间",
+                    "argument": "10月18日晚20时",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "活动名称",
+                    "argument": "第七届世界军人运动会",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 24,
+                    "role": "地点",
+                    "argument": "武汉体育中心",
+                    "alias": []
+                }
+            ],
+            "class": "组织行为"
+        }
+    ]
+}
+{
+    "text": "C罗与现任的女友非常恩爱，两个人已经有了爱情的结晶，只不过令很多人疑惑的就是C罗为什么不举办一场婚礼，看到现任与C罗的爱情历程，C罗的前女友伊莲娜却遇到了感情问题，她和她的男友库珀已经分手，感情走到了镜头，可是就因为分手之后伊莲娜迟迟不能释然导致自己非常生气，8月16日的时候根据西班牙媒体报道，C罗前女友分手发狠，伊莲娜准备以出书的方式揭露原委，让世人看看库珀的真面目，这让库珀本人非常的紧张，从种种情况来看，库珀的确严重伤害了伊莲娜，当时的C罗与俄罗斯名模恋爱五年分手之后也没有闹的这么沸沸扬扬。",
+    "id": "3328991dbf891dbc0982f0b22581ae35",
+    "event_list": [
+        {
+            "event_type": "人生-分手",
+            "trigger": "分手",
+            "trigger_start_index": 92,
+            "arguments": [
+                {
+                    "argument_start_index": 84,
+                    "role": "分手双方",
+                    "argument": "她的男友库珀",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 64,
+                    "role": "分手双方",
+                    "argument": "C罗的前女友伊莲娜",
+                    "alias": []
+                }
+            ],
+            "class": "人生"
+        },
+        {
+            "event_type": "人生-分手",
+            "trigger": "分手",
+            "trigger_start_index": 108,
+            "arguments": [
+                {
+                    "argument_start_index": 64,
+                    "role": "分手双方",
+                    "argument": "C罗的前女友伊莲娜",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 84,
+                    "role": "分手双方",
+                    "argument": "她的男友库珀",
+                    "alias": []
+                }
+            ],
+            "class": "人生"
+        },
+        {
+            "event_type": "人生-分手",
+            "trigger": "分手",
+            "trigger_start_index": 153,
+            "arguments": [
+                {
+                    "argument_start_index": 148,
+                    "role": "分手双方",
+                    "argument": "C罗前女友",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 84,
+                    "role": "分手双方",
+                    "argument": "她的男友库珀",
+                    "alias": []
+                }
+            ],
+            "class": "人生"
+        },
+        {
+            "event_type": "人生-分手",
+            "trigger": "分手",
+            "trigger_start_index": 234,
+            "arguments": [
+                {
+                    "argument_start_index": 222,
+                    "role": "分手双方",
+                    "argument": "C罗",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 225,
+                    "role": "分手双方",
+                    "argument": "俄罗斯名模",
+                    "alias": []
+                }
+            ],
+            "class": "人生"
+        }
+    ]
+}
+{
+    "text": "今日早盘沪指高开后震荡上行，保险板块强势上涨，领涨两市，宝德股份等6股涨停，手游概念表现活跃，涨幅居前，盛天网络与恺英网络两股涨停，近期表现较好的半导体、芯片、集成电路等概念走势疲弱，由于股指120日均线构成一定压力，有蓄势整固要求，午后市场活跃度明显下降，股指涨幅收窄，截至收盘：沪指涨0.39%，报2952.34点；深指涨0.48%，报9399.10点；创业板指数涨0.87%，报1580.13点。",
+    "id": "28c0b001928d2df1cb096b064951002e",
+    "event_list": [
+        {
+            "event_type": "财经/交易-涨停",
+            "trigger": "涨停",
+            "trigger_start_index": 35,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "今日",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 28,
+                    "role": "涨停股票",
+                    "argument": "宝德股份等6股",
+                    "alias": []
+                }
+            ],
+            "class": "财经/交易"
+        },
+        {
+            "event_type": "财经/交易-涨停",
+            "trigger": "涨停",
+            "trigger_start_index": 63,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "今日",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 52,
+                    "role": "涨停股票",
+                    "argument": "盛天网络",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 57,
+                    "role": "涨停股票",
+                    "argument": "恺英网络",
+                    "alias": []
+                }
+            ],
+            "class": "财经/交易"
+        }
+    ]
+}
+{
+    "text": "欢迎大家收看今天的节目，相信大家都知道，据外媒报道，长安福特有限公司因为违反了《反垄断法》被罚款1.628亿人民币，这次的罚款也是让福特受到了一些影响，而西安奔驰也曾经因车辆问题被罚款了100万。",
+    "id": "be28c2fdbf05323fe0aa861e812d2d6b",
+    "event_list": [
+        {
+            "event_type": "司法行为-罚款",
+            "trigger": "罚款",
+            "trigger_start_index": 46,
+            "arguments": [
+                {
+                    "argument_start_index": 26,
+                    "role": "罚款对象",
+                    "argument": "长安福特有限公司",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 48,
+                    "role": "罚款金额",
+                    "argument": "1.628亿人民币",
+                    "alias": []
+                }
+            ],
+            "class": "司法行为"
+        },
+        {
+            "event_type": "司法行为-罚款",
+            "trigger": "罚款",
+            "trigger_start_index": 61,
+            "arguments": [
+                {
+                    "argument_start_index": 26,
+                    "role": "罚款对象",
+                    "argument": "长安福特有限公司",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 48,
+                    "role": "罚款金额",
+                    "argument": "1.628亿人民币",
+                    "alias": []
+                }
+            ],
+            "class": "司法行为"
+        },
+        {
+            "event_type": "司法行为-罚款",
+            "trigger": "罚款",
+            "trigger_start_index": 90,
+            "arguments": [
+                {
+                    "argument_start_index": 77,
+                    "role": "罚款对象",
+                    "argument": "西安奔驰",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 93,
+                    "role": "罚款金额",
+                    "argument": "100万",
+                    "alias": []
+                }
+            ],
+            "class": "司法行为"
+        }
+    ]
+}
+{
+    "text": "在之前的一场求婚仪式上，何猷君正式向奚梦瑶提出求婚，两人的话题也是一直活跃在热搜点上，但是在之前他们都没有公开过在一起什么的，所以一时之间有人甚至觉得他们是在为何家的商业在做宣传。",
+    "id": "07aeefdb1432804ab7d2a9680f448b8c",
+    "event_list": [
+        {
+            "event_type": "人生-求婚",
+            "trigger": "求婚",
+            "trigger_start_index": 6,
+            "arguments": [
+                {
+                    "argument_start_index": 12,
+                    "role": "求婚者",
+                    "argument": "何猷君",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 18,
+                    "role": "求婚对象",
+                    "argument": "奚梦瑶",
+                    "alias": []
+                }
+            ],
+            "class": "人生"
+        },
+        {
+            "event_type": "人生-求婚",
+            "trigger": "求婚",
+            "trigger_start_index": 23,
+            "arguments": [
+                {
+                    "argument_start_index": 12,
+                    "role": "求婚者",
+                    "argument": "何猷君",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 18,
+                    "role": "求婚对象",
+                    "argument": "奚梦瑶",
+                    "alias": []
+                }
+            ],
+            "class": "人生"
+        }
+    ]
+}
+{
+    "text": "国泰航空今日宣布以下管理高层人事变动，于二零一九年八月十九日生效：\n——邓健荣将接替何杲出任行政总裁\n——林绍波将接替卢家培出任顾客及商务总裁（林绍波将留任香港快运行政总裁，直至另行公布继任人）",
+    "id": "f7551f545bd4976e25b3e3e863431ff0",
+    "event_list": [
+        {
+            "event_type": "组织关系-加盟",
+            "trigger": "出任",
+            "trigger_start_index": 44,
+            "arguments": [
+                {
+                    "argument_start_index": 20,
+                    "role": "时间",
+                    "argument": "二零一九年八月十九日",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 36,
+                    "role": "加盟者",
+                    "argument": "邓健荣",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "所加盟组织",
+                    "argument": "国泰航空",
+                    "alias": []
+                }
+            ],
+            "class": "组织关系"
+        },
+        {
+            "event_type": "组织关系-加盟",
+            "trigger": "出任",
+            "trigger_start_index": 62,
+            "arguments": [
+                {
+                    "argument_start_index": 20,
+                    "role": "时间",
+                    "argument": "二零一九年八月十九日",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 53,
+                    "role": "加盟者",
+                    "argument": "林绍波",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "所加盟组织",
+                    "argument": "国泰航空",
+                    "alias": []
+                }
+            ],
+            "class": "组织关系"
+        }
+    ]
+}
+{
+    "text": "在李易峰和秦海璐相继宣布加入博众星和之后，实力派男星@廖凡 也正式官宣签约。",
+    "id": "df4f6088ed3c4ebe0956efe2c4eba80d",
+    "event_list": [
+        {
+            "event_type": "组织关系-加盟",
+            "trigger": "加入",
+            "trigger_start_index": 12,
+            "arguments": [
+                {
+                    "argument_start_index": 1,
+                    "role": "加盟者",
+                    "argument": "李易峰和秦海璐",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 14,
+                    "role": "所加盟组织",
+                    "argument": "博众星和",
+                    "alias": []
+                }
+            ],
+            "class": "组织关系"
+        },
+        {
+            "event_type": "组织关系-加盟",
+            "trigger": "签约",
+            "trigger_start_index": 35,
+            "arguments": [
+                {
+                    "argument_start_index": 14,
+                    "role": "所加盟组织",
+                    "argument": "博众星和",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 21,
+                    "role": "加盟者",
+                    "argument": "实力派男星@廖凡",
+                    "alias": []
+                }
+            ],
+            "class": "组织关系"
+        }
+    ]
+}
+{
+    "text": "根据时间顺序，李根去了上海队，西热力江重回了新疆队，新疆队在第18顺位选择了刘力鹏，孙桐林去了北控，签下前华侨大学中锋于晓辉，签下周琦，签下克拉克，续约贾内尔-斯托克斯。",
+    "id": "64b115816a94ac48d40412a5376e78e5",
+    "event_list": [
+        {
+            "event_type": "组织关系-加盟",
+            "trigger": "去了",
+            "trigger_start_index": 9,
+            "arguments": [
+                {
+                    "argument_start_index": 7,
+                    "role": "加盟者",
+                    "argument": "李根",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 11,
+                    "role": "所加盟组织",
+                    "argument": "上海队",
+                    "alias": []
+                }
+            ],
+            "class": "组织关系"
+        },
+        {
+            "event_type": "组织关系-加盟",
+            "trigger": "重回",
+            "trigger_start_index": 19,
+            "arguments": [
+                {
+                    "argument_start_index": 15,
+                    "role": "加盟者",
+                    "argument": "西热力江",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 22,
+                    "role": "所加盟组织",
+                    "argument": "新疆队",
+                    "alias": []
+                }
+            ],
+            "class": "组织关系"
+        },
+        {
+            "event_type": "组织关系-加盟",
+            "trigger": "选择",
+            "trigger_start_index": 35,
+            "arguments": [
+                {
+                    "argument_start_index": 26,
+                    "role": "所加盟组织",
+                    "argument": "新疆队",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 38,
+                    "role": "加盟者",
+                    "argument": "刘力鹏",
+                    "alias": []
+                }
+            ],
+            "class": "组织关系"
+        },
+        {
+            "event_type": "组织关系-加盟",
+            "trigger": "去了",
+            "trigger_start_index": 45,
+            "arguments": [
+                {
+                    "argument_start_index": 42,
+                    "role": "加盟者",
+                    "argument": "孙桐林",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 47,
+                    "role": "所加盟组织",
+                    "argument": "北控",
+                    "alias": []
+                }
+            ],
+            "class": "组织关系"
+        },
+        {
+            "event_type": "组织关系-加盟",
+            "trigger": "签下",
+            "trigger_start_index": 50,
+            "arguments": [
+                {
+                    "argument_start_index": 47,
+                    "role": "所加盟组织",
+                    "argument": "北控",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 52,
+                    "role": "加盟者",
+                    "argument": "前华侨大学中锋于晓辉",
+                    "alias": []
+                }
+            ],
+            "class": "组织关系"
+        },
+        {
+            "event_type": "组织关系-加盟",
+            "trigger": "签下",
+            "trigger_start_index": 63,
+            "arguments": [
+                {
+                    "argument_start_index": 65,
+                    "role": "加盟者",
+                    "argument": "周琦",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 47,
+                    "role": "所加盟组织",
+                    "argument": "北控",
+                    "alias": []
+                }
+            ],
+            "class": "组织关系"
+        },
+        {
+            "event_type": "组织关系-加盟",
+            "trigger": "签下",
+            "trigger_start_index": 68,
+            "arguments": [
+                {
+                    "argument_start_index": 70,
+                    "role": "加盟者",
+                    "argument": "克拉克",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 47,
+                    "role": "所加盟组织",
+                    "argument": "北控",
+                    "alias": []
+                }
+            ],
+            "class": "组织关系"
+        }
+    ]
+}
+{
+    "text": "湖人队在得到浓眉哥戴维斯后，詹姆斯摇身一变又成了夺冠热门；不过同城的快船队却搞事情，交易得到保罗·乔治，又签下了伦纳德，成为总冠军最有力的争夺者。",
+    "id": "aa90e629bf368b9f414a28f19c816c31",
+    "event_list": [
+        {
+            "event_type": "组织关系-加盟",
+            "trigger": "得到",
+            "trigger_start_index": 4,
+            "arguments": [
+                {
+                    "argument_start_index": 6,
+                    "role": "加盟者",
+                    "argument": "浓眉哥戴维斯",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "所加盟组织",
+                    "argument": "湖人队",
+                    "alias": []
+                }
+            ],
+            "class": "组织关系"
+        },
+        {
+            "event_type": "组织关系-加盟",
+            "trigger": "得到",
+            "trigger_start_index": 44,
+            "arguments": [
+                {
+                    "argument_start_index": 46,
+                    "role": "加盟者",
+                    "argument": "保罗·乔治",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 31,
+                    "role": "所加盟组织",
+                    "argument": "同城的快船队",
+                    "alias": []
+                }
+            ],
+            "class": "组织关系"
+        },
+        {
+            "event_type": "组织关系-加盟",
+            "trigger": "签下",
+            "trigger_start_index": 53,
+            "arguments": [
+                {
+                    "argument_start_index": 56,
+                    "role": "加盟者",
+                    "argument": "伦纳德",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 31,
+                    "role": "所加盟组织",
+                    "argument": "同城的快船队",
+                    "alias": []
+                }
+            ],
+            "class": "组织关系"
+        }
+    ]
+}
+{
+    "text": "潘粤明与董洁曾是娱乐圈公认的“金童玉女”，当年潘粤明与董洁的结合也是受到大众的祝福的，然而两人在突然离婚，当时也是掀起了轩然大波，两人被爆离婚后，董洁就首先站出来指责潘粤明当时有赌博的恶习，所以来两人才选择离婚的，在董洁发声后没多久就被打脸，董洁被爆出轨王大治。离婚后潘粤明的事业也是一落千丈，直到去年凭借着《白夜追凶》这部电视剧，才重新出现在大众视线。",
+    "id": "e995e91bacad692cae424383fb0668d6",
+    "event_list": [
+        {
+            "event_type": "人生-离婚",
+            "trigger": "离婚",
+            "trigger_start_index": 50,
+            "arguments": [
+                {
+                    "argument_start_index": 23,
+                    "role": "离婚双方",
+                    "argument": "潘粤明",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 27,
+                    "role": "离婚双方",
+                    "argument": "董洁",
+                    "alias": []
+                }
+            ],
+            "class": "人生"
+        },
+        {
+            "event_type": "人生-离婚",
+            "trigger": "离婚",
+            "trigger_start_index": 69,
+            "arguments": [
+                {
+                    "argument_start_index": 23,
+                    "role": "离婚双方",
+                    "argument": "潘粤明",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 27,
+                    "role": "离婚双方",
+                    "argument": "董洁",
+                    "alias": []
+                }
+            ],
+            "class": "人生"
+        },
+        {
+            "event_type": "人生-离婚",
+            "trigger": "离婚",
+            "trigger_start_index": 103,
+            "arguments": [
+                {
+                    "argument_start_index": 73,
+                    "role": "离婚双方",
+                    "argument": "董洁",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 83,
+                    "role": "离婚双方",
+                    "argument": "潘粤明",
+                    "alias": []
+                }
+            ],
+            "class": "人生"
+        },
+        {
+            "event_type": "人生-离婚",
+            "trigger": "离婚",
+            "trigger_start_index": 131,
+            "arguments": [
+                {
+                    "argument_start_index": 121,
+                    "role": "离婚双方",
+                    "argument": "董洁",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 134,
+                    "role": "离婚双方",
+                    "argument": "潘粤明",
+                    "alias": []
+                }
+            ],
+            "class": "人生"
+        }
+    ]
+}
+{
+    "text": "在韩国的娱乐圈当中，宋慧乔和宋钟基离婚这件事情，也算是非常大的一件事了，毕竟两个人从结婚的时候一直被大家看好，没想到这么短的时间内竟然离婚了，真是让人不胜唏嘘。",
+    "id": "9320ea00b7488bf7f65fc8bc99181cca",
+    "event_list": [
+        {
+            "event_type": "人生-离婚",
+            "trigger": "离婚",
+            "trigger_start_index": 17,
+            "arguments": [
+                {
+                    "argument_start_index": 10,
+                    "role": "离婚双方",
+                    "argument": "宋慧乔",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 14,
+                    "role": "离婚双方",
+                    "argument": "宋钟基",
+                    "alias": []
+                }
+            ],
+            "class": "人生"
+        },
+        {
+            "event_type": "人生-结婚",
+            "trigger": "结婚",
+            "trigger_start_index": 42,
+            "arguments": [
+                {
+                    "argument_start_index": 10,
+                    "role": "结婚双方",
+                    "argument": "宋慧乔",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 14,
+                    "role": "结婚双方",
+                    "argument": "宋钟基",
+                    "alias": []
+                }
+            ],
+            "class": "人生"
+        },
+        {
+            "event_type": "人生-离婚",
+            "trigger": "离婚",
+            "trigger_start_index": 67,
+            "arguments": [
+                {
+                    "argument_start_index": 10,
+                    "role": "离婚双方",
+                    "argument": "宋慧乔",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 14,
+                    "role": "离婚双方",
+                    "argument": "宋钟基",
+                    "alias": []
+                }
+            ],
+            "class": "人生"
+        }
+    ]
+}
+{
+    "text": "7月19日，中国足协官方开出多张重磅罚单，其中江苏苏宁队员两名球员因恶意犯规受到追罚，其中叶重秋被追加停赛6场，罚款6万元。在同一场比赛中出场的另一名苏宁球员谢鹏飞也被停赛3场，罚款3万元。",
+    "id": "76593707367b34c09ee36452897f34c4",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-禁赛",
+            "trigger": "停赛",
+            "trigger_start_index": 51,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "7月19日",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 6,
+                    "role": "禁赛机构",
+                    "argument": "中国足协",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 45,
+                    "role": "被禁赛人员",
+                    "argument": "叶重秋",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "司法行为-罚款",
+            "trigger": "罚款",
+            "trigger_start_index": 56,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "7月19日",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 6,
+                    "role": "执法机构",
+                    "argument": "中国足协",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 45,
+                    "role": "罚款对象",
+                    "argument": "叶重秋",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 58,
+                    "role": "罚款金额",
+                    "argument": "6万元",
+                    "alias": []
+                }
+            ],
+            "class": "司法行为"
+        },
+        {
+            "event_type": "竞赛行为-禁赛",
+            "trigger": "停赛",
+            "trigger_start_index": 84,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "7月19日",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 6,
+                    "role": "禁赛机构",
+                    "argument": "中国足协",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 75,
+                    "role": "被禁赛人员",
+                    "argument": "苏宁球员谢鹏飞",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "司法行为-罚款",
+            "trigger": "罚款",
+            "trigger_start_index": 89,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "7月19日",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 75,
+                    "role": "罚款对象",
+                    "argument": "苏宁球员谢鹏飞",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 6,
+                    "role": "执法机构",
+                    "argument": "中国足协",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 91,
+                    "role": "罚款金额",
+                    "argument": "3万元",
+                    "alias": []
+                }
+            ],
+            "class": "司法行为"
+        }
+    ]
+}
+{
+    "text": "这是江苏苏宁女足继5月份蝉联锦标赛冠军、6月份实现足协杯三连冠之后，本赛季夺得的第三座全国冠军奖杯。",
+    "id": "e6ed46f5acf3b995d51fcea2e7d0bfae",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-夺冠",
+            "trigger": "冠军",
+            "trigger_start_index": 17,
+            "arguments": [
+                {
+                    "argument_start_index": 2,
+                    "role": "冠军",
+                    "argument": "江苏苏宁女足",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 9,
+                    "role": "时间",
+                    "argument": "5月份",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 14,
+                    "role": "夺冠赛事",
+                    "argument": "锦标赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-夺冠",
+            "trigger": "三连冠",
+            "trigger_start_index": 28,
+            "arguments": [
+                {
+                    "argument_start_index": 20,
+                    "role": "时间",
+                    "argument": "6月份",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 2,
+                    "role": "冠军",
+                    "argument": "江苏苏宁女足",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 25,
+                    "role": "夺冠赛事",
+                    "argument": "足协杯",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "最近刚结束的日本公开赛上，孙颖莎与刘诗雯在女单决赛中苦战七局，最终状态爆发的孙颖莎拿到日本公开赛女单冠军。这也是孙颖莎第二次拿到日本公开赛冠军，早在2017年孙颖莎就在日本公开赛上拿到双料冠军，不仅一战成名，也成为国乒00后一代的主力选手。",
+    "id": "a5260962d1332bf7cef6023e013b7d11",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-夺冠",
+            "trigger": "冠军",
+            "trigger_start_index": 50,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "最近",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 38,
+                    "role": "冠军",
+                    "argument": "孙颖莎",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 43,
+                    "role": "夺冠赛事",
+                    "argument": "日本公开赛女单",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-夺冠",
+            "trigger": "冠军",
+            "trigger_start_index": 69,
+            "arguments": [
+                {
+                    "argument_start_index": 56,
+                    "role": "冠军",
+                    "argument": "孙颖莎",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "最近",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 43,
+                    "role": "夺冠赛事",
+                    "argument": "日本公开赛女单",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-夺冠",
+            "trigger": "冠军",
+            "trigger_start_index": 94,
+            "arguments": [
+                {
+                    "argument_start_index": 74,
+                    "role": "时间",
+                    "argument": "2017年",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 79,
+                    "role": "冠军",
+                    "argument": "孙颖莎",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 84,
+                    "role": "夺冠赛事",
+                    "argument": "日本公开赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "2019年5月10日18时10分，永平县博南镇糖果厂后山突发森林火灾，火情发生后，永平县立即启动森林火灾扑救预案，县委、政府领导靠前指挥，组织扑火力量206人参与扑救。",
+    "id": "c3655600845c156f9b623c243b0c1be9",
+    "event_list": [
+        {
+            "event_type": "灾害/意外-起火",
+            "trigger": "火灾",
+            "trigger_start_index": 32,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "2019年5月10日18时10分",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 17,
+                    "role": "地点",
+                    "argument": "永平县博南镇糖果厂后山",
+                    "alias": []
+                }
+            ],
+            "class": "灾害/意外"
+        },
+        {
+            "event_type": "灾害/意外-起火",
+            "trigger": "火灾",
+            "trigger_start_index": 50,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "2019年5月10日18时10分",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 17,
+                    "role": "地点",
+                    "argument": "永平县博南镇糖果厂后山",
+                    "alias": []
+                }
+            ],
+            "class": "灾害/意外"
+        }
+    ]
+}
+{
+    "text": "猎云网今日独家获悉，幼儿逻辑思维教育品牌《菠萝校车》完成数百万元Pre-A轮融资，由闽商个人企业家投资，本轮融资主要用于课程迭代及市场推广。",
+    "id": "b63c03910f16ea453bc23e0caf15149e",
+    "event_list": [
+        {
+            "event_type": "财经/交易-融资",
+            "trigger": "融资",
+            "trigger_start_index": 38,
+            "arguments": [
+                {
+                    "argument_start_index": 10,
+                    "role": "融资方",
+                    "argument": "幼儿逻辑思维教育品牌《菠萝校车》",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 32,
+                    "role": "融资轮次",
+                    "argument": "Pre-A",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 28,
+                    "role": "融资金额",
+                    "argument": "数百万元",
+                    "alias": []
+                }
+            ],
+            "class": "财经/交易"
+        },
+        {
+            "event_type": "财经/交易-融资",
+            "trigger": "融资",
+            "trigger_start_index": 54,
+            "arguments": [
+                {
+                    "argument_start_index": 10,
+                    "role": "融资方",
+                    "argument": "幼儿逻辑思维教育品牌《菠萝校车》",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 32,
+                    "role": "融资轮次",
+                    "argument": "Pre-A",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 28,
+                    "role": "融资金额",
+                    "argument": "数百万元",
+                    "alias": []
+                }
+            ],
+            "class": "财经/交易"
+        }
+    ]
+}
+{
+    "text": "作为当今游戏直播领域的天王之一斗鱼游戏直播平台，终于在7月17日继虎牙直播平台之后奔赴纳斯达克上市，众所周知的是，目前斗鱼直播的盈利点主要在那些大主播身上，而斗鱼也采取的一直是天价挖主播然后靠主播积累人气拿提成卖广告的收益模式，可以说斗鱼给了众多主播才艺表现的平台，众多主播也成就了如今的斗鱼上市。",
+    "id": "8d8317b5826fac4a3c2db528ef039500",
+    "event_list": [
+        {
+            "event_type": "财经/交易-上市",
+            "trigger": "上市",
+            "trigger_start_index": 47,
+            "arguments": [
+                {
+                    "argument_start_index": 27,
+                    "role": "时间",
+                    "argument": "7月17日",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "上市企业",
+                    "argument": "作为当今游戏直播领域的天王之一斗鱼游戏直播平台",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 43,
+                    "role": "地点",
+                    "argument": "纳斯达克",
+                    "alias": []
+                }
+            ],
+            "class": "财经/交易"
+        },
+        {
+            "event_type": "财经/交易-上市",
+            "trigger": "上市",
+            "trigger_start_index": 146,
+            "arguments": [
+                {
+                    "argument_start_index": 27,
+                    "role": "时间",
+                    "argument": "7月17日",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "上市企业",
+                    "argument": "作为当今游戏直播领域的天王之一斗鱼游戏直播平台",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 43,
+                    "role": "地点",
+                    "argument": "纳斯达克",
+                    "alias": []
+                }
+            ],
+            "class": "财经/交易"
+        }
+    ]
+}
+{
+    "text": "其中，IG战队与LNG战队发挥均起伏不定，而WE战队则状态火热，8余9日砍翻RW后，已经豪取四连胜。",
+    "id": "89f9c45b949962f50b217b6910e3a5cc",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "砍翻",
+            "trigger_start_index": 36,
+            "arguments": [
+                {
+                    "argument_start_index": 22,
+                    "role": "胜者",
+                    "argument": "WE战队",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 38,
+                    "role": "败者",
+                    "argument": "RW",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 32,
+                    "role": "时间",
+                    "argument": "8余9日",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "连胜",
+            "trigger_start_index": 47,
+            "arguments": [
+                {
+                    "argument_start_index": 22,
+                    "role": "胜者",
+                    "argument": "WE战队",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 38,
+                    "role": "败者",
+                    "argument": "RW",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "纳达尔在最合适的时间找回了神勇状态，他今晨在罗马大师赛男单决赛中，2比1挫败老对手德约科维奇，其中首盘是6比0横扫，从而赢得创纪录的第34个ATP1000大师赛冠军。",
+    "id": "f265e596f60d9876f28a46266cb7300c",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "挫败",
+            "trigger_start_index": 36,
+            "arguments": [
+                {
+                    "argument_start_index": 19,
+                    "role": "时间",
+                    "argument": "今晨",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "胜者",
+                    "argument": "纳达尔",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 41,
+                    "role": "败者",
+                    "argument": "德约科维奇",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 22,
+                    "role": "赛事名称",
+                    "argument": "罗马大师赛男单决赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "横扫",
+            "trigger_start_index": 55,
+            "arguments": [
+                {
+                    "argument_start_index": 19,
+                    "role": "时间",
+                    "argument": "今晨",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "胜者",
+                    "argument": "纳达尔",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 41,
+                    "role": "败者",
+                    "argument": "德约科维奇",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 22,
+                    "role": "赛事名称",
+                    "argument": "罗马大师赛男单决赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-夺冠",
+            "trigger": "冠军",
+            "trigger_start_index": 80,
+            "arguments": [
+                {
+                    "argument_start_index": 19,
+                    "role": "时间",
+                    "argument": "今晨",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "冠军",
+                    "argument": "纳达尔",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 22,
+                    "role": "夺冠赛事",
+                    "argument": "罗马大师赛男单决赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "塞浦路斯FIFA世界排名第92名，球队目前在小组赛取得3胜1平3负得到10个积分排名小组第3，且球队在后面还有面对比利时的比赛，所以本场比赛对于塞浦路斯来说是一场至少要那个1个积分的比赛，球队在最近1场比赛客场2-1战胜整体实力还算不错的哈萨克斯坦，球队近期迎来2连胜，不过小组赛的主场整体表现并不是十分理想。",
+    "id": "190935103eec66a5c055c8a8dbae57c1",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "胜",
+            "trigger_start_index": 28,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "胜者",
+                    "argument": "塞浦路斯",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "负",
+            "trigger_start_index": 32,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "败者",
+                    "argument": "塞浦路斯",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "战胜",
+            "trigger_start_index": 108,
+            "arguments": [
+                {
+                    "argument_start_index": 72,
+                    "role": "胜者",
+                    "argument": "塞浦路斯",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 110,
+                    "role": "败者",
+                    "argument": "整体实力还算不错的哈萨克斯坦",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "连胜",
+            "trigger_start_index": 132,
+            "arguments": [
+                {
+                    "argument_start_index": 72,
+                    "role": "胜者",
+                    "argument": "塞浦路斯",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "刚刚结束的男篮世界杯5-8名排位赛中，美国男篮89-94不敌塞尔维亚遭遇两连败，这是他们2002年以后17年间首次连败，无缘前六的成绩也是自1992年NBA球员参加国际比赛以后的最差成绩。",
+    "id": "2abf27bc370460c5810eba8461f8ef51",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "不敌",
+            "trigger_start_index": 28,
+            "arguments": [
+                {
+                    "argument_start_index": 5,
+                    "role": "赛事名称",
+                    "argument": "男篮世界杯",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 19,
+                    "role": "败者",
+                    "argument": "美国男篮",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 30,
+                    "role": "胜者",
+                    "argument": "塞尔维亚",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "连败",
+            "trigger_start_index": 37,
+            "arguments": [
+                {
+                    "argument_start_index": 19,
+                    "role": "败者",
+                    "argument": "美国男篮",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 5,
+                    "role": "赛事名称",
+                    "argument": "男篮世界杯",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "今晚，2019年苏迪曼杯1/4决赛拉开战幕，中国队对阵丹麦队。首场比赛，中国混双组合黄雅琼/郑思维（人称“雅思”组合）在先丢一局的情况下，连胜两局，从而以19比21、21比11、21比13逆转击败丹麦组合蒂格森/克里斯蒂安森，帮助中国队先下一城。",
+    "id": "83db0b29e3fd8f476623ab098268ea53",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "先丢一局",
+            "trigger_start_index": 60,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "今晚",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 3,
+                    "role": "赛事名称",
+                    "argument": "2019年苏迪曼杯1/4决赛",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 27,
+                    "role": "胜者",
+                    "argument": "丹麦队",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 36,
+                    "role": "败者",
+                    "argument": "中国混双组合黄雅琼/郑思维（人称“雅思”组合）",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "连胜",
+            "trigger_start_index": 69,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "今晚",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 3,
+                    "role": "赛事名称",
+                    "argument": "2019年苏迪曼杯1/4决赛",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 22,
+                    "role": "胜者",
+                    "argument": "中国队",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 27,
+                    "role": "败者",
+                    "argument": "丹麦队",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "击败",
+            "trigger_start_index": 96,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "今晚",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 3,
+                    "role": "赛事名称",
+                    "argument": "2019年苏迪曼杯1/4决赛",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 115,
+                    "role": "胜者",
+                    "argument": "中国队",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 98,
+                    "role": "败者",
+                    "argument": "丹麦组合蒂格森/克里斯蒂安森",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "韩国公开赛-许昕4-1逆转马龙 陈梦4-1战胜丁宁 夺得男女单冠军",
+    "id": "03f5b1159e8ee26811d1177f19273b1c",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "逆转",
+            "trigger_start_index": 11,
+            "arguments": [
+                {
+                    "argument_start_index": 6,
+                    "role": "胜者",
+                    "argument": "许昕",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 13,
+                    "role": "败者",
+                    "argument": "马龙",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "赛事名称",
+                    "argument": "韩国公开赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "战胜",
+            "trigger_start_index": 21,
+            "arguments": [
+                {
+                    "argument_start_index": 16,
+                    "role": "胜者",
+                    "argument": "陈梦",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 23,
+                    "role": "败者",
+                    "argument": "丁宁",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "赛事名称",
+                    "argument": "韩国公开赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-夺冠",
+            "trigger": "冠军",
+            "trigger_start_index": 31,
+            "arguments": [
+                {
+                    "argument_start_index": 6,
+                    "role": "冠军",
+                    "argument": "许昕",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 16,
+                    "role": "冠军",
+                    "argument": "陈梦",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "夺冠赛事",
+                    "argument": "韩国公开赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "3-1，赛事1号种子中国组合陈梦/王曼昱，轻松击败2号种子韩国组合田志希/梁夏银，强势夺得2019年国际乒联澳大利亚公开赛女子双打冠军。这个冠军是中国队在本次赛事的首冠，同时也是陈梦/王曼昱组合的2连冠。",
+    "id": "c9efa2f3cba844c306bf1ebc14473921",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "击败",
+            "trigger_start_index": 23,
+            "arguments": [
+                {
+                    "argument_start_index": 4,
+                    "role": "胜者",
+                    "argument": "赛事1号种子中国组合陈梦/王曼昱",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 25,
+                    "role": "败者",
+                    "argument": "2号种子韩国组合田志希/梁夏银",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 45,
+                    "role": "赛事名称",
+                    "argument": "2019年国际乒联澳大利亚公开赛女子双打",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-夺冠",
+            "trigger": "冠军",
+            "trigger_start_index": 65,
+            "arguments": [
+                {
+                    "argument_start_index": 4,
+                    "role": "冠军",
+                    "argument": "赛事1号种子中国组合陈梦/王曼昱",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 45,
+                    "role": "夺冠赛事",
+                    "argument": "2019年国际乒联澳大利亚公开赛女子双打",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-夺冠",
+            "trigger": "冠军",
+            "trigger_start_index": 70,
+            "arguments": [
+                {
+                    "argument_start_index": 4,
+                    "role": "冠军",
+                    "argument": "赛事1号种子中国组合陈梦/王曼昱",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 45,
+                    "role": "夺冠赛事",
+                    "argument": "2019年国际乒联澳大利亚公开赛女子双打",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-夺冠",
+            "trigger": "2连冠",
+            "trigger_start_index": 98,
+            "arguments": [
+                {
+                    "argument_start_index": 89,
+                    "role": "冠军",
+                    "argument": "陈梦/王曼昱组合",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 45,
+                    "role": "时间",
+                    "argument": "2019年",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "北京时间今天凌晨，新赛季欧冠结束了首个比赛日的争夺，4个小组16支球队相继亮相为球迷们奉献出了多场精彩的对决，比如那不勒斯主场2-0战胜卫冕冠军利物浦、欧冠新军萨尔茨堡红牛6-2大胜亨克等等。",
+    "id": "c0ad947616a5efe8a14a96d2cbb3ec7e",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "战胜",
+            "trigger_start_index": 66,
+            "arguments": [
+                {
+                    "argument_start_index": 57,
+                    "role": "胜者",
+                    "argument": "那不勒斯",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 72,
+                    "role": "败者",
+                    "argument": "利物浦",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "北京时间今天凌晨",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 12,
+                    "role": "赛事名称",
+                    "argument": "欧冠",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "大胜",
+            "trigger_start_index": 89,
+            "arguments": [
+                {
+                    "argument_start_index": 80,
+                    "role": "胜者",
+                    "argument": "萨尔茨堡红牛",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 91,
+                    "role": "败者",
+                    "argument": "亨克",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "北京时间今天凌晨",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 12,
+                    "role": "赛事名称",
+                    "argument": "欧冠",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "2019年女排世界杯赛继续在日本进行，在今天迎来第7轮的较量，中国队迎来最强对手美国队。比赛的结果也是让人意外，中国队轻松的以3-0击败美国队，豪取7连胜的同时继续高举第一位，卫冕世界杯冠军又近了一步。",
+    "id": "d628c1e19a5527bac12f63c393c48f3b",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "击败",
+            "trigger_start_index": 66,
+            "arguments": [
+                {
+                    "argument_start_index": 56,
+                    "role": "胜者",
+                    "argument": "中国队",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 68,
+                    "role": "败者",
+                    "argument": "美国队",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "赛事名称",
+                    "argument": "2019年女排世界杯赛",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 20,
+                    "role": "时间",
+                    "argument": "今天",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "连胜",
+            "trigger_start_index": 75,
+            "arguments": [
+                {
+                    "argument_start_index": 56,
+                    "role": "胜者",
+                    "argument": "中国队",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "赛事名称",
+                    "argument": "2019年女排世界杯赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "北京时间6月1日，2019年国际乒联中国公开赛进入到倒数第二个比赛日，男单的1/4比赛中，许昕4-0横扫德国老将波尔，林高远4-3淘汰队友梁靖崑，日本球员张本智和4-1击败黄镇霆。老将马龙和樊振东的较量中4-1取胜。",
+    "id": "7fcea6eda9a14b19f1e053be61a262f2",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "横扫",
+            "trigger_start_index": 50,
+            "arguments": [
+                {
+                    "argument_start_index": 45,
+                    "role": "胜者",
+                    "argument": "许昕",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 52,
+                    "role": "败者",
+                    "argument": "德国老将波尔",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 35,
+                    "role": "赛事名称",
+                    "argument": "男单的1/4比赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "淘汰",
+            "trigger_start_index": 65,
+            "arguments": [
+                {
+                    "argument_start_index": 59,
+                    "role": "胜者",
+                    "argument": "林高远",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 67,
+                    "role": "败者",
+                    "argument": "队友梁靖崑",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 35,
+                    "role": "赛事名称",
+                    "argument": "男单的1/4比赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "击败",
+            "trigger_start_index": 84,
+            "arguments": [
+                {
+                    "argument_start_index": 73,
+                    "role": "胜者",
+                    "argument": "日本球员张本智和",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 86,
+                    "role": "败者",
+                    "argument": "黄镇霆",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 35,
+                    "role": "赛事名称",
+                    "argument": "男单的1/4比赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "取胜",
+            "trigger_start_index": 105,
+            "arguments": [
+                {
+                    "argument_start_index": 90,
+                    "role": "胜者",
+                    "argument": "老将马龙",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 95,
+                    "role": "败者",
+                    "argument": "樊振东",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 35,
+                    "role": "赛事名称",
+                    "argument": "男单的1/4比赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "围甲联赛：柯洁半目惜败，朴廷桓中盘完胜",
+    "id": "893f5cae54f1a7392d4edb4e2117e754",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "惜败",
+            "trigger_start_index": 9,
+            "arguments": [
+                {
+                    "argument_start_index": 5,
+                    "role": "败者",
+                    "argument": "柯洁",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 12,
+                    "role": "胜者",
+                    "argument": "朴廷桓",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "赛事名称",
+                    "argument": "围甲联赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "完胜",
+            "trigger_start_index": 17,
+            "arguments": [
+                {
+                    "argument_start_index": 5,
+                    "role": "败者",
+                    "argument": "柯洁",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 12,
+                    "role": "胜者",
+                    "argument": "朴廷桓",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "赛事名称",
+                    "argument": "围甲联赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "南特上赛季联赛排名第12位，实力属于法甲联赛当中中下游球队的表现，不过本赛季至今的表现还算不错，目前6场比赛取得3胜1平2负积10分排名第7位的战绩，表现对比上赛季总体来说有积极的影响，虽然上场比赛球队在客场1:2输给斯特拉斯堡，但是球队主场比赛目前取得2胜1平的不败战绩，主场表现不算差，本场比赛主场拿分还是有机会的。",
+    "id": "6cd316bb3f0ba65c7f41a566dce8b569",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "胜",
+            "trigger_start_index": 57,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "胜者",
+                    "argument": "南特",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "负",
+            "trigger_start_index": 61,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "败者",
+                    "argument": "南特",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "输给",
+            "trigger_start_index": 107,
+            "arguments": [
+                {
+                    "argument_start_index": 109,
+                    "role": "胜者",
+                    "argument": "斯特拉斯堡",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "败者",
+                    "argument": "南特",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "胜",
+            "trigger_start_index": 128,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "胜者",
+                    "argument": "南特",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "西西帕斯目前世界排名第七，在之前已经取得年终总决赛席位，他先是在澳网战胜费德勒首次打进大满贯四强，在马德里大师赛击败纳达尔进入决赛，接着在法网中五盘败给瓦林卡。",
+    "id": "0fd73948dcac935587d653c62d75897b",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "战胜",
+            "trigger_start_index": 34,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "胜者",
+                    "argument": "西西帕斯",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 36,
+                    "role": "败者",
+                    "argument": "费德勒",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 32,
+                    "role": "赛事名称",
+                    "argument": "澳网",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-晋级",
+            "trigger": "打进",
+            "trigger_start_index": 41,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "晋级方",
+                    "argument": "西西帕斯",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 43,
+                    "role": "晋级赛事",
+                    "argument": "大满贯四强",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "击败",
+            "trigger_start_index": 56,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "胜者",
+                    "argument": "西西帕斯",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 58,
+                    "role": "败者",
+                    "argument": "纳达尔",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 50,
+                    "role": "赛事名称",
+                    "argument": "马德里大师赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-晋级",
+            "trigger": "进入",
+            "trigger_start_index": 61,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "晋级方",
+                    "argument": "西西帕斯",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "败给",
+            "trigger_start_index": 74,
+            "arguments": [
+                {
+                    "argument_start_index": 76,
+                    "role": "胜者",
+                    "argument": "瓦林卡",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "败者",
+                    "argument": "西西帕斯",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 69,
+                    "role": "赛事名称",
+                    "argument": "法网",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "北京时间5月27号凌晨，18-19赛季意甲联赛最后一轮最后8场比赛展开争夺。都灵主场3：1轻取拉齐奥，尤文客场0：2不敌桑普多利亚，佛罗伦萨主场0：0闷平热那亚，AC米兰客场3：2击败费拉拉，国米主场2：1险胜恩波利，卡利亚里主场1：2不敌乌迪内斯，罗马主场2：1小胜帕尔马，亚特兰大主场3：1逆转萨索洛。",
+    "id": "be9aa1b4c5d163494896f195e24ecb97",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "轻取",
+            "trigger_start_index": 45,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "北京时间5月27号凌晨",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 12,
+                    "role": "赛事名称",
+                    "argument": "18-19赛季意甲联赛",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 38,
+                    "role": "胜者",
+                    "argument": "都灵",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 47,
+                    "role": "败者",
+                    "argument": "拉齐奥",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "不敌",
+            "trigger_start_index": 58,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "北京时间5月27号凌晨",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 12,
+                    "role": "赛事名称",
+                    "argument": "18-19赛季意甲联赛",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 51,
+                    "role": "败者",
+                    "argument": "尤文",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 60,
+                    "role": "胜者",
+                    "argument": "桑普多利亚",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "击败",
+            "trigger_start_index": 90,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "北京时间5月27号凌晨",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 12,
+                    "role": "赛事名称",
+                    "argument": "18-19赛季意甲联赛",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 81,
+                    "role": "胜者",
+                    "argument": "AC米兰",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 92,
+                    "role": "败者",
+                    "argument": "费拉拉",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "险胜",
+            "trigger_start_index": 103,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "北京时间5月27号凌晨",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 12,
+                    "role": "赛事名称",
+                    "argument": "18-19赛季意甲联赛",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 96,
+                    "role": "胜者",
+                    "argument": "国米",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 105,
+                    "role": "败者",
+                    "argument": "恩波利",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "不敌",
+            "trigger_start_index": 118,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "北京时间5月27号凌晨",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 12,
+                    "role": "赛事名称",
+                    "argument": "18-19赛季意甲联赛",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 109,
+                    "role": "败者",
+                    "argument": "卡利亚里",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 120,
+                    "role": "胜者",
+                    "argument": "乌迪内斯",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "小胜",
+            "trigger_start_index": 132,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "北京时间5月27号凌晨",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 12,
+                    "role": "赛事名称",
+                    "argument": "18-19赛季意甲联赛",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 125,
+                    "role": "胜者",
+                    "argument": "罗马",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 134,
+                    "role": "败者",
+                    "argument": "帕尔马",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "逆转",
+            "trigger_start_index": 147,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "北京时间5月27号凌晨",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 12,
+                    "role": "赛事名称",
+                    "argument": "18-19赛季意甲联赛",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 138,
+                    "role": "胜者",
+                    "argument": "亚特兰大",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 149,
+                    "role": "败者",
+                    "argument": "萨索洛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "北京时间10月28日，NBA常规赛继续进行，今天共有五场比赛进行，在结束的四场比赛中，勇士92-120惨败雷霆遭遇开局两连败，篮网133-134憾负灰熊无缘连胜，灰熊则是结束两连败，开拓者121-119险胜独行侠，独行侠两连胜惨遭终结，森林狼116-109战胜热火豪取三连胜，热火则是结束两连胜，下面来看下具体的赛况分析。",
+    "id": "ff80a2384ace202bc4787abd6ecb5db6",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "惨败",
+            "trigger_start_index": 51,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "北京时间10月28日",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 11,
+                    "role": "赛事名称",
+                    "argument": "NBA常规赛",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 43,
+                    "role": "败者",
+                    "argument": "勇士",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 53,
+                    "role": "胜者",
+                    "argument": "雷霆",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "连败",
+            "trigger_start_index": 60,
+            "arguments": [
+                {
+                    "argument_start_index": 43,
+                    "role": "败者",
+                    "argument": "勇士",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 11,
+                    "role": "赛事名称",
+                    "argument": "NBA常规赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "憾负",
+            "trigger_start_index": 72,
+            "arguments": [
+                {
+                    "argument_start_index": 63,
+                    "role": "败者",
+                    "argument": "篮网",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 74,
+                    "role": "胜者",
+                    "argument": "灰熊",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "北京时间10月28日",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 11,
+                    "role": "赛事名称",
+                    "argument": "NBA常规赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "连败",
+            "trigger_start_index": 88,
+            "arguments": [
+                {
+                    "argument_start_index": 81,
+                    "role": "败者",
+                    "argument": "灰熊",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 11,
+                    "role": "赛事名称",
+                    "argument": "NBA常规赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "险胜",
+            "trigger_start_index": 101,
+            "arguments": [
+                {
+                    "argument_start_index": 91,
+                    "role": "胜者",
+                    "argument": "开拓者",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 103,
+                    "role": "败者",
+                    "argument": "独行侠",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "北京时间10月28日",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 11,
+                    "role": "赛事名称",
+                    "argument": "NBA常规赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "连胜",
+            "trigger_start_index": 111,
+            "arguments": [
+                {
+                    "argument_start_index": 107,
+                    "role": "胜者",
+                    "argument": "独行侠",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 11,
+                    "role": "赛事名称",
+                    "argument": "NBA常规赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "战胜",
+            "trigger_start_index": 128,
+            "arguments": [
+                {
+                    "argument_start_index": 118,
+                    "role": "胜者",
+                    "argument": "森林狼",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 130,
+                    "role": "败者",
+                    "argument": "热火",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "北京时间10月28日",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 11,
+                    "role": "赛事名称",
+                    "argument": "NBA常规赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "连胜",
+            "trigger_start_index": 135,
+            "arguments": [
+                {
+                    "argument_start_index": 118,
+                    "role": "胜者",
+                    "argument": "森林狼",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 11,
+                    "role": "赛事名称",
+                    "argument": "NBA常规赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "连胜",
+            "trigger_start_index": 145,
+            "arguments": [
+                {
+                    "argument_start_index": 138,
+                    "role": "胜者",
+                    "argument": "热火",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 11,
+                    "role": "赛事名称",
+                    "argument": "NBA常规赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "8月23号英雄联盟LPL赛区IG战队输给了LNG，与此同时LCK赛区的SKT战胜Sandbox Gaming离冠军更进一步。",
+    "id": "a3236d749f97faabe1fec781b59d2098",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "输",
+            "trigger_start_index": 18,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "8月23号",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 14,
+                    "role": "败者",
+                    "argument": "IG战队",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 21,
+                    "role": "胜者",
+                    "argument": "LNG",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "战胜",
+            "trigger_start_index": 38,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "8月23号",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 35,
+                    "role": "胜者",
+                    "argument": "SKT",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 40,
+                    "role": "败者",
+                    "argument": "Sandbox Gaming",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "北京时间10月11日晚，2019年CBA季前赛江西上饶站进入最后一日角逐。焦点战，费尔德错失三分绝杀，广东男篮经过四节较量以111-109险胜新疆男篮，战绩锁定为2胜1负；新疆队遭遇2连败最后成绩是1胜2负。",
+    "id": "f1018bc5f25e840db5cca0d39d89f199",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "险胜",
+            "trigger_start_index": 69,
+            "arguments": [
+                {
+                    "argument_start_index": 12,
+                    "role": "赛事名称",
+                    "argument": "2019年CBA季前赛江西上饶站",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 51,
+                    "role": "胜者",
+                    "argument": "广东男篮",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 71,
+                    "role": "败者",
+                    "argument": "新疆男篮",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "北京时间10月11日晚",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "连败",
+            "trigger_start_index": 92,
+            "arguments": [
+                {
+                    "argument_start_index": 86,
+                    "role": "败者",
+                    "argument": "新疆队",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 12,
+                    "role": "赛事名称",
+                    "argument": "2019年CBA季前赛",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 12,
+                    "role": "时间",
+                    "argument": "2019年",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "胜",
+            "trigger_start_index": 82,
+            "arguments": [
+                {
+                    "argument_start_index": 51,
+                    "role": "胜者",
+                    "argument": "广东男篮",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 12,
+                    "role": "赛事名称",
+                    "argument": "2019年CBA季前赛",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 12,
+                    "role": "时间",
+                    "argument": "2019年",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "负",
+            "trigger_start_index": 84,
+            "arguments": [
+                {
+                    "argument_start_index": 51,
+                    "role": "败者",
+                    "argument": "广东男篮",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 12,
+                    "role": "赛事名称",
+                    "argument": "2019年CBA季前赛",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 12,
+                    "role": "时间",
+                    "argument": "2019年",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "胜",
+            "trigger_start_index": 100,
+            "arguments": [
+                {
+                    "argument_start_index": 12,
+                    "role": "时间",
+                    "argument": "2019年",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 12,
+                    "role": "赛事名称",
+                    "argument": "2019年CBA季前赛",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 86,
+                    "role": "胜者",
+                    "argument": "新疆队",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "负",
+            "trigger_start_index": 102,
+            "arguments": [
+                {
+                    "argument_start_index": 86,
+                    "role": "败者",
+                    "argument": "新疆队",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 12,
+                    "role": "时间",
+                    "argument": "2019年",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 12,
+                    "role": "赛事名称",
+                    "argument": "2019年CBA季前赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "这个成绩还算正常体现了如今国奥的水平，本次土伦杯国奥首战1比4负与北爱尔兰，之后大比分战胜了巴林，小负墨西哥和智利。国奥体会到了和高手之间的差距，比赛很有锻炼价值。",
+    "id": "73426f5c294355576f9da75c1c3ec9a6",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "负",
+            "trigger_start_index": 31,
+            "arguments": [
+                {
+                    "argument_start_index": 21,
+                    "role": "赛事名称",
+                    "argument": "土伦杯",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 24,
+                    "role": "败者",
+                    "argument": "国奥",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 33,
+                    "role": "胜者",
+                    "argument": "北爱尔兰",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "战胜",
+            "trigger_start_index": 43,
+            "arguments": [
+                {
+                    "argument_start_index": 21,
+                    "role": "赛事名称",
+                    "argument": "土伦杯",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 24,
+                    "role": "胜者",
+                    "argument": "国奥",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 46,
+                    "role": "败者",
+                    "argument": "巴林",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "负",
+            "trigger_start_index": 50,
+            "arguments": [
+                {
+                    "argument_start_index": 51,
+                    "role": "胜者",
+                    "argument": "墨西哥和智利",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 21,
+                    "role": "赛事名称",
+                    "argument": "土伦杯",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 24,
+                    "role": "败者",
+                    "argument": "国奥",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "女排世界杯-朱婷22分 张常宁17分 中国队3-0俄罗斯取三连胜",
+    "id": "9e6a811d69f91bfb193cfb2bd02f8e2a",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "3-0",
+            "trigger_start_index": 22,
+            "arguments": [
+                {
+                    "argument_start_index": 19,
+                    "role": "胜者",
+                    "argument": "中国队",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 25,
+                    "role": "败者",
+                    "argument": "俄罗斯",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "赛事名称",
+                    "argument": "女排世界杯",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "连胜",
+            "trigger_start_index": 30,
+            "arguments": [
+                {
+                    "argument_start_index": 19,
+                    "role": "胜者",
+                    "argument": "中国队",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "赛事名称",
+                    "argument": "女排世界杯",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "八强赛97-87力克实力榜排名第一位的塞尔维亚，半决赛80-66大胜全NBA球员首发的法国男篮，阿根廷彻底扮演了本届世界杯上的“最大黑马”角色。",
+    "id": "8cf966b8a01f4f92934857862e61d958",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "力克",
+            "trigger_start_index": 8,
+            "arguments": [
+                {
+                    "argument_start_index": 10,
+                    "role": "败者",
+                    "argument": "实力榜排名第一位的塞尔维亚",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 48,
+                    "role": "胜者",
+                    "argument": "阿根廷",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 0,
+                    "role": "赛事名称",
+                    "argument": "八强赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "大胜",
+            "trigger_start_index": 32,
+            "arguments": [
+                {
+                    "argument_start_index": 34,
+                    "role": "败者",
+                    "argument": "全NBA球员首发的法国男篮",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 48,
+                    "role": "胜者",
+                    "argument": "阿根廷",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 24,
+                    "role": "赛事名称",
+                    "argument": "半决赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "近几年的季后赛可谓诞生了不少的神迹，其中有些球星打出了史诗般的数据，有些球队则创造了历史纪录，在这个讲究数据的年代，由巨星打出华丽的数据也不足为奇，但在16年总决赛那个经典的系列赛里，常规赛打出73胜9负的历史第一战绩的勇士却在大比分3-1领先情况下被詹姆斯带领的骑士翻盘，他们创造了历史，完成了几乎不可能的任务，这个系列赛注定会被载入史册，被世人所铭记，但3年过去了，而很多人至今似乎都没有明白，当年的勇士到底是怎样被逆转的。",
+    "id": "7ecdbcc076f0103fa150bca3d4f01e61",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "胜",
+            "trigger_start_index": 99,
+            "arguments": [
+                {
+                    "argument_start_index": 92,
+                    "role": "胜者",
+                    "argument": "常规赛打出73胜9负的历史第一战绩的勇士",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 92,
+                    "role": "赛事名称",
+                    "argument": "常规赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "负",
+            "trigger_start_index": 101,
+            "arguments": [
+                {
+                    "argument_start_index": 92,
+                    "role": "败者",
+                    "argument": "常规赛打出73胜9负的历史第一战绩的勇士",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 92,
+                    "role": "赛事名称",
+                    "argument": "常规赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-胜负",
+            "trigger": "翻盘",
+            "trigger_start_index": 134,
+            "arguments": [
+                {
+                    "argument_start_index": 126,
+                    "role": "胜者",
+                    "argument": "詹姆斯带领的骑士",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 92,
+                    "role": "败者",
+                    "argument": "常规赛打出73胜9负的历史第一战绩的勇士",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 76,
+                    "role": "赛事名称",
+                    "argument": "16年总决赛那个经典的系列赛",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "芜湖县人民检察院原党组成员、副检察长殷坤洋利用职务便利，收受贿赂80万余元、挪用公款70万元一案，日前由芜湖市弋江区法院作出一审判决，被告人殷坤洋犯受贿罪，被判有期徒刑四年零六个月，并处罚金30万元；犯挪用公款罪，被判有期徒刑六个月；数罪并罚，决定执行有期徒刑四年零六个月，并处罚金30万元。",
+    "id": "a6e78af8d3f60ea5dd1824eba421c9d2",
+    "event_list": [
+        {
+            "event_type": "司法行为-入狱",
+            "trigger": "有期徒刑",
+            "trigger_start_index": 80,
+            "arguments": [
+                {
+                    "argument_start_index": 84,
+                    "role": "刑期",
+                    "argument": "四年零六个月",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 67,
+                    "role": "入狱者",
+                    "argument": "被告人殷坤洋",
+                    "alias": []
+                }
+            ],
+            "class": "司法行为"
+        },
+        {
+            "event_type": "司法行为-罚款",
+            "trigger": "罚金",
+            "trigger_start_index": 93,
+            "arguments": [
+                {
+                    "argument_start_index": 52,
+                    "role": "执法机构",
+                    "argument": "芜湖市弋江区法院",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 67,
+                    "role": "罚款对象",
+                    "argument": "被告人殷坤洋",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 95,
+                    "role": "罚款金额",
+                    "argument": "30万元",
+                    "alias": []
+                }
+            ],
+            "class": "司法行为"
+        },
+        {
+            "event_type": "司法行为-入狱",
+            "trigger": "有期徒刑",
+            "trigger_start_index": 109,
+            "arguments": [
+                {
+                    "argument_start_index": 67,
+                    "role": "入狱者",
+                    "argument": "被告人殷坤洋",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 113,
+                    "role": "刑期",
+                    "argument": "六个月",
+                    "alias": []
+                }
+            ],
+            "class": "司法行为"
+        },
+        {
+            "event_type": "司法行为-入狱",
+            "trigger": "有期徒刑",
+            "trigger_start_index": 126,
+            "arguments": [
+                {
+                    "argument_start_index": 67,
+                    "role": "入狱者",
+                    "argument": "被告人殷坤洋",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 130,
+                    "role": "刑期",
+                    "argument": "四年零六个月",
+                    "alias": []
+                }
+            ],
+            "class": "司法行为"
+        },
+        {
+            "event_type": "司法行为-罚款",
+            "trigger": "罚金",
+            "trigger_start_index": 139,
+            "arguments": [
+                {
+                    "argument_start_index": 52,
+                    "role": "执法机构",
+                    "argument": "芜湖市弋江区法院",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 67,
+                    "role": "罚款对象",
+                    "argument": "被告人殷坤洋",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 141,
+                    "role": "罚款金额",
+                    "argument": "30万元",
+                    "alias": []
+                }
+            ],
+            "class": "司法行为"
+        }
+    ]
+}
+{
+    "text": "北京时间昨晚至今日中午，美网结束了第五日的争夺，男单方面，德约科维奇和费德勒共同晋级16强，女单方面，小威亦轻松过关，我国金花中则是一晋级一淘汰",
+    "id": "b0d23c119a3422fc9a88644c0e11532a",
+    "event_list": [
+        {
+            "event_type": "竞赛行为-晋级",
+            "trigger": "晋级",
+            "trigger_start_index": 40,
+            "arguments": [
+                {
+                    "argument_start_index": 4,
+                    "role": "时间",
+                    "argument": "昨晚至今日中午",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 12,
+                    "role": "晋级赛事",
+                    "argument": "美网",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 29,
+                    "role": "晋级方",
+                    "argument": "德约科维奇和费德勒",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-晋级",
+            "trigger": "过关",
+            "trigger_start_index": 56,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "北京时间昨晚至今日中午",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 51,
+                    "role": "晋级方",
+                    "argument": "小威",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 12,
+                    "role": "晋级赛事",
+                    "argument": "美网",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        },
+        {
+            "event_type": "竞赛行为-晋级",
+            "trigger": "晋级",
+            "trigger_start_index": 67,
+            "arguments": [
+                {
+                    "argument_start_index": 12,
+                    "role": "晋级赛事",
+                    "argument": "美网",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 4,
+                    "role": "时间",
+                    "argument": "昨晚至今日中午",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 59,
+                    "role": "晋级方",
+                    "argument": "我国金花",
+                    "alias": []
+                }
+            ],
+            "class": "竞赛行为"
+        }
+    ]
+}
+{
+    "text": "限售股解禁的当天，天风证券股价就直接被按在跌停板上，至10月22日，公司股价连续两日跌停。",
+    "id": "ab4bc414e988c92c3b39bc1a87d4e0f6",
+    "event_list": [
+        {
+            "event_type": "财经/交易-跌停",
+            "trigger": "跌停板",
+            "trigger_start_index": 21,
+            "arguments": [
+                {
+                    "argument_start_index": 6,
+                    "role": "时间",
+                    "argument": "当天",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 9,
+                    "role": "跌停股票",
+                    "argument": "天风证券",
+                    "alias": []
+                }
+            ],
+            "class": "财经/交易"
+        },
+        {
+            "event_type": "财经/交易-跌停",
+            "trigger": "跌停",
+            "trigger_start_index": 42,
+            "arguments": [
+                {
+                    "argument_start_index": 9,
+                    "role": "跌停股票",
+                    "argument": "天风证券",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 27,
+                    "role": "时间",
+                    "argument": "10月22日",
+                    "alias": []
+                }
+            ],
+            "class": "财经/交易"
+        }
+    ]
+}
+{
+    "text": "2019年6月17日22时55分，四川宜宾市长宁县（北纬28.34度，东经104.90度）发生6.0级地震。截至6月18日15点56分，地震已导致13人死亡，199人受伤。",
+    "id": "161ab35cf4da024eb1d9175039e3ed4f",
+    "event_list": [
+        {
+            "event_type": "灾害/意外-地震",
+            "trigger": "地震",
+            "trigger_start_index": 51,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "2019年6月17日22时55分",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 47,
+                    "role": "震级",
+                    "argument": "6.0级",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 73,
+                    "role": "死亡人数",
+                    "argument": "13人",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 79,
+                    "role": "受伤人数",
+                    "argument": "199人",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 17,
+                    "role": "震中",
+                    "argument": "四川宜宾市长宁县（北纬28.34度，东经104.90度）",
+                    "alias": []
+                }
+            ],
+            "class": "灾害/意外"
+        },
+        {
+            "event_type": "灾害/意外-地震",
+            "trigger": "地震",
+            "trigger_start_index": 68,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "2019年6月17日22时55分",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 47,
+                    "role": "震级",
+                    "argument": "6.0级",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 73,
+                    "role": "死亡人数",
+                    "argument": "13人",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 79,
+                    "role": "受伤人数",
+                    "argument": "199人",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 17,
+                    "role": "震中",
+                    "argument": "四川宜宾市长宁县（北纬28.34度，东经104.90度）",
+                    "alias": []
+                }
+            ],
+            "class": "灾害/意外"
+        },
+        {
+            "event_type": "人生-死亡",
+            "trigger": "死亡",
+            "trigger_start_index": 76,
+            "arguments": [],
+            "class": "人生"
+        }
+    ]
+}
+{
+    "text": "6月22日22时29分，四川珙县发生5.4级地震。记者23日从四川省地震局获悉，专家综合分析认为，此次珙县5.4级地震属长宁6.0级地震的余震正常起伏活动。从目前余震活动来看，此次地震的序列呈现正常的起伏衰减状态。同时，四川省地震预报研究中心主任、研究员杜方对此次地震的几个热点问题进行了解读。",
+    "id": "a68f0770cb1ba9a279145a02e3ce80c7",
+    "event_list": [
+        {
+            "event_type": "灾害/意外-地震",
+            "trigger": "地震",
+            "trigger_start_index": 22,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "6月22日22时29分",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 18,
+                    "role": "震级",
+                    "argument": "5.4级",
+                    "alias": []
+                }
+            ],
+            "class": "灾害/意外"
+        },
+        {
+            "event_type": "灾害/意外-地震",
+            "trigger": "地震",
+            "trigger_start_index": 57,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "6月22日22时29分",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 53,
+                    "role": "震级",
+                    "argument": "5.4级",
+                    "alias": []
+                }
+            ],
+            "class": "灾害/意外"
+        },
+        {
+            "event_type": "灾害/意外-地震",
+            "trigger": "地震",
+            "trigger_start_index": 66,
+            "arguments": [
+                {
+                    "argument_start_index": 62,
+                    "role": "震级",
+                    "argument": "6.0级",
+                    "alias": []
+                }
+            ],
+            "class": "灾害/意外"
+        },
+        {
+            "event_type": "灾害/意外-地震",
+            "trigger": "地震",
+            "trigger_start_index": 90,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "6月22日22时29分",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 18,
+                    "role": "震级",
+                    "argument": "5.4级",
+                    "alias": []
+                }
+            ],
+            "class": "灾害/意外"
+        },
+        {
+            "event_type": "灾害/意外-地震",
+            "trigger": "地震",
+            "trigger_start_index": 132,
+            "arguments": [
+                {
+                    "argument_start_index": 0,
+                    "role": "时间",
+                    "argument": "6月22日22时29分",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 18,
+                    "role": "震级",
+                    "argument": "5.4级",
+                    "alias": []
+                }
+            ],
+            "class": "灾害/意外"
+        }
+    ]
+}
+{
+    "text": "据外媒报道，美国地质勘探局消息称，当地时间14日下午6时28分，在印度尼西亚东部北马鲁古省的特纳特镇西南偏南165公里处发生7.3级地震，震源深度10千米。消息指，地震未引发海啸预警。",
+    "id": "d9e07e3cb2e1aab3a0710b2e5fee4c0a",
+    "event_list": [
+        {
+            "event_type": "灾害/意外-地震",
+            "trigger": "地震",
+            "trigger_start_index": 66,
+            "arguments": [
+                {
+                    "argument_start_index": 17,
+                    "role": "时间",
+                    "argument": "当地时间14日下午6时28分",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 62,
+                    "role": "震级",
+                    "argument": "7.3级",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 73,
+                    "role": "震源深度",
+                    "argument": "10千米",
+                    "alias": []
+                }
+            ],
+            "class": "灾害/意外"
+        },
+        {
+            "event_type": "灾害/意外-地震",
+            "trigger": "地震",
+            "trigger_start_index": 82,
+            "arguments": [
+                {
+                    "argument_start_index": 17,
+                    "role": "时间",
+                    "argument": "当地时间14日下午6时28分",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 62,
+                    "role": "震级",
+                    "argument": "7.3级",
+                    "alias": []
+                },
+                {
+                    "argument_start_index": 73,
+                    "role": "震源深度",
+                    "argument": "10千米",
+                    "alias": []
+                }
+            ],
+            "class": "灾害/意外"
+        }
+    ]
+}

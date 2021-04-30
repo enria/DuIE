@@ -20,12 +20,13 @@ label_error_cnt=0
 global_text_index=0
 
 class Dataset(torch.utils.data.Dataset):
-    def __init__(self,input_ids,token_type_ids,attention_mask,offset_mapping,label_tensor,label_text_index):
+    def __init__(self,input_ids,token_type_ids,attention_mask,offset_mapping,label_tensor,sec_tensor,label_text_index):
         self.input_ids=input_ids
         self.token_type_ids=token_type_ids
         self.attention_mask=attention_mask
         self.offset_mapping=offset_mapping
         self.label_tensor=label_tensor
+        self.sec_tensor=sec_tensor
         self.label_text_index=label_text_index
 
     def __getitem__(self, index):
@@ -34,6 +35,7 @@ class Dataset(torch.utils.data.Dataset):
                self.attention_mask[index],
                self.offset_mapping[index],
                self.label_tensor[index],
+               self.sec_tensor[index],
                self.label_text_index[index])
 
     def __len__(self):
@@ -78,14 +80,8 @@ class NERProcessor(DataProcessor):
         test_data = self.read_json_data(self.test_path)
         return test_data
 
-    def from_offset_to_label_tensor(self,offset,label_index):
+    def from_offset_to_label_tensor(self,offset,label_index,offset_index_dict):
         label_tensor=torch.zeros(len(offset),len(self.event_schema.id2labels))
-        offset_index_dict={} # text index to offset index
-        for i,o in enumerate(offset):
-            if o[-1]==0:
-                continue
-            for oi in range(o[0],o[-1]):
-                offset_index_dict[int(oi)]=i
 
         for role_index in label_index:
             try:
@@ -118,25 +114,28 @@ class NERProcessor(DataProcessor):
         )
 
         label_tensors = []
+        sec_tensors=[]
         label_text_index=[]
         for index,offset in enumerate(inputs['offset_mapping']):
             global global_text_index
             global_text_index=index
             event_list=data[index].get("event_list",[])
-            label_index=self.event_schema.tokens_to_label_index(data[index]["text"],event_list)
-            label_tensor=self.from_offset_to_label_tensor(offset,label_index)
+
+            offset_index_dict={} # text index to offset index
+            for i,o in enumerate(offset):
+                if o[-1]==0:
+                    continue
+                for oi in range(o[0],o[-1]):
+                    offset_index_dict[int(oi)]=i
+            sec_matrix=torch.zeros((offset.shape[0],offset.shape[0]))
+            label_index=self.event_schema.tokens_to_label_index(data[index]["text"],event_list,offset_index_dict,sec_matrix)
+            sec_tensors.append(sec_matrix)
+            label_tensor=self.from_offset_to_label_tensor(offset,label_index,offset_index_dict)
             label_tensors.append(label_tensor)
             label_text_index.append([(x[0],x[1]) for x in label_index])
 
-        # dataset = torch.utils.data.TensorDataset(
-        #     torch.LongTensor(inputs["input_ids"]),          # 句子字符id
-        #     torch.LongTensor(inputs["token_type_ids"]),     # 区分两句话，此任务中全为0，表示输入只有一句话
-        #     torch.LongTensor(inputs["attention_mask"]),     # 区分是否是pad值。句子内容为1，pad为0
-        #     torch.LongTensor(inputs["offset_mapping"]),     # 区分是否是pad值。句子内容为1，pad为0
-        #     torch.stack(labels)
-        # )
-
-        dataset=Dataset(inputs["input_ids"],inputs["token_type_ids"],inputs["attention_mask"],inputs["offset_mapping"],label_tensors,label_text_index)
+        dataset=Dataset(inputs["input_ids"],inputs["token_type_ids"],inputs["attention_mask"],
+                        inputs["offset_mapping"],label_tensors,sec_tensors,label_text_index)
 
         dataloader = torch.utils.data.DataLoader(
             dataset,
@@ -151,17 +150,30 @@ class NERProcessor(DataProcessor):
         result=[]
         for label_tensor,offset_mapping in zip(label_tensor_list,offset_mapping_list):
             label_index=(label_tensor>threshold).nonzero()
+            # sec_index=(torch.triu(sec_tensor,1)>threshold).nonzero()
             label_text_index={} # key:label_id,value:text indices
+            label_text_set={} # key:label_id,value:text indices set
+            # sec_start_index={} # key:start,value:end indices
 
             item_result=[]
     
             for index in label_index:
-                key=index[1].item()
-                row=index[0].item()
-                if offset_mapping[row][-1]==0:
+                label_id=index[1].item()
+                input_id=index[0].item()
+                if offset_mapping[input_id][-1]==0:
                     continue
-                label_text_index.setdefault(key,[])
-                label_text_index[key].append(row)
+                label_text_index.setdefault(label_id,[])
+                label_text_index[label_id].append(input_id)
+                label_text_set.setdefault(label_id,set())
+                label_text_set[label_id].add(input_id)
+            
+            # for index in sec_index:
+            #     start=index[0].item()
+            #     end=index[1].item()
+            #     if offset_mapping[start][-1]==0 or offset_mapping[end][-1]==0:
+            #         continue
+            #     sec_start_index.setdefault(start,set())
+            #     sec_start_index[start].add(end)
             
             for start_label_id,start_text_indices in label_text_index.items():
                 if start_label_id%2:
@@ -170,13 +182,24 @@ class NERProcessor(DataProcessor):
                 end_text_indices=label_text_index.get(end_label_id,[])
                 start_index,end_index=0,0
                 while start_index<len(start_text_indices) and end_index<len(end_text_indices):
-                    while end_index<len(end_text_indices) and end_text_indices[end_index]<start_text_indices[start_index]:
-                        end_index+=1
-                    if end_index>=len(end_text_indices):
-                        break
-                    item_result.append(((offset_mapping[start_text_indices[start_index]][0].item(),
-                                    offset_mapping[end_text_indices[end_index]][-1].item()),
-                                    (start_label_id,end_label_id)))
+                    start_input_index = start_text_indices[start_index]
+                    end_input_index = 0
+
+                    # available_ends=label_text_set.get(end_label_id,set()) & sec_start_index.get(start_input_index,set())
+                    available_ends=None # TODO
+                    if available_ends:
+                        # most_possible_end=max(available_ends,key=lambda x:sec_tensor[start_input_index][x])
+                        nearest_end=min(available_ends)
+                        end_input_index=nearest_end
+                    else:
+                        while end_index<len(end_text_indices) and end_text_indices[end_index]<start_text_indices[start_index]:
+                            end_index+=1
+                        if end_index>=len(end_text_indices):
+                            break
+                        end_input_index=end_text_indices[end_index]
+                    item_result.append(((offset_mapping[start_input_index][0].item(),
+                                        offset_mapping[end_input_index][-1].item()),
+                                        (start_label_id,end_label_id)))
                     start_index+=1
             result.append(item_result)
 
@@ -213,7 +236,7 @@ class EventSchemaDict(object):
             self.id2labels[index*2]="B-"+role
             self.id2labels[index*2+1]="E-"+role
     
-    def tokens_to_label_index(self,text:str,label):
+    def tokens_to_label_index(self,text:str,label,offset_index_dict,sec_matrix):
         label_index=[]
         for event_index,event in enumerate(label):
             event_type=event["event_type"]
@@ -234,31 +257,39 @@ class EventSchemaDict(object):
                     if role["argument"].strip() in role["argument"]:
                         role_start+=role["argument"].index(role["argument"].strip())
                         role_end=role_start+len(role["argument"].strip())
+
+                if sec_matrix !=None and \
+                    role_start in offset_index_dict and role_end-1  in offset_index_dict:
+                    sec_matrix[offset_index_dict[role_start]][offset_index_dict[role_end-1]]=1
+
                 B_label_id=self.label2ids["B-"+event_type+":"+role["role"]]
                 I_label_id=self.label2ids["E-"+event_type+":"+role["role"]]
                 label_index.append(((role_start,role_end),(B_label_id,I_label_id),event_index))
-
+            
         # Sort by argument first index and event index.
         label_index.sort(key=lambda x:(x[0][0],x[2]))
         return label_index
     
 from collections import Counter
 def overlap_stat(data):
+    overlap_data=[]
     all_event,contain2event=0,0
     all_role_cnt,distinct_role_cnt=0,0
     for item in data:
-        roles=[(role["argument_start_index"],len(role["argument"])) for event in item["event_list"] for role in event["arguments"]]
+        roles=[((role["argument_start_index"],len(role["argument"]),event["event_type"]+role["role"])) for event in item["event_list"] for role in event["arguments"]]
+        distinct_role=len(roles)
         if len(item["event_list"])>=2:
             contain2event+=1
             cnter=Counter(roles)
-            distinct_role_cnt+=len(cnter.values())
-        else:
-            distinct_role_cnt+=len(roles)
+            distinct_role=len(cnter.values())
+        distinct_role_cnt+=distinct_role
         all_role_cnt+=len(roles)
+        if distinct_role!=len(roles):
+            overlap_data.append(item)
         all_event+=1
     
-    print(f"events:{contain2event}/{all_event}={contain2event/all_event:.2f},roles={distinct_role_cnt}/{all_event}={distinct_role_cnt/all_role_cnt:.2f}")
-
+    print(f"events:{contain2event}/{all_event}={contain2event/all_event:.2f},roles={distinct_role_cnt}/{all_role_cnt}={distinct_role_cnt/all_role_cnt:.2f}")
+    return overlap_data
 
 
 if __name__ == '__main__':
@@ -270,6 +301,11 @@ if __name__ == '__main__':
 
     processor=NERProcessor(config)
     train_data=processor.get_dev_data()
-    loader=processor.create_dataloader(train_data,batch_size=8)
-    for batch in loader:
-        x = batch
+    overlap_data=overlap_stat(train_data)
+    with open("../data/overlap_role.json","w") as jsonf:
+        for item in overlap_data:
+            jsonf.write(json.dumps(item,ensure_ascii=False)+"\n")
+
+    # loader=processor.create_dataloader(train_data,batch_size=8)
+    # for batch in loader:
+    #     x = batch

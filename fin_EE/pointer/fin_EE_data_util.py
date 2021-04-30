@@ -226,23 +226,23 @@ class NERProcessor(DataProcessor):
                                     (start_label_id,end_label_id)))
                     start_index+=1
             
-            for index in concurrence_index:
-                key=index[1].item()
-                row=index[0].item()
-                if offset_mapping[row][-1]==0 or offset_mapping[key][-1]==0 :
-                    continue
-                concurrence.setdefault(offset_mapping[key][0].item(),set())
-                concurrence[offset_mapping[key][0].item()].add(offset_mapping[row][0].item())
+            # for index in concurrence_index:
+            #     key=index[1].item()
+            #     row=index[0].item()
+            #     if offset_mapping[row][-1]==0 or offset_mapping[key][-1]==0 :
+            #         continue
+            #     concurrence.setdefault(offset_mapping[key][0].item(),set())
+            #     concurrence[offset_mapping[key][0].item()].add(offset_mapping[row][0].item())
 
-            result.append((item_result,concurrence))
+            result.append((item_result,None))
 
         return result
 
 class EventSchemaDict(object):
-    def __init__(self,schema_path,use_trigger=True,find_all=False):
+    def __init__(self,schema_path,use_trigger=True,find_closest=True):
         self.schema_path=schema_path
         self.use_trigger=use_trigger
-        self.find_all=find_all
+        self.find_closest=find_closest
         self.label2ids={}
         self.id2labels={}
         self.event_subject={}
@@ -272,19 +272,55 @@ class EventSchemaDict(object):
             self.id2labels[index*2]="B-"+role
             self.id2labels[index*2+1]="E-"+role
     
-    def find_all_sub(self,a_str,sub):
+    def find_all_sub(self,a_str,sub,end=510):
         start = 0
         while True:
-            start = a_str.find(sub, start)
+            start = a_str.find(sub, start,end)
             if start == -1: return []
             yield (start,start+len(sub))
-            start += len(sub) # use start += 1 to find overlapping matches
+            start += len(sub) 
+    
+    def find_closest_roles(self,role_mentions):
+        """roles:{"text":{"role_label":(B,I),"mentions":[(start,end)]}}"""
+        arguments=list(role_mentions.keys())
+        arguments.sort(key=lambda x: len(role_mentions[x]["mentions"]))
+
+        best_path=[]
+        best_cost=-1
+
+        def f(path,ai,cost):
+            nonlocal best_cost,best_path
+            if ai>=len(arguments):
+                if cost<best_cost or best_cost==-1:
+                    best_path=path[:]
+                    best_cost=cost
+                return 
+
+            mentions=role_mentions[arguments[ai]]["mentions"]
+            for mi in range(len(mentions)):
+                ncost=cost
+                for aj in range(len(path)):
+                    ncost+=abs(mentions[mi][0]-role_mentions[arguments[aj]]["mentions"][path[aj]][0])
+                if best_cost==-1 or ncost<best_cost:
+                    f(path+[mi],ai+1,ncost)
+
+        f([],0,0)
+        select_arguments=[(role_mentions[arguments[i]]["mentions"][best_path[i]],role_mentions[arguments[i]]["role_label"]) for i in range(len(arguments))]
+
+        return select_arguments
+    
+    def find_first_roles(self,roles):
+        """roles:{"text":{"role_label":(B,I),"mentions":[start]}}"""
+
+        pass
+
     
     def tokens_to_label_index(self,text:str,label,offset_index_dict,concurrence_matrix):
         label_index=[]
+        add_index_event_list=[]
         for event_index,event in enumerate(label):
             event_type=event["event_type"]
-            start_indices=[]
+            role_mentions={}
 
             addition_roles=[]
             if self.use_trigger:
@@ -294,26 +330,34 @@ class EventSchemaDict(object):
 
             for role in event["arguments"]+addition_roles:
                 # 有些数据标注错误，加上了空格。用BertTokenizer不好处理，而且这样的数据会是噪声。
-                role["argument"]=role["argument"].strip()
-                if self.find_all:
-                    role_index=self.find_all_sub(text,role["argument"])
-                    B_label_id=self.label2ids["B-"+event_type+":"+role["role"]]
-                    I_label_id=self.label2ids["E-"+event_type+":"+role["role"]]
-                    role_label_index=list(map(lambda x:(x,(B_label_id,I_label_id),event_index),role_index))
-                    label_index.extend(role_label_index)
+                argument=role["argument"].strip()
+                B_label_id=self.label2ids["B-"+event_type+":"+role["role"]]
+                I_label_id=self.label2ids["E-"+event_type+":"+role["role"]]
+                if self.find_closest:
+                    role_index=list(self.find_all_sub(text,argument))
+                    if len(role_index)==0: continue
+                    role_mentions[argument]={"role_label":(B_label_id,I_label_id),"mentions":role_index}
                 else:
                     role_start=text.find(role["argument"])
                     role_end=role_start+len(role["argument"])
-                    if role_start<0:
-                        global miss_cnt
-                        miss_cnt+=1
-                        # print("miss: "+str(role))
-                        continue
+                    if role_start<0: continue
+                    role_mentions[argument]={"role_label":(B_label_id,I_label_id),"mentions":[(role_start,role_end)]}
+            item_label_index=self.find_closest_roles(role_mentions)
+            label_index.extend([(x[0],x[1],event_index) for x in item_label_index])
+            start_indices=[x[0][0] for x in item_label_index]
 
-                    B_label_id=self.label2ids["B-"+event_type+":"+role["role"]]
-                    I_label_id=self.label2ids["E-"+event_type+":"+role["role"]]
-                    label_index.append(((role_start,role_end),(B_label_id,I_label_id),event_index))
-                    start_indices.append(role_start)
+            event_json={"event_type":event_type,"arguments":[]}
+            for role_index in item_label_index:
+                role=self.id2labels[role_index[1][0]].split(":")[-1]
+                argument=text[role_index[0][0]:role_index[0][1]]
+                argument_start_index=role_index[0][0]
+                if role.endswith("TRG"):
+                    event_json["trigger"]=argument
+                    event_json["trigger_start_index"]=argument_start_index
+                else:
+                    event_json["arguments"].append({"role":role,"argument":argument,"argument_start_index":argument_start_index})
+
+            add_index_event_list.append(event_json)
 
             if concurrence_matrix!=None:
                 word_length=concurrence_matrix.shape[0]
@@ -324,7 +368,7 @@ class EventSchemaDict(object):
                         concurrence_matrix[offset_index_dict[anchor]][offset_index_dict[start_index]]=1
 
         # Sort by argument first index and event index.
-        label_index.sort(key=lambda x:(x[0][0],x[2]))
+        # label_index.sort(key=lambda x:(x[0][0],x[2]))
         return label_index
 
 
@@ -364,18 +408,23 @@ def mutli_events(data):
 
 
 if __name__ == '__main__':
-    schema=EventSchemaDict("../data/duee_fin_event_schema_sub.json")
-    print(schema.event_subject['股东减持'])
-    exit() 
+    # schema=EventSchemaDict("../data/duee_fin_event_schema_sub.json")
+    # print(schema.event_subject['股东减持'])
+    # exit() 
 
     from collections import namedtuple
 
     config_class = namedtuple('config',['train_path','dev_path','test_path','pretrained_path','schema_path'])
-    config = config_class("../data/duee_fin_train.json","../data/duee_fin_dev.json","../data/duee_fin_test1.json","/storage/public/models/bert-base-chinese","../data/duee_fin_event_schema.json")
+    config = config_class("../data/multi_events.json","../data/duee_fin_dev.json","../data/duee_fin_test1.json","/storage/public/models/bert-base-chinese","../data/duee_fin_event_schema_sub.json")
 
     processor=NERProcessor(config)
     train_data=processor.get_train_data()
-    mutli_events(train_data)
+    with open("add_index_train.json","w") as f:
+        for i in train_data:
+            _,add_index_event_list=processor.event_schema.tokens_to_label_index(i["text"],i.get("event_list",[]),None,None)
+            i["index_event_list"]=add_index_event_list
+            f.write(json.dumps(i,ensure_ascii=False)+"\n")
+    # mutli_events(train_data)
     # loader=processor.create_dataloader(train_data,batch_size=8)
     # print(miss_cnt)
     # for batch in loader:

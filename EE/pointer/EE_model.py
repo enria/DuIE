@@ -11,12 +11,13 @@ import csv
 from transformers import (
     BertTokenizerFast,
     BertForTokenClassification,
-    BertModel
+    BertModel,
+    BertForSequenceClassification
 )
 import numpy as np
 import re
 import json
-from evaluation import evaluate
+from evaluation import evaluate,evaluate_bool
 from evaluation import F1Counter
 
 
@@ -25,15 +26,29 @@ class PointerNet(torch.nn.Module):
         super(PointerNet, self).__init__()
         self.encoder=BertModel.from_pretrained(config.pretrained_path)
 
+        self.cls_dense=torch.nn.Linear(self.encoder.config.hidden_size,1)
+
+
         # Pointer Network: one label(event role) has both start and end pointer
-        self.dense=torch.nn.Linear(self.encoder.config.hidden_size,label_categories_num)
+        self.pointer_danse=torch.nn.Linear(self.encoder.config.hidden_size,label_categories_num)
+
+        # self.sec_danse1=torch.nn.Linear(self.encoder.config.hidden_size,self.encoder.config.hidden_size)
+        # self.sec_danse2=torch.nn.Linear(self.encoder.config.hidden_size,self.encoder.config.hidden_size)
 
         # Binary classification: is the pointer?
         self.activation=torch.sigmoid
 
     def forward(self,x):
         embedding=self.encoder(**x)[0]
-        pointer=self.activation(self.dense(embedding))
+        event_detector=self.activation(self.cls_dense(embedding[:,0]))
+        pointer=self.activation(self.pointer_danse(embedding))
+        pointer=pointer*event_detector.reshape(event_detector.shape[0],1,event_detector.shape[-1])
+
+        # fixed_embedding=embedding.detach()
+        # start_embedding=self.sec_danse1(embedding)
+        # end_embedding=self.sec_danse2(fixed_embedding).transpose(1,2)
+        # # SEC:Start End Concurrence 
+        # sec=self.activation(torch.matmul(start_embedding,end_embedding))
         return pointer
 
 class NERModel(pl.LightningModule):
@@ -64,8 +79,8 @@ class NERModel(pl.LightningModule):
         print("Pointer Network model init: done.")
     
     def forward(self, input_ids, token_type_ids=None, attention_mask=None):
-        feats=self.model({"input_ids":input_ids,"token_type_ids":token_type_ids,"attention_mask":attention_mask})
-        return feats
+        pointer=self.model({"input_ids":input_ids,"token_type_ids":token_type_ids,"attention_mask":attention_mask})
+        return pointer
     
     def configure_optimizers(self):
         arg_list = [p for p in self.parameters() if p.requires_grad]
@@ -94,39 +109,62 @@ class NERModel(pl.LightningModule):
         return self.valid_loader
 
     def training_step(self, batch, batch_idx):
-        input_ids, token_type_ids, attention_mask,offset_mapping, label_tensors,label_text_index = batch
-        feats = self(input_ids, token_type_ids=token_type_ids, attention_mask=attention_mask)
+        input_ids, token_type_ids, attention_mask,offset_mapping, label_tensors,sec_tensor,label_text_index = batch
+        pointer = self(input_ids, token_type_ids=token_type_ids, attention_mask=attention_mask)
 
-        loss = self.criterion(feats[attention_mask!=0,:], label_tensors[attention_mask!=0])
+        pointer_loss = self.criterion(pointer[attention_mask!=0,:], label_tensors[attention_mask!=0])
+        # sec_loss= self.criterion(torch.triu(sec,1),sec_tensor)
+        loss=pointer_loss
 
-        self.log('train_loss', loss)
+        self.log('pointer_loss', pointer_loss.item(),prog_bar=True)
+        # self.log('sec_loss', sec_loss.item(),prog_bar=True)
+
+        # self.log('train_loss', loss)
 
         return {'loss': loss}
 
     def validation_step(self, batch, batch_idx):
-        input_ids, token_type_ids, attention_mask,offset_mapping, lalabel_tensors,label_text_index = batch
-        feats = self(input_ids, token_type_ids=token_type_ids, attention_mask=attention_mask)
+        input_ids, token_type_ids, attention_mask,offset_mapping, label_tensors,sec_tensor,label_text_index = batch
+        pointer = self(input_ids, token_type_ids=token_type_ids, attention_mask=attention_mask)
 
-        loss = self.criterion(feats[attention_mask!=0,:], lalabel_tensors[attention_mask!=0])
+        pointer_loss = self.criterion(pointer[attention_mask!=0,:], label_tensors[attention_mask!=0])
+        # sec_loss= self.criterion(torch.triu(sec,1),sec_tensor)
+        loss=pointer_loss
 
-        pre=self.processor.from_label_tensor_to_label_index(feats,offset_mapping)
+        pointer_counter=F1Counter()
+        evaluate_bool(torch.where(pointer[attention_mask!=0]>0.5,1,0),label_tensors[attention_mask!=0],pointer_counter)
 
-        return loss,pre,label_text_index
+        # sec_counter=F1Counter()
+        # evaluate_bool(torch.where(torch.triu(sec,1)>0.5,1,0),sec_tensor,sec_counter)
+
+        span_pred=self.processor.from_label_tensor_to_label_index(pointer,offset_mapping)
+        span_counter=F1Counter()
+        evaluate(span_pred,label_text_index,span_counter)
+
+        return pointer_loss.item(),span_counter,pointer_counter
 
 
     def validation_epoch_end(self, outputs):
-        counter=F1Counter()
-        totol_losss=0
+        span_total_counter=F1Counter()
+        pointer_total_counter=F1Counter()
+        pointer_total_losss=0
         for output in outputs:
-            loss,pre,gold = output
-            evaluate(pre,gold,counter)
-            totol_losss+=loss.item()
+            pointer_loss,span_counter,pointer_counter= output
+            span_total_counter+=span_counter
+            pointer_total_counter+=pointer_counter
+            pointer_total_losss+=pointer_loss
 
-        precision,recall,f1=counter.cal_score()
-        print(f"Finished epoch loss:{totol_losss}, precisoin:{precision}, recall:{recall},f1:{f1}")
+        precision,recall,f1=pointer_total_counter.cal_score()
+        print(f"Finished epoch  pointer loss:{pointer_total_losss}, pointer precisoin:{precision}, pointer recall:{recall},pointer f1:{f1}")
+
+        # precision,recall,f1=sec_total_counter.cal_score()
+        # print(f"Finished epoch  sec loss:{sec_total_losss}, sec precisoin:{precision}, sec recall:{recall},sec f1:{f1}")
+
+        precision,recall,f1=span_total_counter.cal_score()
+        print(f"Finished epoch  span precisoin:{precision}, span recall:{recall},span f1:{f1}")
 
 
-        self.log('val_loss', totol_losss)
+        self.log('val_loss', pointer_total_losss)
         self.log('val_pre', torch.tensor(precision))
         self.log('val_rec', torch.tensor(recall))
         self.log('val_f1', torch.tensor(f1))
@@ -139,7 +177,7 @@ class NERPredictor:
 
         self.model = NERModel.load_from_checkpoint(checkpoint_path, config=config)
 
-        self.test_data = self.model.processor.get_dev_data()
+        self.test_data = self.model.processor.get_test_data()
         self.tokenizer = self.model.tokenizer
         self.dataloader = self.model.processor.create_dataloader(
             self.test_data, batch_size=config.batch_size, shuffle=False)
@@ -183,16 +221,16 @@ class NERPredictor:
                 for i in range(len(batch)-1):
                     batch[i] = batch[i].to(device)
 
-                input_ids, token_type_ids, attention_mask,offset_mapping,label_tensors,label_index = batch
+                input_ids, token_type_ids, attention_mask,offset_mapping,label_tensors,sec_tensor,label_index = batch
 
-                feats = self.model(input_ids, token_type_ids, attention_mask)
+                pointer = self.model(input_ids, token_type_ids, attention_mask)
 
-                preds=self.model.processor.from_label_tensor_to_label_index(feats,offset_mapping)
+                preds=self.model.processor.from_label_tensor_to_label_index(pointer,offset_mapping)
 
                 for offset,pred in zip(offset_mapping,preds):
                     item=dict(self.test_data[cnt].items())
                     events=self.extract_events(item["text"],offset,pred)
-                    item["pred_list"]=events
+                    item["event_list"]=events
             
                     fout.write(json.dumps(item,ensure_ascii=False)+"\n")
                     cnt+=1
