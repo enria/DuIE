@@ -24,13 +24,17 @@ class PointerNet(torch.nn.Module):
         super(PointerNet, self).__init__()
         self.encoder=BertModel.from_pretrained(config.pretrained_path)
 
-        # self.cls_dense=torch.nn.Linear(self.encoder.config.hidden_size,1)
+        self.cls_dense=torch.nn.Linear(self.encoder.config.hidden_size,1)
 
         # Pointer Network: one label(event role) has both start and end pointer
         self.dense=torch.nn.Linear(self.encoder.config.hidden_size,label_categories_num)
         
         # 共现矩阵 (w,h)*(h,h)->(w,h), (w,h)*(h,w)->(w,w)
-        self.dense2=torch.nn.Linear(self.encoder.config.hidden_size,self.encoder.config.hidden_size)
+        # self.dense2=torch.nn.Linear(self.encoder.config.hidden_size,self.encoder.config.hidden_size)
+        self.dense3=torch.nn.Linear(self.encoder.config.hidden_size,256)
+        # self.dense4=torch.nn.Linear(self.encoder.config.hidden_size,self.encoder.config.hidden_size)
+        self.dense5=torch.nn.Linear(self.encoder.config.hidden_size,256)
+        # self.dense6=torch.nn.Linear(self.encoder.config.hidden_size,self.encoder.config.hidden_size)
 
         # Binary classification: is the pointer?
         self.activation=torch.sigmoid
@@ -42,10 +46,55 @@ class PointerNet(torch.nn.Module):
         pointer=self.activation(self.dense(embedding))
         # pointer=pointer*event_detector
 
-        fixed_embedding=embedding.detach()
-        concurrence=self.activation(torch.matmul(embedding,self.dense2(fixed_embedding).transpose(1,2)))
+        start_embedding=embedding
+        start_embedding=self.dense3(start_embedding)
+        # start_embedding=torch.tanh(start_embedding)
+        # start_embedding=self.dense4(start_embedding)
+        # start_embedding=torch.tanh(start_embedding)
+
+
+        end_embedding=embedding
+        end_embedding=self.dense5(end_embedding)
+        # end_embedding=torch.tanh(end_embedding)
+        # end_embedding=self.dense6(end_embedding)
+        # end_embedding=torch.tanh(end_embedding)
+        concurrence=self.activation(torch.matmul(start_embedding,end_embedding.transpose(1,2)))
         # concurrence=concurrence*event_detector
         return pointer,concurrence
+
+
+# class PointerNet(torch.nn.Module):
+#     def __init__(self,config,label_categories_num):
+#         super(PointerNet, self).__init__()
+#         self.encoder=BertModel.from_pretrained(config.pretrained_path)
+
+#         # self.cls_dense=torch.nn.Linear(self.encoder.config.hidden_size,1)
+#         self.dense=torch.nn.Linear(self.encoder.config.hidden_size,label_categories_num)
+
+#         # Pointer Network: one label(event role) has both start and end pointer
+#         self.cat_dense=torch.nn.Linear(self.encoder.config.hidden_size*2,256)
+#         self.con_dense=torch.nn.Linear(256,1)
+        
+#         # Binary classification: is the pointer?
+#         self.activation=torch.sigmoid
+
+#     def forward(self,x):
+#         embedding =self.encoder(**x)[0]
+#         pointer=self.activation(self.dense(embedding))
+#         seq_len = embedding.size()[-2]
+#         concurrence=[]
+#         for ind in range(seq_len):
+#             head_embedding=embedding
+#             tail_embedding = embedding[:, ind, :]
+#             repeat_tail_embedding = tail_embedding[:, None, :].repeat(1, seq_len, 1)
+
+#             concat_embedding=torch.cat([head_embedding,repeat_tail_embedding],dim=-1)
+#             concat_embedding=torch.tanh(self.cat_dense(concat_embedding))
+#             column_concurrence=self.activation(self.con_dense(concat_embedding))
+#             concurrence.append(column_concurrence)
+        
+#         concurrence=torch.cat(concurrence,dim=2)
+#         return pointer,concurrence
 
 class NERModel(pl.LightningModule):
     def __init__(self, config):
@@ -88,11 +137,11 @@ class NERModel(pl.LightningModule):
         train_data = self.processor.get_train_data()
         dev_data=self.processor.get_dev_data()
 
-        import random
-        random.shuffle(train_data)
-        random.shuffle(dev_data)
-        train_data=train_data[:2000]
-        dev_data=dev_data[:200]
+        # import random
+        # random.shuffle(train_data)
+        # random.shuffle(dev_data)
+        # train_data=train_data[:100]
+        # dev_data=train_data[:100]
 
         print("train_length:", len(train_data))
         print("valid_length:", len(dev_data))
@@ -112,9 +161,9 @@ class NERModel(pl.LightningModule):
         input_ids, token_type_ids, attention_mask,offset_mapping, label_tensors,concurrence_tensors,label_text_index = batch
         pointer,concurrence = self(input_ids, token_type_ids=token_type_ids, attention_mask=attention_mask)
 
-        # pointer_loss = self.criterion(pointer[attention_mask!=0,:], label_tensors[attention_mask!=0])
-        pointer_loss=torch.tensor(0)
-        concurrence_loss= self.criterion(concurrence[attention_mask!=0,:], concurrence_tensors[attention_mask!=0])
+        pointer_loss = self.criterion(pointer[attention_mask!=0], label_tensors[attention_mask!=0])
+        # pointer_loss=torch.tensor(0)
+        concurrence_loss= self.criterion(concurrence[attention_mask!=0], concurrence_tensors[attention_mask!=0])
         loss=pointer_loss+concurrence_loss
 
         self.log('pointer_loss', pointer_loss.item(),prog_bar=True)
@@ -127,17 +176,17 @@ class NERModel(pl.LightningModule):
         input_ids, token_type_ids, attention_mask,offset_mapping, label_tensors,concurrence_tensors,label_text_index = batch
         pointer,concurrence = self(input_ids, token_type_ids=token_type_ids, attention_mask=attention_mask)
 
-        # pointer_loss = self.criterion(pointer[attention_mask!=0,:], label_tensors[attention_mask!=0])
-        pointer_loss=torch.tensor(0)
-        concurrence_loss= self.criterion(concurrence[attention_mask!=0,:], concurrence_tensors[attention_mask!=0])
+        pointer_loss = self.criterion(pointer[attention_mask!=0], label_tensors[attention_mask!=0])
+        # pointer_loss=torch.tensor(0)
+        concurrence_loss= self.criterion(concurrence[attention_mask!=0], concurrence_tensors[attention_mask!=0])
         loss=pointer_loss+concurrence_loss
 
-        # pointer_pred=self.processor.from_label_tensor_to_label_index(pointer,concurrence,offset_mapping)
-        # pointer_pred,_=zip(*pointer_pred)
+        pointer_pred=self.processor.from_label_tensor_to_label_index(pointer,concurrence,offset_mapping)
+        pointer_pred,_=zip(*pointer_pred)
         concurrence_pred=torch.where(concurrence > 0.5, 1, 0)
 
         pointer_counter=F1Counter()
-        # evaluate_pointer(pointer_pred,label_text_index,pointer_counter)
+        evaluate_pointer(pointer_pred,label_text_index,pointer_counter)
         concurrence_counter=F1Counter()
         evaluate_concurrence(concurrence_pred,concurrence_tensors,concurrence_counter)
 
@@ -155,15 +204,14 @@ class NERModel(pl.LightningModule):
             pointer_total_counter+=pointer_counter
             concurrence_total_counter+=concurrence_counter
 
-        precision,recall,f1=pointer_total_counter.cal_score()
-        print(f"Finished epoch pointer_loss:{pointer_totol_losss}, pointer precisoin:{precision}, pointer recall:{recall},pointer f1:{f1}")
-        precision,recall,f1=concurrence_total_counter.cal_score()
-        print(f"Finished epoch concurrence_loss:{concurrence_total_loss}, concurrence precisoin:{precision}, concurrence recall:{recall},concurrence f1:{f1}")
+        precision,recall,pf1=pointer_total_counter.cal_score()
+        print(f"Finished epoch pointer_loss:{pointer_totol_losss}, pointer precisoin:{precision}, pointer recall:{recall},pointer f1:{pf1}")
+        precision,recall,cf1=concurrence_total_counter.cal_score()
+        print(f"Finished epoch concurrence_loss:{concurrence_total_loss}, concurrence precisoin:{precision}, concurrence recall:{recall},concurrence f1:{cf1}")
 
-        # precision,recall,f1=pointer_total_counter.cal_score()
         self.log('val_pre', torch.tensor(precision))
         self.log('val_rec', torch.tensor(recall))
-        self.log('val_f1', torch.tensor(f1))
+        self.log('val_f1', torch.tensor(pf1)+torch.tensor(cf1))
 
 
 class NERPredictor:
@@ -214,20 +262,27 @@ class NERPredictor:
                     assist_roles[role[0]].append(role)
 
             SO_pairs=[]
-            for s in subjects:
-                for o in objects:
-                    if o[-1][0] in concurrence.get(s[-1][0],set()):
-                        SO_pairs.append((s,o))
-                    
             event_role_cluster=[]
-            for sao in SO_pairs:
-                clusetr=[sao[0],sao[1]]
+            if len(subjects)==1 and len(objects)==1:
+                clusetr=[subjects[0],objects[0]]
                 for role_type,roles in assist_roles.items():
                     for role in roles:
-                        if role[-1][0] in concurrence.get(sao[0][-1][0],set()) \
-                           or role[-1][0] in concurrence.get(sao[1][-1][0],set()):
-                            clusetr.append(role)
+                        clusetr.append(role)
                 event_role_cluster.append(clusetr)
+            else:
+                for s in subjects:
+                    for o in objects:
+                        if o[-1][0] in concurrence.get(s[-1][0],set()):
+                            SO_pairs.append((s,o))
+                        
+                for sao in SO_pairs:
+                    clusetr=[sao[0],sao[1]]
+                    for role_type,roles in assist_roles.items():
+                        for role in roles:
+                            if role[-1][0] in concurrence.get(sao[0][-1][0],set()) \
+                            or role[-1][0] in concurrence.get(sao[1][-1][0],set()):
+                                clusetr.append(role)
+                    event_role_cluster.append(clusetr)
             
             for role_cluster in event_role_cluster:
                 spo={"predicate":event_type,"object":{}}

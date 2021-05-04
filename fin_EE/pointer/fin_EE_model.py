@@ -20,27 +20,76 @@ from evaluation import F1Counter
 from fin_EE_data_util import NERProcessor,EventSchemaDict
 
 
+class RoPE(object):
+    def __init__(self):
+        self.cache={}
+
+    def pos_embedding(self,iodim):
+        if iodim in self.cache:
+            return self.cache[iodim]
+        seq_len,out_dim = iodim
+        # [] -> [[]]   
+        position_ids = torch.arange(0,seq_len,dtype=torch.float)[None]
+
+        indices = torch.arange(0, out_dim//2, dtype=torch.float)
+        indices = torch.pow(10000.0, -2*indices/out_dim)
+        embeddings = torch.einsum("bn,d->bnd", position_ids, indices)
+        embeddings = torch.stack([torch.sin(embeddings), torch.cos(embeddings)],dim=-1)
+        embeddings = torch.reshape(embeddings, (-1, seq_len, out_dim))
+
+        device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+        embeddings = embeddings.to(device)
+        return embeddings
+    
+    def add_pos_embedding(self,qw):
+        pos=self.pos_embedding((qw.shape[1],qw.shape[-1]))
+        cos_pos = torch.repeat_interleave(pos[..., 1::2],2,dim=-1)
+        sin_pos = torch.repeat_interleave(pos[..., ::2],2,dim=-1)
+        qw2=torch.stack([-qw[...,1::2], qw[...,::2]],dim=-1)
+        qw2=torch.reshape(qw2, qw.shape)
+        qw=qw*cos_pos+qw2*sin_pos
+        return qw
+
 class PointerNet(torch.nn.Module):
     def __init__(self,config,label_categories_num):
         super(PointerNet, self).__init__()
+
+        self.rope=RoPE()
+
         self.encoder=BertModel.from_pretrained(config.pretrained_path)
 
+        # self.cls_dense=torch.nn.Linear(self.encoder.config.hidden_size,1)
+
         # Pointer Network: one label(event role) has both start and end pointer
-        self.dense=torch.nn.Linear(self.encoder.config.hidden_size,label_categories_num)
+        self.pointer_dense=torch.nn.Linear(self.encoder.config.hidden_size,label_categories_num)
         
         # 共现矩阵 (w,h)*(h,h)->(w,h), (w,h)*(h,w)->(w,w)
-        self.dense2=torch.nn.Linear(self.encoder.config.hidden_size,self.encoder.config.hidden_size)
+        self.con_head_dense=torch.nn.Linear(self.encoder.config.hidden_size,256)
+        self.con_tail_dense=torch.nn.Linear(self.encoder.config.hidden_size,256)
 
         # Binary classification: is the pointer?
         self.activation=torch.sigmoid
 
     def forward(self,x):
         embedding =self.encoder(**x)[0]
-        pointer=self.activation(self.dense(embedding))
 
-        fixed_embedding=embedding.detach()
-        concurrence=self.activation(torch.matmul(embedding,self.dense2(fixed_embedding).transpose(1,2)))
-        # concurrence=self.activation(torch.matmul(embedding,embedding.transpose(1,2)))
+        # event_detector=self.activation(self.cls_dense(embedding[:,0]))
+        # event_detector=event_detector.reshape(event_detector.shape[0],1,event_detector.shape[-1])
+
+        # aoembedding = self.rope.add_pos_embedding(embedding)
+        pointer=self.activation(self.pointer_dense(embedding))
+        # pointer=pointer*event_detector
+
+        start_embedding=embedding
+        start_embedding=self.con_head_dense(start_embedding)
+        # start_embedding=self.rope.add_pos_embedding(start_embedding)
+
+        end_embedding=embedding
+        end_embedding=self.con_tail_dense(end_embedding)
+        # end_embedding=self.rope.add_pos_embedding(end_embedding)
+
+        concurrence=self.activation(torch.matmul(start_embedding,end_embedding.transpose(1,2)))
+
         return pointer,concurrence
 
 class NERModel(pl.LightningModule):
@@ -88,6 +137,12 @@ class NERModel(pl.LightningModule):
         train_data=self.processor.process_long_text(origin_train_data,512)
         dev_data=self.processor.process_long_text(origin_dev_data,512)
 
+        # import random
+        # random.shuffle(train_data)
+        # random.shuffle(dev_data)
+        # train_data=train_data[:100]
+        # dev_data=train_data[:100]
+
         print("train_length:", len(train_data))
         print("valid_length:", len(dev_data))
 
@@ -107,8 +162,7 @@ class NERModel(pl.LightningModule):
         pointer,concurrence = self(input_ids, token_type_ids=token_type_ids, attention_mask=attention_mask)
 
         pointer_loss = self.criterion(pointer[attention_mask!=0,:], label_tensors[attention_mask!=0])
-        # concurrence_loss= self.criterion(concurrence[attention_mask!=0,:], concurrence_tensors[attention_mask!=0])
-        concurrence_loss=torch.tensor(0)
+        concurrence_loss= self.criterion(concurrence[attention_mask!=0,:], concurrence_tensors[attention_mask!=0])
         loss=pointer_loss+concurrence_loss
 
         self.log('pointer_loss', pointer_loss.item(),prog_bar=True)
@@ -122,8 +176,7 @@ class NERModel(pl.LightningModule):
         pointer,concurrence = self(input_ids, token_type_ids=token_type_ids, attention_mask=attention_mask)
 
         pointer_loss = self.criterion(pointer[attention_mask!=0,:], label_tensors[attention_mask!=0])
-        # concurrence_loss= self.criterion(concurrence[attention_mask!=0,:], concurrence_tensors[attention_mask!=0])
-        concurrence_loss=torch.tensor(0)
+        concurrence_loss= self.criterion(concurrence[attention_mask!=0,:], concurrence_tensors[attention_mask!=0])
         loss=pointer_loss+concurrence_loss
 
         pointer_pred=self.processor.from_label_tensor_to_label_index(pointer,concurrence,offset_mapping)
@@ -149,16 +202,16 @@ class NERModel(pl.LightningModule):
             pointer_total_counter+=pointer_counter
             concurrence_total_counter+=concurrence_counter
 
-        precision,recall,f1=pointer_total_counter.cal_score()
-        print(f"Finished epoch pointer_loss:{pointer_totol_losss}, pointer precisoin:{precision}, pointer recall:{recall},pointer f1:{f1}")
-        precision,recall,f1=concurrence_total_counter.cal_score()
-        print(f"Finished epoch concurrence_loss:{concurrence_total_loss}, concurrence precisoin:{precision}, concurrence recall:{recall},concurrence f1:{f1}")
+        pointer_precision,pointer_recall,pointer_f1=pointer_total_counter.cal_score()
+        concurrence_precision,concurrence_recall,concurrence_f1=concurrence_total_counter.cal_score()
 
         precision,recall,f1=pointer_total_counter.cal_score()
-        self.log('val_pre', torch.tensor(precision))
-        self.log('val_rec', torch.tensor(recall))
-        self.log('val_f1', torch.tensor(f1))
+        self.log('pf1', torch.tensor(pointer_f1))
+        self.log('cf1', torch.tensor(concurrence_f1))
+        self.log('val_total_f1', pointer_f1+concurrence_f1)
 
+        print(f"\nFinished epoch ploss:{pointer_totol_losss:.4f}, pprec:{pointer_precision:.4f}, precall:{pointer_recall:.4f}, pf1:{pointer_f1:.4f}\t"+
+              f"closs:{concurrence_total_loss:.4f}, cprec:{concurrence_precision:.4f}, crecall:{concurrence_recall:.4f}, cf1:{concurrence_f1:.4f}")
 
 class NERPredictor:
     def __init__(self, checkpoint_path, config):
@@ -224,27 +277,25 @@ class NERPredictor:
             subjects=[]
             assist_roles={}
 
-            # for role in roles:
-            #     if role[0] in self.model.processor.event_schema.event_subject[event_type]:
-            #         subjects.append(role)
-            #     else:
-            #         assist_roles.setdefault(role[0],[])
-            #         assist_roles[role[0]].append(role)
+            for role in roles:
+                if role[0] in self.model.processor.event_schema.event_subject[event_type]:
+                    subjects.append(role)
+                else:
+                    assist_roles.setdefault(role[0],[])
+                    assist_roles[role[0]].append(role)
                     
-            # event_role_cluster=[]
-            # if len(subjects)>1:
-            #     for subject in subjects:
-            #         clusetr=[subject]
-            #         for role_type,roles in assist_roles.items():
-            #             for role in roles:
-            #                 if role[-1][0] in concurrence.get(subject[-1][0],set()):
-            #                     clusetr.append(role)
-            #         event_role_cluster.append(clusetr)
-            # else:
-            #     event_role_cluster.append(roles)
+            event_role_cluster=[]
+            if len(subjects)>1:
+                for subject in subjects:
+                    clusetr=[subject]
+                    for role_type,roles in assist_roles.items():
+                        for role in roles:
+                            if role[-1][0] in concurrence.get(subject[-1][0],set()):
+                                clusetr.append(role)
+                    event_role_cluster.append(clusetr)
+            else:
+                event_role_cluster.append(roles)
             
-            # TODO 
-            event_role_cluster=[roles]
             
             for role_cluster in event_role_cluster:
                 new_events.append({

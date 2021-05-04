@@ -61,7 +61,7 @@ class NERProcessor(DataProcessor):
         self.dev_path=config.dev_path
         self.test_path=config.test_path
         self.tokenizer = BertTokenizerFast.from_pretrained(config.pretrained_path)
-        self.event_schema=EventSchemaDict(config.schema_path)
+        self.event_schema=EventSchemaDict(config.schema_path,find_closest=False)
 
     def read_json_data(self, filename, add_title=False):
         data = []
@@ -184,7 +184,7 @@ class NERProcessor(DataProcessor):
             dataset,
             shuffle=shuffle,
             batch_size=batch_size,
-            num_workers=0,
+            num_workers=4,
             collate_fn=Dataset.collate_fn
         )
         global miss_cnt
@@ -226,15 +226,15 @@ class NERProcessor(DataProcessor):
                                     (start_label_id,end_label_id)))
                     start_index+=1
             
-            # for index in concurrence_index:
-            #     key=index[1].item()
-            #     row=index[0].item()
-            #     if offset_mapping[row][-1]==0 or offset_mapping[key][-1]==0 :
-            #         continue
-            #     concurrence.setdefault(offset_mapping[key][0].item(),set())
-            #     concurrence[offset_mapping[key][0].item()].add(offset_mapping[row][0].item())
+            for index in concurrence_index:
+                key=index[1].item()
+                row=index[0].item()
+                if offset_mapping[row][-1]==0 or offset_mapping[key][-1]==0 :
+                    continue
+                concurrence.setdefault(offset_mapping[key][0].item(),set())
+                concurrence[offset_mapping[key][0].item()].add(offset_mapping[row][0].item())
 
-            result.append((item_result,None))
+            result.append((item_result,concurrence))
 
         return result
 
@@ -317,7 +317,7 @@ class EventSchemaDict(object):
     
     def tokens_to_label_index(self,text:str,label,offset_index_dict,concurrence_matrix):
         label_index=[]
-        add_index_event_list=[]
+        # add_index_event_list=[]
         for event_index,event in enumerate(label):
             event_type=event["event_type"]
             role_mentions={}
@@ -346,18 +346,18 @@ class EventSchemaDict(object):
             label_index.extend([(x[0],x[1],event_index) for x in item_label_index])
             start_indices=[x[0][0] for x in item_label_index]
 
-            event_json={"event_type":event_type,"arguments":[]}
-            for role_index in item_label_index:
-                role=self.id2labels[role_index[1][0]].split(":")[-1]
-                argument=text[role_index[0][0]:role_index[0][1]]
-                argument_start_index=role_index[0][0]
-                if role.endswith("TRG"):
-                    event_json["trigger"]=argument
-                    event_json["trigger_start_index"]=argument_start_index
-                else:
-                    event_json["arguments"].append({"role":role,"argument":argument,"argument_start_index":argument_start_index})
+            # event_json={"event_type":event_type,"arguments":[]}
+            # for role_index in item_label_index:
+            #     role=self.id2labels[role_index[1][0]].split(":")[-1]
+            #     argument=text[role_index[0][0]:role_index[0][1]]
+            #     argument_start_index=role_index[0][0]
+            #     if role.endswith("TRG"):
+            #         event_json["trigger"]=argument
+            #         event_json["trigger_start_index"]=argument_start_index
+            #     else:
+            #         event_json["arguments"].append({"role":role,"argument":argument,"argument_start_index":argument_start_index})
 
-            add_index_event_list.append(event_json)
+            # add_index_event_list.append(event_json)
 
             if concurrence_matrix!=None:
                 word_length=concurrence_matrix.shape[0]
