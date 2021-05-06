@@ -16,7 +16,7 @@ import utils
 
 utils.set_random_seed(20200819)
 os.environ["TOKENIZERS_PARALLELISM"] = "True"
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
 if __name__ == '__main__':
 
@@ -25,8 +25,8 @@ if __name__ == '__main__':
 
     # 设置参数
     parser = argparse.ArgumentParser()
-    parser.add_argument("--is_train", type=utils.str2bool, default=False, help="train the NER model or not (default: False)")
-    parser.add_argument("--batch_size", type=int, default=2, help="input batch size for training and test (default: 8)")
+    parser.add_argument("--is_train", type=utils.str2bool, default=True, help="train the NER model or not (default: False)")
+    parser.add_argument("--batch_size", type=int, default=8, help="input batch size for training and test (default: 8)")
     parser.add_argument("--max_epochs", type=int, default=40, help="the max epochs for training and test (default: 5)")
     parser.add_argument("--lr", type=float, default=2e-5, help="learning rate (default: 2e-5)")
     parser.add_argument("--crf_lr", type=float, default=0.1, help="crf learning rate (default: 0.1)")
@@ -52,10 +52,10 @@ if __name__ == '__main__':
     parser.add_argument("--ner_save_path", type=str,
                         default="{}/weights".format(WORKING_DIR), help="ner_save_path")
     parser.add_argument("--pretrained_path", type=str,
-                        default="/storage/public/models/chinese-roberta-wwm-ext-large".format(WORKING_DIR), help="pretrained_path")
+                        default="/storage/public/models/chinese-roberta-wwm-ext".format(WORKING_DIR), help="pretrained_path")
 
     parser.add_argument("--ckpt_name",  type=str, default="###", help="ckpt save name")
-    parser.add_argument("--test_ckpt_name",  type=str, default="val_f1=0.7668_epoch=5_global|large.ckpt", help="ckpt name for test")
+    parser.add_argument("--test_ckpt_name",  type=str, default="val_f1=0.7488_epoch=7_global|large copy.ckpt", help="ckpt name for test")
 
     args = parser.parse_args()
     
@@ -84,7 +84,7 @@ if __name__ == '__main__':
         # 设置保存模型的路径及参数
         ckpt_callback = ModelCheckpoint(
             dirpath=config.ner_save_path,                           # 模型保存路径
-            filename="{val_f1:.4f}_{epoch}_global|large",   # 模型保存名称，参数ckpt_name后加入epoch信息以及验证集分数
+            filename="{val_f1:.4f}_{epoch}_global+sec+rope",   # 模型保存名称，参数ckpt_name后加入epoch信息以及验证集分数
             monitor='val_f1',                                      # 根据验证集上的准确率评估模型优劣
             mode='max',
             save_top_k=3,                                           # 保存得分最高的前两个模型
@@ -94,7 +94,7 @@ if __name__ == '__main__':
         # 设置训练器
         trainer = pl.Trainer(
             progress_bar_refresh_rate=1,
-            resume_from_checkpoint = config.ner_save_path + '/val_f1=0.0000_epoch=0_global|large.ckpt',  # 加载已保存的模型继续训练
+            # resume_from_checkpoint = config.ner_save_path + '/val_f1=0.0000_epoch=0_global|large.ckpt',  # 加载已保存的模型继续训练
             max_epochs=config.max_epochs,
             callbacks=[ckpt_callback],
             checkpoint_callback=True,

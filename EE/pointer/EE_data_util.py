@@ -146,14 +146,14 @@ class NERProcessor(DataProcessor):
         )
         return dataloader
     
-    def from_label_tensor_to_label_index(self,label_tensor_list,offset_mapping_list,threshold=0.5):
+    def from_label_tensor_to_label_index(self,label_tensor_list,sec_tensor_list,offset_mapping_list,threshold=0.5):
         result=[]
-        for label_tensor,offset_mapping in zip(label_tensor_list,offset_mapping_list):
+        for label_tensor,sec_tensor,offset_mapping in zip(label_tensor_list,sec_tensor_list,offset_mapping_list):
             label_index=(label_tensor>threshold).nonzero()
-            # sec_index=(torch.triu(sec_tensor,1)>threshold).nonzero()
+            sec_index=(torch.triu(sec_tensor,1)>threshold).nonzero()
             label_text_index={} # key:label_id,value:text indices
             label_text_set={} # key:label_id,value:text indices set
-            # sec_start_index={} # key:start,value:end indices
+            sec_start_index={} # key:start,value:end indices
 
             item_result=[]
     
@@ -167,13 +167,13 @@ class NERProcessor(DataProcessor):
                 label_text_set.setdefault(label_id,set())
                 label_text_set[label_id].add(input_id)
             
-            # for index in sec_index:
-            #     start=index[0].item()
-            #     end=index[1].item()
-            #     if offset_mapping[start][-1]==0 or offset_mapping[end][-1]==0:
-            #         continue
-            #     sec_start_index.setdefault(start,set())
-            #     sec_start_index[start].add(end)
+            for index in sec_index:
+                start=index[0].item()
+                end=index[1].item()
+                if offset_mapping[start][-1]==0 or offset_mapping[end][-1]==0:
+                    continue
+                sec_start_index.setdefault(start,set())
+                sec_start_index[start].add(end)
             
             for start_label_id,start_text_indices in label_text_index.items():
                 if start_label_id%2:
@@ -185,12 +185,12 @@ class NERProcessor(DataProcessor):
                     start_input_index = start_text_indices[start_index]
                     end_input_index = 0
 
-                    # available_ends=label_text_set.get(end_label_id,set()) & sec_start_index.get(start_input_index,set())
+                    available_ends=label_text_set.get(end_label_id,set()) & sec_start_index.get(start_input_index,set())
                     available_ends=None # TODO
                     if available_ends:
-                        # most_possible_end=max(available_ends,key=lambda x:sec_tensor[start_input_index][x])
-                        nearest_end=min(available_ends)
-                        end_input_index=nearest_end
+                        most_possible_end=max(available_ends,key=lambda x:sec_tensor[start_input_index][x])
+                        # nearest_end=min(available_ends)
+                        end_input_index=most_possible_end
                     else:
                         while end_index<len(end_text_indices) and end_text_indices[end_index]<start_text_indices[start_index]:
                             end_index+=1
@@ -300,7 +300,7 @@ if __name__ == '__main__':
     config = config_class("../data/duee_train.json","../data/duee_dev.json","../data/duee_test1.json","/storage/public/models/bert-base-chinese","../data/duee_event_schema.json")
 
     processor=NERProcessor(config)
-    train_data=processor.get_dev_data()
+    train_data=processor.get_train_data()
     overlap_data=overlap_stat(train_data)
     with open("../data/overlap_role.json","w") as jsonf:
         for item in overlap_data:

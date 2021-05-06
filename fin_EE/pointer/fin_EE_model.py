@@ -39,6 +39,7 @@ class RoPE(object):
 
         device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         embeddings = embeddings.to(device)
+        self.cache[iodim]=embeddings
         return embeddings
     
     def add_pos_embedding(self,qw):

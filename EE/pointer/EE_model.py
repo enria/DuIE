@@ -20,6 +20,37 @@ import json
 from evaluation import evaluate,evaluate_bool
 from evaluation import F1Counter
 
+class RoPE(object):
+    def __init__(self):
+        self.cache={}
+
+    def pos_embedding(self,iodim):
+        if iodim in self.cache:
+            return self.cache[iodim]
+        seq_len,out_dim = iodim
+        # [] -> [[]]   
+        position_ids = torch.arange(0,seq_len,dtype=torch.float)[None]
+
+        indices = torch.arange(0, out_dim//2, dtype=torch.float)
+        indices = torch.pow(10000.0, -2*indices/out_dim)
+        embeddings = torch.einsum("bn,d->bnd", position_ids, indices)
+        embeddings = torch.stack([torch.sin(embeddings), torch.cos(embeddings)],dim=-1)
+        embeddings = torch.reshape(embeddings, (-1, seq_len, out_dim))
+
+        device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+        embeddings = embeddings.to(device)
+        self.cache[iodim]=embeddings
+        return embeddings
+    
+    def add_pos_embedding(self,qw):
+        pos=self.pos_embedding((qw.shape[1],qw.shape[-1]))
+        cos_pos = torch.repeat_interleave(pos[..., 1::2],2,dim=-1)
+        sin_pos = torch.repeat_interleave(pos[..., ::2],2,dim=-1)
+        qw2=torch.stack([-qw[...,1::2], qw[...,::2]],dim=-1)
+        qw2=torch.reshape(qw2, qw.shape)
+        qw=qw*cos_pos+qw2*sin_pos
+        return qw
+
 
 class PointerNet(torch.nn.Module):
     def __init__(self,config,label_categories_num):
@@ -32,24 +63,37 @@ class PointerNet(torch.nn.Module):
         # Pointer Network: one label(event role) has both start and end pointer
         self.pointer_danse=torch.nn.Linear(self.encoder.config.hidden_size,label_categories_num)
 
-        # self.sec_danse1=torch.nn.Linear(self.encoder.config.hidden_size,self.encoder.config.hidden_size)
-        # self.sec_danse2=torch.nn.Linear(self.encoder.config.hidden_size,self.encoder.config.hidden_size)
+        self.dropout=torch.nn.Dropout(config.dropout)
+
+        self.sec_danse1=torch.nn.Linear(self.encoder.config.hidden_size,256)
+        self.sec_danse2=torch.nn.Linear(self.encoder.config.hidden_size,256)
 
         # Binary classification: is the pointer?
         self.activation=torch.sigmoid
+        self.rope=RoPE()
 
     def forward(self,x):
         embedding=self.encoder(**x)[0]
-        event_detector=self.activation(self.cls_dense(embedding[:,0]))
-        pointer=self.activation(self.pointer_danse(embedding))
-        pointer=pointer*event_detector.reshape(event_detector.shape[0],1,event_detector.shape[-1])
+        embedding=self.dropout(embedding)
 
-        # fixed_embedding=embedding.detach()
-        # start_embedding=self.sec_danse1(embedding)
-        # end_embedding=self.sec_danse2(fixed_embedding).transpose(1,2)
-        # # SEC:Start End Concurrence 
-        # sec=self.activation(torch.matmul(start_embedding,end_embedding))
-        return pointer
+        event_detector=self.activation(self.cls_dense(embedding[:,0]))
+        event_detector=event_detector.reshape(event_detector.shape[0],1,event_detector.shape[-1])
+
+        pointer=self.activation(self.pointer_danse(embedding))
+        pointer=pointer*event_detector
+
+        # SEC:Start End Concurrence 
+        start_embedding=self.sec_danse1(embedding)
+        start_embedding=self.rope.add_pos_embedding(start_embedding)
+        start_embedding=self.dropout(start_embedding)
+
+        end_embedding=self.sec_danse2(embedding)
+        end_embedding=self.rope.add_pos_embedding(end_embedding)
+        end_embedding=self.dropout(end_embedding)
+
+        sec=self.activation(torch.matmul(start_embedding,end_embedding.transpose(1,2)))
+        sec=sec*event_detector
+        return pointer,sec
 
 class NERModel(pl.LightningModule):
     def __init__(self, config):
@@ -79,8 +123,8 @@ class NERModel(pl.LightningModule):
         print("Pointer Network model init: done.")
     
     def forward(self, input_ids, token_type_ids=None, attention_mask=None):
-        pointer=self.model({"input_ids":input_ids,"token_type_ids":token_type_ids,"attention_mask":attention_mask})
-        return pointer
+        pointer,sec=self.model({"input_ids":input_ids,"token_type_ids":token_type_ids,"attention_mask":attention_mask})
+        return pointer,sec
     
     def configure_optimizers(self):
         arg_list = [p for p in self.parameters() if p.requires_grad]
@@ -110,55 +154,62 @@ class NERModel(pl.LightningModule):
 
     def training_step(self, batch, batch_idx):
         input_ids, token_type_ids, attention_mask,offset_mapping, label_tensors,sec_tensor,label_text_index = batch
-        pointer = self(input_ids, token_type_ids=token_type_ids, attention_mask=attention_mask)
+        pointer,sec = self(input_ids, token_type_ids=token_type_ids, attention_mask=attention_mask)
 
-        pointer_loss = self.criterion(pointer[attention_mask!=0,:], label_tensors[attention_mask!=0])
-        # sec_loss= self.criterion(torch.triu(sec,1),sec_tensor)
-        loss=pointer_loss
+        pointer_loss = self.criterion(pointer[attention_mask!=0], label_tensors[attention_mask!=0])
+        sec_loss= self.criterion(torch.triu(sec,1),sec_tensor)
+        loss=pointer_loss+sec_loss
 
         self.log('pointer_loss', pointer_loss.item(),prog_bar=True)
-        # self.log('sec_loss', sec_loss.item(),prog_bar=True)
+        self.log('sec_loss', sec_loss.item(),prog_bar=True)
 
-        # self.log('train_loss', loss)
+        self.log('train_loss', loss)
 
         return {'loss': loss}
 
     def validation_step(self, batch, batch_idx):
         input_ids, token_type_ids, attention_mask,offset_mapping, label_tensors,sec_tensor,label_text_index = batch
-        pointer = self(input_ids, token_type_ids=token_type_ids, attention_mask=attention_mask)
+        pointer,sec = self(input_ids, token_type_ids=token_type_ids, attention_mask=attention_mask)
 
         pointer_loss = self.criterion(pointer[attention_mask!=0,:], label_tensors[attention_mask!=0])
-        # sec_loss= self.criterion(torch.triu(sec,1),sec_tensor)
+        sec_loss= self.criterion(torch.triu(sec,1),sec_tensor)
         loss=pointer_loss
 
         pointer_counter=F1Counter()
         evaluate_bool(torch.where(pointer[attention_mask!=0]>0.5,1,0),label_tensors[attention_mask!=0],pointer_counter)
 
-        # sec_counter=F1Counter()
-        # evaluate_bool(torch.where(torch.triu(sec,1)>0.5,1,0),sec_tensor,sec_counter)
+        sec_counter=F1Counter()
+        evaluate_bool(torch.where(torch.triu(sec,1)>0.5,1,0),sec_tensor,sec_counter)
 
-        span_pred=self.processor.from_label_tensor_to_label_index(pointer,offset_mapping)
+        span_pred=self.processor.from_label_tensor_to_label_index(pointer,sec,offset_mapping)
         span_counter=F1Counter()
         evaluate(span_pred,label_text_index,span_counter)
 
-        return pointer_loss.item(),span_counter,pointer_counter
+        return pointer_loss.item(),sec_loss.item(),pointer_counter,sec_counter,span_counter,
 
 
     def validation_epoch_end(self, outputs):
         span_total_counter=F1Counter()
         pointer_total_counter=F1Counter()
+        sec_total_counter=F1Counter()
+
         pointer_total_losss=0
+        sec_total_loss=0
         for output in outputs:
-            pointer_loss,span_counter,pointer_counter= output
-            span_total_counter+=span_counter
+            pointer_loss,sec_loss,pointer_counter,sec_counter,span_counter= output
+
             pointer_total_counter+=pointer_counter
+            sec_total_counter+=sec_counter
+            span_total_counter+=span_counter
+
             pointer_total_losss+=pointer_loss
+            sec_total_loss+=sec_loss
 
         precision,recall,f1=pointer_total_counter.cal_score()
         print(f"Finished epoch  pointer loss:{pointer_total_losss}, pointer precisoin:{precision}, pointer recall:{recall},pointer f1:{f1}")
 
-        # precision,recall,f1=sec_total_counter.cal_score()
-        # print(f"Finished epoch  sec loss:{sec_total_losss}, sec precisoin:{precision}, sec recall:{recall},sec f1:{f1}")
+        precision,recall,f1=sec_total_counter.cal_score()
+        print(f"Finished epoch  sec loss:{sec_total_loss}, sec precisoin:{precision}, sec recall:{recall},sec f1:{f1}")
 
         precision,recall,f1=span_total_counter.cal_score()
         print(f"Finished epoch  span precisoin:{precision}, span recall:{recall},span f1:{f1}")
