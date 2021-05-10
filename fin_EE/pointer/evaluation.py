@@ -37,3 +37,10 @@ def evaluate_concurrence(pred,gold,counter=F1Counter()):
         counter.gold_cnt+=(goldi == 1).cpu().sum().item()
         counter.correct_pred+=((predi == 1) & (goldi.data == 1)).cpu().sum().item()
     return counter
+
+def evaluate_acc(pred,gold):
+    correct_num=0
+    for predi,goldi in zip(pred,gold):
+        if predi==goldi:
+            correct_num+=1
+    return (correct_num,len(pred))

@@ -14,7 +14,7 @@ from transformers import (
 import numpy as np
 import re
 import json
-from evaluation import evaluate_pointer,evaluate_concurrence
+from evaluation import evaluate_pointer,evaluate_concurrence,evaluate_span
 from evaluation import F1Counter
 from IE_data_util import NERProcessor,EventSchemaDict
 
@@ -38,28 +38,24 @@ class PointerNet(torch.nn.Module):
 
         # Binary classification: is the pointer?
         self.activation=torch.sigmoid
+        self.dropout=torch.nn.Dropout(config.dropout)
 
     def forward(self,x):
         embedding =self.encoder(**x)[0]
+        dropout_embedding=self.dropout(embedding)
         # event_detector=self.activation(self.cls_dense(embedding[:,0]))
         # event_detector=event_detector.reshape(event_detector.shape[0],1,event_detector.shape[-1])
-        pointer=self.activation(self.dense(embedding))
-        # pointer=pointer*event_detector
+        pointer=self.activation(self.dense(dropout_embedding))
 
         start_embedding=embedding
         start_embedding=self.dense3(start_embedding)
-        # start_embedding=torch.tanh(start_embedding)
-        # start_embedding=self.dense4(start_embedding)
-        # start_embedding=torch.tanh(start_embedding)
+        start_embedding=self.dropout(start_embedding)
 
-
-        end_embedding=embedding
+        end_embedding=embedding.detach()
         end_embedding=self.dense5(end_embedding)
-        # end_embedding=torch.tanh(end_embedding)
-        # end_embedding=self.dense6(end_embedding)
-        # end_embedding=torch.tanh(end_embedding)
+        end_embedding=self.dropout(end_embedding)
+
         concurrence=self.activation(torch.matmul(start_embedding,end_embedding.transpose(1,2)))
-        # concurrence=concurrence*event_detector
         return pointer,concurrence
 
 
@@ -137,11 +133,11 @@ class NERModel(pl.LightningModule):
         train_data = self.processor.get_train_data()
         dev_data=self.processor.get_dev_data()
 
-        # import random
-        # random.shuffle(train_data)
-        # random.shuffle(dev_data)
-        # train_data=train_data[:100]
-        # dev_data=train_data[:100]
+        import random
+        random.shuffle(train_data)
+        random.shuffle(dev_data)
+        train_data=train_data[:30000]
+        dev_data=dev_data[:3000]
 
         print("train_length:", len(train_data))
         print("valid_length:", len(dev_data))
@@ -181,36 +177,41 @@ class NERModel(pl.LightningModule):
         concurrence_loss= self.criterion(concurrence[attention_mask!=0], concurrence_tensors[attention_mask!=0])
         loss=pointer_loss+concurrence_loss
 
-        pointer_pred=self.processor.from_label_tensor_to_label_index(pointer,concurrence,offset_mapping)
-        pointer_pred,_=zip(*pointer_pred)
-        concurrence_pred=torch.where(concurrence > 0.5, 1, 0)
+        span_pred=self.processor.from_label_tensor_to_label_index(pointer,concurrence,offset_mapping)
+        span_pred,_,_=zip(*span_pred)
 
         pointer_counter=F1Counter()
-        evaluate_pointer(pointer_pred,label_text_index,pointer_counter)
-        concurrence_counter=F1Counter()
-        evaluate_concurrence(concurrence_pred,concurrence_tensors,concurrence_counter)
+        evaluate_pointer(torch.where(pointer[attention_mask!=0]>0.5,1,0),label_tensors[attention_mask!=0],pointer_counter)
 
-        return pointer_loss,concurrence_loss,pointer_counter,concurrence_counter
+        span_counter=F1Counter()
+        evaluate_span(span_pred,label_text_index,span_counter)
+
+        concurrence_counter=F1Counter()
+        evaluate_concurrence(torch.where(concurrence[attention_mask!=0]>0.5,1,0),concurrence_tensors[attention_mask!=0],concurrence_counter)
+
+        return pointer_loss,concurrence_loss,pointer_counter,span_counter,concurrence_counter
 
 
     def validation_epoch_end(self, outputs):
         pointer_total_counter=F1Counter()
+        span_total_counter=F1Counter()
         concurrence_total_counter=F1Counter()
         pointer_totol_losss,concurrence_total_loss=0,0
         for output in outputs:
-            pointer_loss,concurrence_loss,pointer_counter,concurrence_counter = output
+            pointer_loss,concurrence_loss,pointer_counter,span_counter,concurrence_counter = output
             pointer_totol_losss+=pointer_loss.item()
             concurrence_total_loss+=concurrence_loss.item()
             pointer_total_counter+=pointer_counter
+            span_total_counter+=span_counter
             concurrence_total_counter+=concurrence_counter
 
         precision,recall,pf1=pointer_total_counter.cal_score()
-        print(f"Finished epoch pointer_loss:{pointer_totol_losss}, pointer precisoin:{precision}, pointer recall:{recall},pointer f1:{pf1}")
+        print(f"Finished epoch pointer_loss:{pointer_totol_losss:.4f}, pointer precisoin:{precision:.4f}, pointer recall:{recall:.4f},pointer f1:{pf1:.4f}")
+        precision,recall,sf1=span_total_counter.cal_score()
+        print(f"Finished epoch span precisoin:{precision:.4f}, span recall:{recall:.4f},span f1:{sf1:.4f}")
         precision,recall,cf1=concurrence_total_counter.cal_score()
-        print(f"Finished epoch concurrence_loss:{concurrence_total_loss}, concurrence precisoin:{precision}, concurrence recall:{recall},concurrence f1:{cf1}")
+        print(f"Finished epoch concurrence_loss:{concurrence_total_loss:.4f}, concurrence precisoin:{precision:.4f}, concurrence recall:{recall:.4f},concurrence f1:{cf1:.4f}")
 
-        self.log('val_pre', torch.tensor(precision))
-        self.log('val_rec', torch.tensor(recall))
         self.log('val_f1', torch.tensor(pf1)+torch.tensor(cf1))
 
 
@@ -231,6 +232,8 @@ class NERPredictor:
         print("The TEST num is:", len(self.test_data))
         print('load checkpoint:', checkpoint_path)
 
+        self.role_total_num,self.use_role_num=0,0
+
 
     def extract_events(self,item,offset_mapping,preds):
         events_dict={}
@@ -245,7 +248,7 @@ class NERPredictor:
                 events_dict[event_type].add((role,argument,index))
         return events_dict
 
-    def cluster_events(self,events_dict,concurrence):
+    def cluster_events(self,events_dict,concurrence,relax_concurrence,fspy):
         new_events=[]
         for event_type,roles in events_dict.items():
             subjects=[]
@@ -264,25 +267,66 @@ class NERPredictor:
             SO_pairs=[]
             event_role_cluster=[]
             if len(subjects)==1 and len(objects)==1:
+                SO_pairs=[(subjects[0],objects[0])]
                 clusetr=[subjects[0],objects[0]]
                 for role_type,roles in assist_roles.items():
                     for role in roles:
                         clusetr.append(role)
                 event_role_cluster.append(clusetr)
             else:
+                remain_subject_set=set(subjects)
+                remain_object_set=set(objects)
                 for s in subjects:
                     for o in objects:
                         if o[-1][0] in concurrence.get(s[-1][0],set()):
                             SO_pairs.append((s,o))
+                            if s in remain_subject_set:remain_subject_set.remove(s)
+                            if o in remain_object_set:remain_object_set.remove(o)
+                
+                if remain_subject_set:
+                    for s in remain_subject_set:
+                        rco=list(filter(lambda o:o[-1][0] in relax_concurrence.get(s[-1][0],{}),objects))
+                        if rco:
+                            mrco=max(rco,key=lambda o:relax_concurrence[s[-1][0]][o[-1][0]])
+                            SO_pairs.append((s,mrco))
+                            if mrco in remain_object_set:remain_object_set.remove(mrco)
+                        else:
+                            SO_pairs.append((s,))
+                
+                if remain_object_set:
+                    for o in remain_object_set:
+                        rcs=list(filter(lambda s:s[-1][0] in relax_concurrence.get(o[-1][0],{}), subjects))
+                        if rcs:
+                            mrcs=max(rcs,key=lambda s:relax_concurrence[o[-1][0]][s[-1][0]])
+                            SO_pairs.append((mrcs,o))
+                        else:
+                            SO_pairs.append((o,))
+
+                if remain_subject_set or remain_object_set:
+                    fspy.write(f"remain {event_type}: {remain_subject_set} {remain_object_set}\n")
                         
                 for sao in SO_pairs:
-                    clusetr=[sao[0],sao[1]]
-                    for role_type,roles in assist_roles.items():
-                        for role in roles:
-                            if role[-1][0] in concurrence.get(sao[0][-1][0],set()) \
-                            or role[-1][0] in concurrence.get(sao[1][-1][0],set()):
-                                clusetr.append(role)
+                    if len(sao)>=2:
+                        clusetr=[sao[0],sao[1]]
+                        for role_type,roles in assist_roles.items():
+                            for role in roles:
+                                if role[-1][0] in concurrence.get(sao[0][-1][0],set()) \
+                                or role[-1][0] in concurrence.get(sao[1][-1][0],set()):
+                                    clusetr.append(role)
+                    else:
+                        continue
+                        if event_type in self.model.processor.event_schema.complicated_event_type:
+                            continue
+                        clusetr=[sao[0]]
+                        if sao[0][0]=="subject":
+                            clusetr.append(("@value","",(0,0)))
+                        else:
+                            clusetr.append(("subject","",(0,0)))
                     event_role_cluster.append(clusetr)
+            
+            self.role_total_num+=len(subjects)+len(objects)
+            self.use_role_num+=2*len(SO_pairs)
+
             
             for role_cluster in event_role_cluster:
                 spo={"predicate":event_type,"object":{}}
@@ -301,7 +345,7 @@ class NERPredictor:
 
         cnt = 0
         concurrence_dict={}
-        with open(outfile_txt, 'w') as fout:
+        with open(outfile_txt, 'w') as fout,open("spy_result.json", 'w') as fspy:
             for batch in tqdm.tqdm(self.dataloader):
                 for i in range(len(batch)-1):
                     batch[i] = batch[i].to(device)
@@ -313,11 +357,14 @@ class NERPredictor:
 
                 for offset,pred_role in zip(offset_mapping,preds):
                     item=dict(self.test_data[cnt].items())
+                    fspy.write(f"{item['text']}\n")
                     events_dict=self.extract_events(item,offset,pred_role[0])
-                    events=self.cluster_events(events_dict,pred_role[1])
+                    events=self.cluster_events(events_dict,pred_role[1],pred_role[2],fspy)
                     item=dict(item.items())
                     item["spo_list"]=events
                     fout.write(json.dumps(item,ensure_ascii=False)+"\n")
                     cnt+=1
+                    fspy.write(f"{events}\n\n")
         
         print('done--all %d tokens.' % cnt)
+        print(self.use_role_num,self.role_total_num)

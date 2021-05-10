@@ -26,8 +26,15 @@ class F1Counter(object):
 
 def evaluate_pointer(pred,gold,counter=F1Counter()):
     for predi,goldi in zip(pred,gold):
+        counter.pred_cnt+=(predi == 1).cpu().sum().item()
+        counter.gold_cnt+=(goldi == 1).cpu().sum().item()
+        counter.correct_pred+=((predi == 1) & (goldi.data == 1)).cpu().sum().item()
+    return counter
+
+def evaluate_span(pred,gold,counter=F1Counter()):
+    for predi,goldi in zip(pred,gold):
         counter.pred_cnt+=len(predi)
-        counter.gold_cnt+=len(goldi)
+        counter.gold_cnt+=len(set(goldi))
         counter.correct_pred+=len(set(predi)&set(goldi))
     return counter
 

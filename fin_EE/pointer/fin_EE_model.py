@@ -70,26 +70,30 @@ class PointerNet(torch.nn.Module):
 
         # Binary classification: is the pointer?
         self.activation=torch.sigmoid
+        self.dropout=torch.nn.Dropout(config.dropout)
 
     def forward(self,x):
         embedding =self.encoder(**x)[0]
+        dropout_embedding=self.dropout(embedding)
 
-        # event_detector=self.activation(self.cls_dense(embedding[:,0]))
+        # event_detector=self.activation(self.cls_dense(dropout_embedding[:,0]))
         # event_detector=event_detector.reshape(event_detector.shape[0],1,event_detector.shape[-1])
 
         # aoembedding = self.rope.add_pos_embedding(embedding)
-        pointer=self.activation(self.pointer_dense(embedding))
+        
+        pointer=self.activation(self.pointer_dense(dropout_embedding))
         # pointer=pointer*event_detector
 
         start_embedding=embedding
         start_embedding=self.con_head_dense(start_embedding)
-        # start_embedding=self.rope.add_pos_embedding(start_embedding)
+        start_embedding=self.dropout(start_embedding)
 
         end_embedding=embedding
         end_embedding=self.con_tail_dense(end_embedding)
-        # end_embedding=self.rope.add_pos_embedding(end_embedding)
+        end_embedding=self.dropout(end_embedding)
 
         concurrence=self.activation(torch.matmul(start_embedding,end_embedding.transpose(1,2)))
+        # concurrence=concurrence*event_detector
 
         return pointer,concurrence
 
@@ -187,7 +191,7 @@ class NERModel(pl.LightningModule):
         pointer_counter=F1Counter()
         evaluate_pointer(pointer_pred,label_text_index,pointer_counter)
         concurrence_counter=F1Counter()
-        evaluate_concurrence(concurrence_pred,concurrence_tensors,concurrence_counter)
+        evaluate_concurrence(torch.where(concurrence[attention_mask!=0]>0.5,1,0),concurrence_tensors[attention_mask!=0],concurrence_counter)
 
         return pointer_loss,concurrence_loss,pointer_counter,concurrence_counter
 

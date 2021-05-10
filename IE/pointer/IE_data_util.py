@@ -153,7 +153,7 @@ class NERProcessor(DataProcessor):
         result=[]
         for label_tensor,concurrence_tensor,offset_mapping in zip(label_tensor_list,concurrence_tensor_list,offset_mapping_list):
             label_index=(label_tensor>threshold).nonzero()
-            concurrence_index=(concurrence_tensor+concurrence_tensor.transpose(0,1)>threshold*2).nonzero()
+            concurrence_index=((concurrence_tensor+concurrence_tensor.transpose(0,1))>threshold*2).nonzero()
             label_text_index={} # key:label_id,value:text indices
 
             item_result=[]
@@ -174,13 +174,21 @@ class NERProcessor(DataProcessor):
                 end_text_indices=label_text_index.get(end_label_id,[])
                 start_index,end_index=0,0
                 while start_index<len(start_text_indices) and end_index<len(end_text_indices):
+                    start_input_index = start_text_indices[start_index]
                     while end_index<len(end_text_indices) and end_text_indices[end_index]<start_text_indices[start_index]:
                         end_index+=1
                     if end_index>=len(end_text_indices):
                         break
-                    item_result.append(((offset_mapping[start_text_indices[start_index]][0].item(),
-                                    offset_mapping[end_text_indices[end_index]][-1].item()),
-                                    (start_label_id,end_label_id)))
+                    
+                    end_input_index=end_text_indices[end_index]
+                    if start_index<len(start_text_indices)-1:
+                        if start_text_indices[start_index+1]<end_text_indices[end_index]:
+                            end_input_index=-1
+
+                    if end_input_index!=-1:
+                        item_result.append(((offset_mapping[start_input_index][0].item(),
+                                            offset_mapping[end_input_index][-1].item()),
+                                            (start_label_id,end_label_id)))
                     start_index+=1
             
             for index in concurrence_index:
@@ -191,7 +199,18 @@ class NERProcessor(DataProcessor):
                 concurrence.setdefault(offset_mapping[key][0].item(),set())
                 concurrence[offset_mapping[key][0].item()].add(offset_mapping[row][0].item())
 
-            result.append((item_result,concurrence))
+            relax_concurrence={}
+            relax_concurrence_tensor=(concurrence_tensor+concurrence_tensor.transpose(0,1))>0.3
+            relax_concurrence_index=relax_concurrence_tensor.nonzero()
+            for index in relax_concurrence_index:
+                key=index[1].item()
+                row=index[0].item()
+                if offset_mapping[row][-1]==0 or offset_mapping[key][-1]==0 :
+                    continue
+                relax_concurrence.setdefault(offset_mapping[key][0].item(),{})
+                relax_concurrence[offset_mapping[key][0].item()][offset_mapping[row][0].item()]=relax_concurrence_tensor[row][key]
+
+            result.append((item_result,concurrence,relax_concurrence))
 
         return result
 
@@ -202,6 +221,8 @@ class EventSchemaDict(object):
         self.find_closest=find_closest
         self.label2ids={}
         self.id2labels={}
+
+        self.complicated_event_type=set()
 
         self.load_schema()
 
@@ -217,6 +238,8 @@ class EventSchemaDict(object):
                 role_list.append(f"{event_type}:subject")
                 for key, desc in event_schema["object_type"].items():
                     role_list.append(f"{event_type}:{key}")
+                if len(event_schema["object_type"])>1:
+                    self.complicated_event_type.add(event_type)
 
         for index,role in enumerate(role_list):
             self.label2ids["B-"+role]=index*2

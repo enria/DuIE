@@ -217,13 +217,21 @@ class NERProcessor(DataProcessor):
                 end_text_indices=label_text_index.get(end_label_id,[])
                 start_index,end_index=0,0
                 while start_index<len(start_text_indices) and end_index<len(end_text_indices):
+                    start_input_index = start_text_indices[start_index]
                     while end_index<len(end_text_indices) and end_text_indices[end_index]<start_text_indices[start_index]:
                         end_index+=1
                     if end_index>=len(end_text_indices):
                         break
-                    item_result.append(((offset_mapping[start_text_indices[start_index]][0].item(),
-                                    offset_mapping[end_text_indices[end_index]][-1].item()),
-                                    (start_label_id,end_label_id)))
+                    
+                    end_input_index=end_text_indices[end_index]
+                    if start_index<len(start_text_indices)-1:
+                        if start_text_indices[start_index+1]<end_text_indices[end_index]:
+                            end_input_index=-1
+
+                    if end_input_index!=-1:
+                        item_result.append(((offset_mapping[start_input_index][0].item(),
+                                            offset_mapping[end_input_index][-1].item()),
+                                            (start_label_id,end_label_id)))
                     start_index+=1
             
             for index in concurrence_index:
