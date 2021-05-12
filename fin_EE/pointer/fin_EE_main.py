@@ -25,8 +25,8 @@ if __name__ == '__main__':
 
     # 设置参数
     parser = argparse.ArgumentParser()
-    parser.add_argument("--is_train", type=utils.str2bool, default=False, help="train the NER model or not (default: False)")
-    parser.add_argument("--batch_size", type=int, default=8, help="input batch size for training and test (default: 8)")
+    parser.add_argument("--is_train", type=utils.str2bool, default=True, help="train the NER model or not (default: False)")
+    parser.add_argument("--batch_size", type=int, default=2, help="input batch size for training and test (default: 8)")
     parser.add_argument("--max_epochs", type=int, default=40, help="the max epochs for training and test (default: 5)")
     parser.add_argument("--lr", type=float, default=2e-5, help="learning rate (default: 2e-5)")
     parser.add_argument("--crf_lr", type=float, default=0.1, help="crf learning rate (default: 0.1)")
@@ -57,7 +57,7 @@ if __name__ == '__main__':
                         default="/storage/public/models/chinese-roberta-wwm-ext".format(WORKING_DIR), help="pretrained_path")
 
     parser.add_argument("--ckpt_name",  type=str, default="###", help="ckpt save name")
-    parser.add_argument("--test_ckpt_name",  type=str, default="val_total_f1=1.527_pf1=0.740cf1=0.787_epoch=34.ckpt", help="ckpt name for test")
+    parser.add_argument("--test_ckpt_name",  type=str, default="val_total_f1=1.513_pf1=0.748cf1=0.764_epoch=10_large.ckpt", help="ckpt name for test")
 
     args = parser.parse_args()
     
@@ -86,18 +86,19 @@ if __name__ == '__main__':
         # 设置保存模型的路径及参数
         ckpt_callback = ModelCheckpoint(
             dirpath=config.ner_save_path,                           # 模型保存路径
-            filename="{val_total_f1:.3f}_{pf1:.3f}{cf1:.3f}_{epoch}",   # 模型保存名称，参数ckpt_name后加入epoch信息以及验证集分数
+            filename="{val_total_f1:.3f}_{pf1:.3f}{cf1:.3f}_{epoch}_2bert",   # 模型保存名称，参数ckpt_name后加入epoch信息以及验证集分数
             monitor='val_total_f1',                                      # 根据验证集上的准确率评估模型优劣
             mode='max',
             save_top_k=3,                                           # 保存得分最高的前三个模型
             verbose=True
         )
-          
+        
+        early_stopping=EarlyStopping("val_total_f1",mode="max")
 
         # 设置训练器
         trainer = pl.Trainer(
             progress_bar_refresh_rate=1,
-            resume_from_checkpoint = config.ner_save_path + '/val_total_f1=1.293_pf1=0.522cf1=0.771_epoch=14.ckpt',  # 加载已保存的模型继续训练
+            # resume_from_checkpoint = config.ner_save_path + '/val_total_f1=1.293_pf1=0.522cf1=0.771_epoch=14.ckpt',  # 加载已保存的模型继续训练
             max_epochs=config.max_epochs,
             callbacks=[ckpt_callback,early_stopping,utils.PrintLineCallback()],
             checkpoint_callback=True,

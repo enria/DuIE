@@ -126,7 +126,7 @@ class IPOProcessor(DataProcessor):
 
         for index in range(len(data)):
             IPO_cls=self.get_IPO_cls(data[index])
-            label_index=self.IPO_categories.index(IPO_cls)
+            label_index=self.IPO_categories.index(IPO_cls) if IPO_cls in self.IPO_categories else -1
             label_tensors.append(torch.tensor(label_index))
 
 

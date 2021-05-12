@@ -57,24 +57,25 @@ class PointerNet(torch.nn.Module):
 
         self.rope=RoPE()
 
-        self.encoder=BertModel.from_pretrained(config.pretrained_path)
+        self.encoder1=BertModel.from_pretrained(config.pretrained_path)
+        self.encoder2=BertModel.from_pretrained(config.pretrained_path)
 
         # self.cls_dense=torch.nn.Linear(self.encoder.config.hidden_size,1)
 
         # Pointer Network: one label(event role) has both start and end pointer
-        self.pointer_dense=torch.nn.Linear(self.encoder.config.hidden_size,label_categories_num)
+        self.pointer_dense=torch.nn.Linear(self.encoder1.config.hidden_size,label_categories_num)
         
         # 共现矩阵 (w,h)*(h,h)->(w,h), (w,h)*(h,w)->(w,w)
-        self.con_head_dense=torch.nn.Linear(self.encoder.config.hidden_size,256)
-        self.con_tail_dense=torch.nn.Linear(self.encoder.config.hidden_size,256)
+        self.con_head_dense=torch.nn.Linear(self.encoder2.config.hidden_size,256)
+        self.con_tail_dense=torch.nn.Linear(self.encoder2.config.hidden_size,256)
 
         # Binary classification: is the pointer?
         self.activation=torch.sigmoid
         self.dropout=torch.nn.Dropout(config.dropout)
 
     def forward(self,x):
-        embedding =self.encoder(**x)[0]
-        dropout_embedding=self.dropout(embedding)
+        embedding1 =self.encoder1(**x)[0]
+        dropout_embedding=self.dropout(embedding1)
 
         # event_detector=self.activation(self.cls_dense(dropout_embedding[:,0]))
         # event_detector=event_detector.reshape(event_detector.shape[0],1,event_detector.shape[-1])
@@ -84,11 +85,12 @@ class PointerNet(torch.nn.Module):
         pointer=self.activation(self.pointer_dense(dropout_embedding))
         # pointer=pointer*event_detector
 
-        start_embedding=embedding
+        embedding2 =self.encoder2(**x)[0]
+        start_embedding=embedding2
         start_embedding=self.con_head_dense(start_embedding)
         start_embedding=self.dropout(start_embedding)
 
-        end_embedding=embedding
+        end_embedding=embedding2
         end_embedding=self.con_tail_dense(end_embedding)
         end_embedding=self.dropout(end_embedding)
 

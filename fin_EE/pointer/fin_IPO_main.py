@@ -40,7 +40,7 @@ if __name__ == '__main__':
                         help="dev_path")
     parser.add_argument("--schema_path", type=str, default="{}/duee_fin_event_schema_sub.json".format(DATA_DIR),
                         help="schema_path")
-    parser.add_argument("--test_path", type=str, default="{}/result/val_total_f1=1.527_pf1=0.740cf1=0.787_epoch=34.json".format(WORKING_DIR),
+    parser.add_argument("--test_path", type=str, default="{}/result/val_total_f1=1.513_pf1=0.748cf1=0.764_epoch=10_large.json".format(WORKING_DIR),
                         help="test_path")
     parser.add_argument("--ner_result_path", type=str, default="{}/IPO_result".format(WORKING_DIR),
                         help="ner_result_path")
