@@ -94,9 +94,11 @@ class PointerNet(torch.nn.Module):
         return pointer
 
 class NERModel(pl.LightningModule):
-    def __init__(self, config):
+    def __init__(self, config,kno=-1):
         # 1. Init parameters
         super(NERModel, self).__init__()
+        self.kno=kno
+        self.config=config
         
 
         self.batch_size = config.batch_size
@@ -133,6 +135,10 @@ class NERModel(pl.LightningModule):
             return torch.optim.SGD(arg_list, lr=self.lr, momentum=0.9)
 
     def prepare_data(self):
+        if self.kno>=0:
+            self.prepare_k_data()
+            return
+
         train_data = self.processor.get_train_data()
         dev_data=self.processor.get_dev_data()
 
@@ -143,6 +149,27 @@ class NERModel(pl.LightningModule):
             train_data, batch_size=self.batch_size, shuffle=True)
         self.valid_loader = self.processor.create_dataloader(
             dev_data, batch_size=self.batch_size, shuffle=False)
+    
+    def prepare_k_data(self):
+        train_data = self.processor.get_train_data()[:10]
+        dev_data=self.processor.get_train_data()[:10]
+
+        all_data=train_data+dev_data
+        all_data_num=len(all_data)
+        k_avg_num=all_data_num//self.config.k+1
+
+        k_fold_train_data,k_fold_dev_data=[],None
+        for i in range(self.config.k):
+            cur_data_split=all_data[i*k_avg_num:(i+1)*k_avg_num]
+            if i==self.kno:
+                k_fold_dev_data=cur_data_split
+            else:
+                k_fold_train_data.extend(cur_data_split)
+
+        self.train_loader = self.processor.create_dataloader(
+            k_fold_train_data, batch_size=self.batch_size, shuffle=True)
+        self.valid_loader = self.processor.create_dataloader(
+            k_fold_dev_data, batch_size=self.batch_size, shuffle=False)
 
     def train_dataloader(self):
         return self.train_loader
