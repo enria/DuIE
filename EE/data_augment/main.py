@@ -9,10 +9,11 @@ from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 
 from configuration import Config
 import utils
+from module import ARModule
 
 utils.set_random_seed(20210507)
 os.environ["TOKENIZERS_PARALLELISM"] = "True"
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 if __name__ == '__main__':
 
@@ -22,8 +23,8 @@ if __name__ == '__main__':
     # 设置参数
     parser = argparse.ArgumentParser()
     parser.add_argument("--is_train", type=utils.str2bool, default=True, help="train the NER model or not (default: False)")
-    parser.add_argument("--batch_size", type=int, default=2, help="input batch size for training and test (default: 8)")
-    parser.add_argument("--max_epochs", type=int, default=40, help="the max epochs for training and test (default: 5)")
+    parser.add_argument("--batch_size", type=int, default=3, help="input batch size for training and test (default: 8)")
+    parser.add_argument("--max_epochs", type=int, default=20, help="the max epochs for training and test (default: 5)")
     parser.add_argument("--lr", type=float, default=2e-5, help="learning rate (default: 2e-5)")
     parser.add_argument("--optimizer", type=str, default="Adam", choices=["Adam", "SGD"], help="optimizer")
 
@@ -34,6 +35,8 @@ if __name__ == '__main__':
                         help="dev_path")
     parser.add_argument("--test_path", type=str, default="{}/duee_test1.json".format(DATA_DIR),
                         help="test_path")
+    parser.add_argument("--schema_path", type=str, default="{}/duee_event_schema.json".format(DATA_DIR),
+                        help="schema_path")
     parser.add_argument("--ner_result_path", type=str, default="{}/result".format(WORKING_DIR),
                         help="ner_result_path")
     parser.add_argument("--ner_save_path", type=str,
@@ -48,8 +51,6 @@ if __name__ == '__main__':
     
     # Init config
     config = Config.from_dict(args.__dict__)
-    if args.is_train:   # 训练模式下，将参数保存
-        config.save_to_json_file(os.path.join(config.ner_save_path, "config.json"))
 
     print('--------config----------')
     print(config)
@@ -58,14 +59,15 @@ if __name__ == '__main__':
     if config.is_train == True:
         # ============= train 训练模型==============
         print("start train model ...")
-        model = ARModel(config)
+        model = ARModule(config)
+        early_stopping=EarlyStopping("loss",mode="min")
 
         # 设置保存模型的路径及参数
         ckpt_callback = ModelCheckpoint(
             dirpath=config.ner_save_path,                           # 模型保存路径
-            filename="{val_f1:.4f}_{epoch}_global+large",   # 模型保存名称，参数ckpt_name后加入epoch信息以及验证集分数
-            monitor='val_f1',                                      # 根据验证集上的准确率评估模型优劣
-            mode='max',
+            filename="{loss:.4f}_{epoch}_global+large",   # 模型保存名称，参数ckpt_name后加入epoch信息以及验证集分数
+            monitor='loss',                                      # 根据验证集上的准确率评估模型优劣
+            mode='min',
             save_top_k=3,                                           # 保存得分最高的前两个模型
             verbose=True,
         )
@@ -75,7 +77,7 @@ if __name__ == '__main__':
             progress_bar_refresh_rate=1,
             # resume_from_checkpoint = config.ner_save_path + '/val_f1=0.7519_epoch=10_global+sec+rope.ckpt',  # 加载已保存的模型继续训练
             max_epochs=config.max_epochs,
-            callbacks=[ckpt_callback],
+            callbacks=[ckpt_callback,early_stopping],
             checkpoint_callback=True,
             gpus=1,
             distributed_backend='dp',
