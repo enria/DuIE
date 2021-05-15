@@ -152,7 +152,7 @@ class NERProcessor(DataProcessor):
     def from_label_tensor_to_label_index(self,label_tensor_list,concurrence_tensor_list,offset_mapping_list,threshold=0.5):
         result=[]
         for label_tensor,concurrence_tensor,offset_mapping in zip(label_tensor_list,concurrence_tensor_list,offset_mapping_list):
-            label_index=(label_tensor>threshold).nonzero()
+            label_index=(label_tensor>0.38).nonzero()
             concurrence_index=((concurrence_tensor+concurrence_tensor.transpose(0,1))>threshold*2).nonzero()
             label_text_index={} # key:label_id,value:text indices
 

@@ -315,13 +315,6 @@ class NERPredictor:
                                     clusetr.append(role)
                     else:
                         continue
-                        if event_type in self.model.processor.event_schema.complicated_event_type:
-                            continue
-                        clusetr=[sao[0]]
-                        if sao[0][0]=="subject":
-                            clusetr.append(("@value","",(0,0)))
-                        else:
-                            clusetr.append(("subject","",(0,0)))
                     event_role_cluster.append(clusetr)
             
             self.role_total_num+=len(subjects)+len(objects)
