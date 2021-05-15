@@ -1,5 +1,7 @@
 # coding=utf-8
+from logging import fatal
 from EE_data_util import NERProcessor
+import os
 import pytorch_lightning as pl
 # from sklearn import model_selection
 import tqdm
@@ -151,8 +153,8 @@ class NERModel(pl.LightningModule):
             dev_data, batch_size=self.batch_size, shuffle=False)
     
     def prepare_k_data(self):
-        train_data = self.processor.get_train_data()[:10]
-        dev_data=self.processor.get_train_data()[:10]
+        train_data = self.processor.get_train_data()
+        dev_data=self.processor.get_dev_data()
 
         all_data=train_data+dev_data
         all_data_num=len(all_data)
@@ -250,15 +252,17 @@ class NERPredictor:
     def __init__(self, checkpoint_path, config):
         self.use_bert = config.use_bert
         self.use_crf = config.use_crf
+        self.config=config
         
         print('load checkpoint:', checkpoint_path)
-        self.model = NERModel.load_from_checkpoint(checkpoint_path, config=config)
+        # self.model = NERModel.load_from_checkpoint(checkpoint_path, config=config)
+        self.processor=NERProcessor(config)
 
     def extract_events(self,text,offset_mapping,preds):
         events_dict={}
         for index,label_id in preds:
             argument=text[index[0]:index[1]]
-            label=self.model.processor.event_schema.id2labels[label_id[0]]
+            label=self.processor.event_schema.id2labels[label_id[0]]
             label=re.match("B-(.+):(.+)",label).groups()
             events_dict.setdefault(label[0],[])
             if argument:
@@ -282,7 +286,7 @@ class NERPredictor:
         self.test_data = self.model.processor.get_test_data()
         self.tokenizer = self.model.tokenizer
         self.dataloader = self.model.processor.create_dataloader(
-        self.test_data, batch_size=2, shuffle=False)
+        self.test_data, batch_size=self.config.batch_size, shuffle=False)
 
         print("The TEST num is:", len(self.test_data))
 
@@ -313,6 +317,77 @@ class NERPredictor:
 
         print('done--all %d tokens.' % cnt)
     
+    def generate_k_temp(self):
+
+        device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+        ckpt_name=["val_f1=0.7163_epoch=14_global.ckpt",
+                   "val_f1=0.7411_epoch=13_global.ckpt",
+                   "val_f1=0.7364_epoch=14_global.ckpt",
+                   "val_f1=0.7180_epoch=14_global.ckpt",
+                   "val_f1=0.6903_epoch=13_global.ckpt"]
+
+        all_offset_maping=[]
+        test_data = self.processor.get_test_data()
+        dataloader = self.processor.create_dataloader(test_data, batch_size=self.config.batch_size, shuffle=False)
+
+        for kno in range(self.config.k):
+            model = NERModel.load_from_checkpoint(os.path.join(self.config.ner_save_path,f"k{kno}",ckpt_name[kno]), config=self.config)
+            print("The TEST num is:", len(test_data))
+            model.to(device)
+            model.eval()
+
+            cnt = 0
+
+            with open(os.path.join("ktemp",ckpt_name[kno][:-5]+".pk"), 'wb') as fout:
+                all_pres=[]
+                for batch in tqdm.tqdm(dataloader):
+                    for i in range(len(batch)-1):
+                        batch[i] = batch[i].to(device)
+
+                    input_ids, token_type_ids, attention_mask,offset_mapping,label_tensors,sec_tensor,label_index = batch
+                    if kno==0:
+                        all_offset_maping.append(offset_mapping.cpu().detach())
+                    pointer = model(input_ids, token_type_ids, attention_mask)
+                    pointer=pointer.cpu().detach()
+                    all_pres.append(pointer)
+                all_pres_tensor=torch.cat(all_pres,dim=0)
+                torch.save(all_pres_tensor,fout)
+
+            print('done--all %d tokens.' % cnt)
+        
+        with open(os.path.join("ktemp","offset_mapping.pk"),"wb") as fout:
+            all_offset_mapping_tensor=torch.cat(all_offset_maping,dim=0)
+            torch.save(all_offset_mapping_tensor,fout)
+        
+    def generate_k_result(self,outfile_txt):
+        integrate_pointer_tensor=None
+        kno=0
+        for temp_tensor_file_name in os.listdir("ktemp"):
+            if temp_tensor_file_name.startswith("val"):
+                with open(os.path.join("ktemp",temp_tensor_file_name),"rb") as fin:
+                    temp_tensor=torch.load(fin)
+                    if kno==0:
+                        integrate_pointer_tensor=temp_tensor
+                    else:
+                        integrate_pointer_tensor+=temp_tensor
+                kno+=1
+        integrate_pointer_tensor/=kno
+        
+        with open(os.path.join("ktemp","offset_mapping.pk"),"rb") as fin:
+            offset_mapping=torch.load(fin)
+        
+        test_data = self.processor.get_test_data()
+
+        with open(outfile_txt, 'w') as fout:
+            for offset,pointer,item in zip(offset_mapping,integrate_pointer_tensor,test_data):
+                pred=self.processor.from_label_tensor_to_label_index(pointer[None],offset[None])[0]
+                item=dict(item.items())
+                events=self.extract_events(item["text"],offset,pred)
+                item["event_list"]=events
+                fout.write(json.dumps(item,ensure_ascii=False)+"\n")
+
+        print('done--all %d tokens.' % len(test_data))
+    
     def validation(self):
         device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         self.model.to(device)
@@ -331,27 +406,21 @@ class NERPredictor:
 
             input_ids, token_type_ids, attention_mask,offset_mapping, label_tensors,sec_tensor,label_text_index = batch
 
-            pointer,sec = self.model(input_ids, token_type_ids, attention_mask)
+            pointer = self.model(input_ids, token_type_ids, attention_mask)
 
             pointer_counter=F1Counter()
             evaluate_bool(torch.where(pointer[attention_mask!=0]>0.5,1,0),label_tensors[attention_mask!=0],pointer_counter)
 
-            sec_counter=F1Counter()
-            evaluate_bool(torch.where(torch.triu(sec,1)>0.5,1,0),sec_tensor,sec_counter)
-
-            span_pred=self.model.processor.from_label_tensor_to_label_index(pointer,sec,offset_mapping)
+            span_pred=self.model.processor.from_label_tensor_to_label_index(pointer,offset_mapping)
             span_counter=F1Counter()
             evaluate(span_pred,label_text_index,span_counter)
 
             pointer_total_counter+=pointer_counter
-            sec_total_counter+=sec_counter
             span_total_counter+=span_counter
         
         precision,recall,f1=pointer_total_counter.cal_score()
         print(f"Finished epoch pointer precisoin:{precision}, pointer recall:{recall},pointer f1:{f1}")
 
-        precision,recall,f1=sec_total_counter.cal_score()
-        print(f"Finished epoch sec precisoin:{precision}, sec recall:{recall},sec f1:{f1}")
 
         precision,recall,f1=span_total_counter.cal_score()
         print(f"Finished epoch  span precisoin:{precision}, span recall:{recall},span f1:{f1}")

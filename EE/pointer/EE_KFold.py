@@ -16,7 +16,7 @@ import utils
 
 utils.set_random_seed(20200819)
 os.environ["TOKENIZERS_PARALLELISM"] = "True"
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 if __name__ == '__main__':
 
@@ -25,8 +25,8 @@ if __name__ == '__main__':
 
     # 设置参数
     parser = argparse.ArgumentParser()
-    parser.add_argument("--is_train", type=utils.str2bool, default=True, help="train the NER model or not (default: False)")
-    parser.add_argument("--batch_size", type=int, default=1, help="input batch size for training and test (default: 8)")
+    parser.add_argument("--is_train", type=utils.str2bool, default=False, help="train the NER model or not (default: False)")
+    parser.add_argument("--batch_size", type=int, default=4, help="input batch size for training and test (default: 8)")
     parser.add_argument("--max_epochs", type=int, default=15, help="the max epochs for training and test (default: 5)")
     parser.add_argument("--k", type=int, default=5, help="input batch size for training and test (default: 8)")
     parser.add_argument("--lr", type=float, default=2e-5, help="learning rate (default: 2e-5)")
@@ -51,12 +51,12 @@ if __name__ == '__main__':
     parser.add_argument("--ner_result_path", type=str, default="{}/result".format(WORKING_DIR),
                         help="ner_result_path")
     parser.add_argument("--ner_save_path", type=str,
-                        default="{}/weights".format(WORKING_DIR), help="ner_save_path")
+                        default="{}/kweights".format(WORKING_DIR), help="ner_save_path")
     parser.add_argument("--pretrained_path", type=str,
-                        default="/storage/public/models/chinese-roberta-wwm-ext-large".format(WORKING_DIR), help="pretrained_path")
+                        default="/storage/public/models/chinese-roberta-wwm-ext".format(WORKING_DIR), help="pretrained_path")
 
     parser.add_argument("--ckpt_name",  type=str, default="###", help="ckpt save name")
-    parser.add_argument("--test_ckpt_name",  type=str, default="val_f1=0.7642_epoch=4_global+large.ckpt", help="ckpt name for test")
+    parser.add_argument("--test_ckpt_name",  type=str, default="k1/val_f1=0.7411_epoch=13_global.ckpt", help="ckpt name for test")
 
     args = parser.parse_args()
     
@@ -80,6 +80,8 @@ if __name__ == '__main__':
     if config.is_train == True:
         # ============= train 训练模型==============
         for kno in range(config.k):
+            if kno<=1:
+                continue
             print("start train model ...")
             model = NERModel(config,kno)
             early_stopping=EarlyStopping("val_f1",mode="max")
@@ -87,7 +89,7 @@ if __name__ == '__main__':
             # 设置保存模型的路径及参数
             ckpt_callback = ModelCheckpoint(
                 dirpath=config.ner_save_path+f"/k{kno}",                           # 模型保存路径
-                filename="{val_f1:.4f}_{epoch}_global+large",   # 模型保存名称，参数ckpt_name后加入epoch信息以及验证集分数
+                filename="{val_f1:.4f}_{epoch}_global",   # 模型保存名称，参数ckpt_name后加入epoch信息以及验证集分数
                 monitor='val_f1',                                      # 根据验证集上的准确率评估模型优劣
                 mode='max',
                 save_top_k=3,                                           # 保存得分最高的前两个模型
@@ -99,7 +101,7 @@ if __name__ == '__main__':
                 progress_bar_refresh_rate=1,
                 # resume_from_checkpoint = config.ner_save_path + '/val_f1=0.7519_epoch=10_global+sec+rope.ckpt',  # 加载已保存的模型继续训练
                 max_epochs=config.max_epochs,
-                callbacks=[ckpt_callback,early_stopping],
+                callbacks=[ckpt_callback],
                 checkpoint_callback=True,
                 gpus=1,
                 distributed_backend='dp',
@@ -115,33 +117,12 @@ if __name__ == '__main__':
     else:
         # ============= test 测试模型==============
         print("\n\nstart test model...")
-
-        '''
-        设置输出文件名 得到结果为 
-            1).txt 测试数据的字符输出文件 
-            共三列，分别是：字符token， 真实BIO标签， 模型预测BIO标签
-                eg:
-                    浙 B-COM B-COM
-                    江 I-COM I-COM
-                    龙 I-COM I-COM
-                    盛 I-COM I-COM
-                    于 O O
-                    2020 O O
-                    年 O O
-                    8 O O
-                    月 O O
-                    18 O O
-                    日 O O
-                    
-            2).tsv 根据txt内容，整理得到句子+公司名文件，与训练输入文件保持一致
-            共两列，以制表符分割，分别是 句子 公司名列表
-                eg:
-                浙江龙盛于2020年8月18日披露中报，公司2020上半年实现营业总收入75.9亿	['浙江龙盛']
-        '''
-        outfile_txt = os.path.join(config.ner_result_path, config.test_ckpt_name[:-5] + ".json")
+        outfile_txt = os.path.join(config.ner_result_path, "k.json")
 
         # 开始测试，将结果保存至输出文件
         checkpoint_path = os.path.join(config.ner_save_path, config.test_ckpt_name)
         predictor = NERPredictor(checkpoint_path, config)
-        predictor.generate_result(outfile_txt)
+        # predictor.validation()
+        predictor.generate_k_temp()
+        predictor.generate_k_result(outfile_txt)
         print('\n', 'outfile_txt name:', outfile_txt)
