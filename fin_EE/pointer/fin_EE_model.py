@@ -57,25 +57,24 @@ class PointerNet(torch.nn.Module):
 
         self.rope=RoPE()
 
-        self.encoder1=BertModel.from_pretrained(config.pretrained_path)
-        self.encoder2=BertModel.from_pretrained(config.pretrained_path)
+        self.encoder=BertModel.from_pretrained(config.pretrained_path)
 
         # self.cls_dense=torch.nn.Linear(self.encoder.config.hidden_size,1)
 
         # Pointer Network: one label(event role) has both start and end pointer
-        self.pointer_dense=torch.nn.Linear(self.encoder1.config.hidden_size,label_categories_num)
+        self.pointer_dense=torch.nn.Linear(self.encoder.config.hidden_size,label_categories_num)
         
         # 共现矩阵 (w,h)*(h,h)->(w,h), (w,h)*(h,w)->(w,w)
-        self.con_head_dense=torch.nn.Linear(self.encoder2.config.hidden_size,256)
-        self.con_tail_dense=torch.nn.Linear(self.encoder2.config.hidden_size,256)
+        self.con_head_dense=torch.nn.Linear(self.encoder.config.hidden_size,256)
+        self.con_tail_dense=torch.nn.Linear(self.encoder.config.hidden_size,256)
 
         # Binary classification: is the pointer?
         self.activation=torch.sigmoid
         self.dropout=torch.nn.Dropout(config.dropout)
 
     def forward(self,x):
-        embedding1 =self.encoder1(**x)[0]
-        dropout_embedding=self.dropout(embedding1)
+        embedding =self.encoder(**x)[0]
+        dropout_embedding=self.dropout(embedding)
 
         # event_detector=self.activation(self.cls_dense(dropout_embedding[:,0]))
         # event_detector=event_detector.reshape(event_detector.shape[0],1,event_detector.shape[-1])
@@ -85,12 +84,11 @@ class PointerNet(torch.nn.Module):
         pointer=self.activation(self.pointer_dense(dropout_embedding))
         # pointer=pointer*event_detector
 
-        embedding2 =self.encoder2(**x)[0]
-        start_embedding=embedding2
+        start_embedding=embedding
         start_embedding=self.con_head_dense(start_embedding)
         start_embedding=self.dropout(start_embedding)
 
-        end_embedding=embedding2
+        end_embedding=embedding
         end_embedding=self.con_tail_dense(end_embedding)
         end_embedding=self.dropout(end_embedding)
 
@@ -100,10 +98,11 @@ class PointerNet(torch.nn.Module):
         return pointer,concurrence
 
 class NERModel(pl.LightningModule):
-    def __init__(self, config):
+    def __init__(self, config,kno=-1):
         # 1. Init parameters
         super(NERModel, self).__init__()
-        
+        self.config=config
+        self.kno=kno
 
         self.batch_size = config.batch_size
         self.lr = config.lr
@@ -139,6 +138,10 @@ class NERModel(pl.LightningModule):
             return torch.optim.SGD(arg_list, lr=self.lr, momentum=0.9)
 
     def prepare_data(self):
+        if self.kno>=0:
+            self.prepare_k_data()
+            return
+
         origin_train_data = self.processor.get_train_data()
         origin_dev_data=self.processor.get_dev_data()
         train_data=self.processor.process_long_text(origin_train_data,512)
@@ -157,6 +160,32 @@ class NERModel(pl.LightningModule):
             train_data, batch_size=self.batch_size, shuffle=True)
         self.valid_loader = self.processor.create_dataloader(
             dev_data, batch_size=self.batch_size, shuffle=False)
+
+    def prepare_k_data(self):
+        origin_train_data = self.processor.get_train_data()
+        origin_dev_data=self.processor.get_dev_data()
+        train_data=self.processor.process_long_text(origin_train_data,512)
+        dev_data=self.processor.process_long_text(origin_dev_data,512)
+
+        all_data=train_data+dev_data
+        all_data_num=len(all_data)
+        k_avg_num=all_data_num//self.config.k+1
+
+        k_fold_train_data,k_fold_dev_data=[],None
+        for i in range(self.config.k):
+            cur_data_split=all_data[i*k_avg_num:(i+1)*k_avg_num]
+            if i==self.kno:
+                k_fold_dev_data=cur_data_split
+            else:
+                k_fold_train_data.extend(cur_data_split)
+        
+        print("train_length:", len(k_fold_train_data))
+        print("valid_length:", len(k_fold_dev_data))
+
+        self.train_loader = self.processor.create_dataloader(
+            k_fold_train_data, batch_size=self.batch_size, shuffle=False)
+        self.valid_loader = self.processor.create_dataloader(
+            k_fold_dev_data, batch_size=self.batch_size, shuffle=False)
 
     def train_dataloader(self):
         return self.train_loader
