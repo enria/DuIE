@@ -15,6 +15,7 @@ from transformers import (
 import numpy as np
 import re
 import json
+import os
 from evaluation import evaluate_pointer,evaluate_concurrence
 from evaluation import F1Counter
 from fin_EE_data_util import NERProcessor,EventSchemaDict
@@ -254,14 +255,16 @@ class NERPredictor:
         self.use_bert = config.use_bert
         self.use_crf = config.use_crf
 
-        self.model = NERModel.load_from_checkpoint(checkpoint_path, config=config)
+        # self.model = NERModel.load_from_checkpoint(checkpoint_path, config=config)
 
-        self.origin_test_data = self.model.processor.get_test_data()
-        self.test_data=self.model.processor.process_long_text(self.origin_test_data,512)
+        # self.origin_test_data = self.model.processor.get_test_data()
+        # self.test_data=self.model.processor.process_long_text(self.origin_test_data,512)
 
-        self.tokenizer = self.model.tokenizer
-        self.dataloader = self.model.processor.create_dataloader(
-            self.test_data, batch_size=config.batch_size, shuffle=False)
+        # self.tokenizer = self.model.tokenizer
+        # self.dataloader = self.model.processor.create_dataloader(
+        #     self.test_data, batch_size=config.batch_size, shuffle=False)
+        
+        self.processor=NERProcessor(config)
         
         # 保存每一条数据的事件
         self.item_events={}
@@ -374,3 +377,71 @@ class NERPredictor:
                     fout.write(json.dumps(item,ensure_ascii=False)+"\n")
 
         print('done--all %d tokens.' % cnt)
+    
+    def generate_k_temp(self):
+        device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+        ckpt_name=["val_total_f1=1.472_pf1=0.728cf1=0.744_epoch=10.ckpt"]
+
+        all_offset_maping=[]
+        test_data = self.processor.get_test_data()
+        dataloader = self.processor.create_dataloader(test_data, batch_size=self.config.batch_size, shuffle=False)
+
+        for kno in range(1):
+            model = NERModel.load_from_checkpoint(os.path.join(self.config.ner_save_path,f"k{kno}",ckpt_name[kno]), config=self.config)
+            print("The TEST num is:", len(test_data))
+            model.to(device)
+            model.eval()
+
+
+            all_pointer_pres=[]
+            all_concurrence_pres=[]
+            for batch in tqdm.tqdm(dataloader):
+                for i in range(len(batch)-1):
+                    batch[i] = batch[i].to(device)
+
+                input_ids, token_type_ids, attention_mask,offset_mapping,label_tensors,sec_tensor,label_index = batch
+                if kno==0:
+                    all_offset_maping.append(offset_mapping.cpu().detach())
+                pointer,concurrence = model(input_ids, token_type_ids, attention_mask)
+                pointer=pointer.cpu().detach()
+                concurrence=pointer.cpu().detach()
+                all_pointer_pres.append(pointer)
+                all_concurrence_pres.append(concurrence)
+            all_pointer_pres_tensor=torch.cat(all_pointer_pres,dim=0)
+            all_concurrence_pres_tensor=torch.cat(all_concurrence_pres,dim=0)
+            torch.save(all_pointer_pres_tensor,os.path.join("ktemp",f"pointer_{kno}.pk"))
+            torch.save(all_concurrence_pres_tensor,os.path.join("ktemp",f"concurrence_{kno}.pk"))
+
+            print('done--all %d tokens.' % len(test_data))
+        
+        all_offset_mapping_tensor=torch.cat(all_offset_maping,dim=0)
+        torch.save(all_offset_mapping_tensor,os.path.join("ktemp","offset_mapping.pk"))
+        
+    def generate_k_result(self,outfile_txt):
+        integrate_pointer_tensor=None
+        kno=0
+        for temp_tensor_file_name in os.listdir("ktemp"):
+            if temp_tensor_file_name.startswith("val"):
+                with open(os.path.join("ktemp",temp_tensor_file_name),"rb") as fin:
+                    temp_tensor=torch.load(fin)
+                    if kno==0:
+                        integrate_pointer_tensor=temp_tensor
+                    else:
+                        integrate_pointer_tensor+=temp_tensor
+                kno+=1
+        integrate_pointer_tensor/=kno
+        
+        with open(os.path.join("ktemp","offset_mapping.pk"),"rb") as fin:
+            offset_mapping=torch.load(fin)
+        
+        test_data = self.processor.get_test_data()
+
+        with open(outfile_txt, 'w') as fout:
+            for offset,pointer,item in zip(offset_mapping,integrate_pointer_tensor,test_data):
+                pred=self.processor.from_label_tensor_to_label_index(pointer[None],offset[None])[0]
+                item=dict(item.items())
+                events=self.extract_events(item["text"],offset,pred)
+                item["event_list"]=events
+                fout.write(json.dumps(item,ensure_ascii=False)+"\n")
+
+        print('done--all %d tokens.' % len(test_data))

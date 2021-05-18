@@ -16,7 +16,7 @@ import utils
 
 utils.set_random_seed(20200819)
 os.environ["TOKENIZERS_PARALLELISM"] = "True"
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 if __name__ == '__main__':
 
@@ -86,19 +86,19 @@ if __name__ == '__main__':
         # 设置保存模型的路径及参数
         ckpt_callback = ModelCheckpoint(
             dirpath=config.ner_save_path,                           # 模型保存路径
-            filename="{val_total_f1:.3f}_{pf1:.3f}{cf1:.3f}_{epoch}",   # 模型保存名称，参数ckpt_name后加入epoch信息以及验证集分数
+            filename="{val_total_f1:.3f}_{pf1:.3f}{cf1:.3f}_{epoch}_large",   # 模型保存名称，参数ckpt_name后加入epoch信息以及验证集分数
             monitor='val_total_f1',                                      # 根据验证集上的准确率评估模型优劣
             mode='max',
             save_top_k=3,                                           # 保存得分最高的前三个模型
             verbose=True
         )
         
-        early_stopping=EarlyStopping("val_total_f1",mode="max")
+        early_stopping=EarlyStopping("val_total_f1",mode="max",patience=4)
 
         # 设置训练器
         trainer = pl.Trainer(
             progress_bar_refresh_rate=1,
-            resume_from_checkpoint = config.ner_save_path + '/val_total_f1=1.513_pf1=0.748cf1=0.764_epoch=10_large.ckpt',  # 加载已保存的模型继续训练
+            # resume_from_checkpoint = config.ner_save_path + '/val_total_f1=1.513_pf1=0.748cf1=0.764_epoch=10_large.ckpt',  # 加载已保存的模型继续训练
             max_epochs=config.max_epochs,
             callbacks=[ckpt_callback,early_stopping,utils.PrintLineCallback()],
             checkpoint_callback=True,

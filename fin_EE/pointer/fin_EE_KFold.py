@@ -13,10 +13,11 @@ sys.path.append(os.path.dirname(BASE_DIR))              # 将src目录添加到�
 from fin_EE_model import NERModel, NERPredictor
 from configuration import Config
 import utils
+from collections import defaultdict
 
 utils.set_random_seed(20200819)
 os.environ["TOKENIZERS_PARALLELISM"] = "True"
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 if __name__ == '__main__':
 
@@ -25,9 +26,9 @@ if __name__ == '__main__':
 
     # 设置参数
     parser = argparse.ArgumentParser()
-    parser.add_argument("--is_train", type=utils.str2bool, default=True, help="train the NER model or not (default: False)")
+    parser.add_argument("--is_train", type=utils.str2bool, default=False, help="train the NER model or not (default: False)")
     parser.add_argument("--batch_size", type=int, default=2, help="input batch size for training and test (default: 8)")
-    parser.add_argument("--max_epochs", type=int, default=15, help="the max epochs for training and test (default: 5)")
+    parser.add_argument("--max_epochs", type=int, default=14, help="the max epochs for training and test (default: 5)")
     parser.add_argument("--k", type=int, default=5, help="input batch size for training and test (default: 8)")
     parser.add_argument("--lr", type=float, default=2e-5, help="learning rate (default: 2e-5)")
     parser.add_argument("--crf_lr", type=float, default=0.1, help="crf learning rate (default: 0.1)")
@@ -69,6 +70,9 @@ if __name__ == '__main__':
     print(config)
     print('--------config----------')
 
+    kckpt={0:config.ner_save_path + '/k0/val_total_f1=1.472_pf1=0.728cf1=0.744_epoch=10.ckpt'}
+
+
     if config.is_train == True:
         # ============= train 训练模型==============
         for kno in range(config.k):
@@ -85,11 +89,14 @@ if __name__ == '__main__':
                 verbose=True
             )
 
+            early_stopping=EarlyStopping("val_total_f1",mode="max",patience=4)
+
             # 设置训练器
             trainer = pl.Trainer(
                 progress_bar_refresh_rate=1,
+                resume_from_checkpoint = kckpt[kno] if kno in kckpt else None,  # 加载已保存的模型继续训练
                 max_epochs=config.max_epochs,
-                callbacks=[ckpt_callback,utils.PrintLineCallback()],
+                callbacks=[ckpt_callback,early_stopping,utils.PrintLineCallback()],
                 checkpoint_callback=True,
                 gpus=1,
                 distributed_backend='dp',
@@ -112,5 +119,5 @@ if __name__ == '__main__':
         predictor = NERPredictor(checkpoint_path, config)
         # predictor.validation()
         predictor.generate_k_temp()
-        predictor.generate_k_result(outfile_txt)
-        print('\n', 'outfile_txt name:', outfile_txt)
+        # predictor.generate_k_result(outfile_txt)
+        # print('\n', 'outfile_txt name:', outfile_txt)
