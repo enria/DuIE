@@ -254,6 +254,7 @@ class NERPredictor:
     def __init__(self, checkpoint_path, config):
         self.use_bert = config.use_bert
         self.use_crf = config.use_crf
+        self.config=config
 
         # self.model = NERModel.load_from_checkpoint(checkpoint_path, config=config)
 
@@ -270,7 +271,7 @@ class NERPredictor:
         self.item_events={}
         self.event_schema=EventSchemaDict(config.schema_path)
 
-        print("The TEST num is:", len(self.test_data))
+        # print("The TEST num is:", len(self.test_data))
         print('load checkpoint:', checkpoint_path)
 
 
@@ -281,7 +282,7 @@ class NERPredictor:
 
         for index,label_id in preds:
             argument=item["text"][index[0]:index[1]]
-            label=self.model.processor.event_schema.id2labels[label_id[0]]
+            label=self.event_schema.id2labels[label_id[0]]
             event_type,role=re.match("B-(.+):(.+)",label).groups()
             if role=="TRG":
                 continue
@@ -317,7 +318,7 @@ class NERPredictor:
             assist_roles={}
 
             for role in roles:
-                if role[0] in self.model.processor.event_schema.event_subject[event_type]:
+                if role[0] in self.event_schema.event_subject[event_type]:
                     subjects.append(role)
                 else:
                     assist_roles.setdefault(role[0],[])
@@ -383,7 +384,7 @@ class NERPredictor:
         ckpt_name=["val_total_f1=1.472_pf1=0.728cf1=0.744_epoch=10.ckpt"]
 
         all_offset_maping=[]
-        test_data = self.processor.get_test_data()
+        test_data = self.processor.get_test_data()[:1000]
         dataloader = self.processor.create_dataloader(test_data, batch_size=self.config.batch_size, shuffle=False)
 
         for kno in range(1):
@@ -404,7 +405,7 @@ class NERPredictor:
                     all_offset_maping.append(offset_mapping.cpu().detach())
                 pointer,concurrence = model(input_ids, token_type_ids, attention_mask)
                 pointer=pointer.cpu().detach()
-                concurrence=pointer.cpu().detach()
+                concurrence=concurrence.cpu().detach()
                 all_pointer_pres.append(pointer)
                 all_concurrence_pres.append(concurrence)
             all_pointer_pres_tensor=torch.cat(all_pointer_pres,dim=0)
@@ -419,28 +420,45 @@ class NERPredictor:
         
     def generate_k_result(self,outfile_txt):
         integrate_pointer_tensor=None
-        kno=0
+        integrate_concurrence_tensor=None
+        kpno,kcno=0,0
         for temp_tensor_file_name in os.listdir("ktemp"):
-            if temp_tensor_file_name.startswith("val"):
+            if temp_tensor_file_name.startswith("pointer"):
                 with open(os.path.join("ktemp",temp_tensor_file_name),"rb") as fin:
                     temp_tensor=torch.load(fin)
-                    if kno==0:
+                    if kpno==0:
                         integrate_pointer_tensor=temp_tensor
                     else:
                         integrate_pointer_tensor+=temp_tensor
-                kno+=1
-        integrate_pointer_tensor/=kno
+                kpno+=1
+            if temp_tensor_file_name.startswith("concurrence"):
+                temp_tensor=torch.load(os.path.join("ktemp",temp_tensor_file_name))
+                if kcno==0:
+                    integrate_concurrence_tensor=temp_tensor
+                else:
+                    integrate_concurrence_tensor+=temp_tensor
+                kcno+=1
+        integrate_pointer_tensor/=kpno
+        integrate_concurrence_tensor/=kcno
         
         with open(os.path.join("ktemp","offset_mapping.pk"),"rb") as fin:
             offset_mapping=torch.load(fin)
         
-        test_data = self.processor.get_test_data()
+        test_data = self.processor.get_test_data()[:100]
 
+        concurrence_dict={}
+        for offset,pointer,concurrence,item in zip(offset_mapping,integrate_pointer_tensor,integrate_concurrence_tensor,test_data):
+            pred=self.processor.from_label_tensor_to_label_index(pointer[None],concurrence[None],offset[None])[0]
+            item=dict(item.items())
+            self.extract_events(item,offset,pred[0])
+            concurrence_dict[item["id"]]=pred[1]
+
+                
         with open(outfile_txt, 'w') as fout:
-            for offset,pointer,item in zip(offset_mapping,integrate_pointer_tensor,test_data):
-                pred=self.processor.from_label_tensor_to_label_index(pointer[None],offset[None])[0]
+            for item in tqdm.tqdm(test_data):
+                events_dict=self.item_events.get(item["id"],{})
+                events=self.cluster_events(events_dict,concurrence_dict[item["id"]])
                 item=dict(item.items())
-                events=self.extract_events(item["text"],offset,pred)
                 item["event_list"]=events
                 fout.write(json.dumps(item,ensure_ascii=False)+"\n")
 
