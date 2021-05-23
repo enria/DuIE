@@ -17,7 +17,7 @@ from collections import defaultdict
 
 utils.set_random_seed(20200819)
 os.environ["TOKENIZERS_PARALLELISM"] = "True"
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 if __name__ == '__main__':
 
@@ -28,7 +28,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--is_train", type=utils.str2bool, default=False, help="train the NER model or not (default: False)")
     parser.add_argument("--batch_size", type=int, default=2, help="input batch size for training and test (default: 8)")
-    parser.add_argument("--max_epochs", type=int, default=14, help="the max epochs for training and test (default: 5)")
+    parser.add_argument("--max_epochs", type=int, default=12, help="the max epochs for training and test (default: 5)")
     parser.add_argument("--k", type=int, default=5, help="input batch size for training and test (default: 8)")
     parser.add_argument("--lr", type=float, default=2e-5, help="learning rate (default: 2e-5)")
     parser.add_argument("--crf_lr", type=float, default=0.1, help="crf learning rate (default: 0.1)")
@@ -49,7 +49,7 @@ if __name__ == '__main__':
                         help="dev_path")
     parser.add_argument("--schema_path", type=str, default="{}/duee_fin_event_schema_sub.json".format(DATA_DIR),
                         help="schema_path")
-    parser.add_argument("--test_path", type=str, default="{}/duee_fin_test1.json".format(DATA_DIR),
+    parser.add_argument("--test_path", type=str, default="{}/duee_fin_test2.json".format(DATA_DIR),
                         help="test_path")
     parser.add_argument("--ner_result_path", type=str, default="{}/result".format(WORKING_DIR),
                         help="ner_result_path")
@@ -76,6 +76,8 @@ if __name__ == '__main__':
     if config.is_train == True:
         # ============= train 训练模型==============
         for kno in range(config.k):
+            if kno<=0:
+                continue
             print("start train model ...")
             model = NERModel(config,kno)
 
@@ -112,12 +114,12 @@ if __name__ == '__main__':
     else:
         # ============= test 测试模型==============
         print("\n\nstart test model...")
-        outfile_txt = os.path.join(config.ner_result_path, "k.json")
+        outfile_txt = os.path.join(config.ner_result_path, "k2-2.json")
 
         # 开始测试，将结果保存至输出文件
         checkpoint_path = os.path.join(config.ner_save_path, config.test_ckpt_name)
         predictor = NERPredictor(checkpoint_path, config)
         # predictor.validation()
         predictor.generate_k_temp()
-        # predictor.generate_k_result(outfile_txt)
+        predictor.generate_k_result(outfile_txt)
         # print('\n', 'outfile_txt name:', outfile_txt)

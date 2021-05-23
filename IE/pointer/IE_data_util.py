@@ -96,7 +96,7 @@ class NERProcessor(DataProcessor):
         return label_tensor
     
 
-    def create_dataloader(self, data, batch_size, shuffle=False, max_length=512):
+    def create_dataset(self, data, max_length=512):
         tokenizer = self.tokenizer
 
         text = [d["text"] for d in data]
@@ -140,19 +140,13 @@ class NERProcessor(DataProcessor):
                         concurrence_tensors,
                         label_text_index)
 
-        dataloader = torch.utils.data.DataLoader(
-            dataset,
-            shuffle=shuffle,
-            batch_size=batch_size,
-            num_workers=4,
-            collate_fn=Dataset.collate_fn
-        )
-        return dataloader
+        return dataset
     
     def from_label_tensor_to_label_index(self,label_tensor_list,concurrence_tensor_list,offset_mapping_list,threshold=0.5):
         result=[]
-        for label_tensor,concurrence_tensor,offset_mapping in zip(label_tensor_list,concurrence_tensor_list,offset_mapping_list):
-            label_index=(label_tensor>0.38).nonzero()
+        for index in range(len(label_tensor_list)):
+            label_tensor,concurrence_tensor,offset_mapping=label_tensor_list[index],concurrence_tensor_list[index],offset_mapping_list[index]
+            label_index=(label_tensor>0.3).nonzero()
             concurrence_index=((concurrence_tensor+concurrence_tensor.transpose(0,1))>threshold*2).nonzero()
             label_text_index={} # key:label_id,value:text indices
 

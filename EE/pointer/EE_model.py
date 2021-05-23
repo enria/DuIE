@@ -328,7 +328,7 @@ class NERPredictor:
 
         all_offset_maping=[]
         test_data = self.processor.get_test_data()
-        dataloader = self.processor.create_dataloader(test_data, batch_size=self.config.batch_size, shuffle=False)
+        dataloader = self.processor.create_dataloader(test_data, batch_size=self.config.batch_size, shuffle=False,is_test=True)
 
         for kno in range(self.config.k):
             model = NERModel.load_from_checkpoint(os.path.join(self.config.ner_save_path,f"k{kno}",ckpt_name[kno]), config=self.config)

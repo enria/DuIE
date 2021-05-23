@@ -10,6 +10,13 @@ import numpy as np
 from datetime import datetime
 import os
 
+from pytorch_lightning.callbacks import Callback
+
+class PrintLineCallback(Callback):
+    def on_save_checkpoint(self, trainer, pl_module,checkpoint):
+        print()
+        return {}
+
 def findAllFile(base):
     for root, ds, fs in os.walk(base):
         for f in fs:

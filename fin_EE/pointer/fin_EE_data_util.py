@@ -133,7 +133,7 @@ class NERProcessor(DataProcessor):
         return label_tensor
     
 
-    def create_dataloader(self, data, batch_size, shuffle=False, max_length=512):
+    def create_dataloader(self, data, batch_size, shuffle=False, max_length=512,is_test=False):
         tokenizer = self.tokenizer
 
         text = [d["text"] for d in data]
@@ -154,22 +154,29 @@ class NERProcessor(DataProcessor):
         concurrence_tensors=[]
         label_text_index=[]
         for index,offset in enumerate(inputs['offset_mapping']):
-            global global_text_index
-            global_text_index=index
+            if is_test:
+                event_list=[]
+                label_index=[]
+                label_tensors.append(torch.zeros(1))
+                concurrence_tensors.append(torch.zeros(1))
+                label_text_index.append([(x[0],x[1]) for x in label_index])
+            else:
+                global global_text_index
+                global_text_index=index
 
-            offset_index_dict={} # text index to offset index
-            for i,o in enumerate(offset):
-                if o[-1]==0:
-                    continue
-                for oi in range(o[0],o[-1]):
-                    offset_index_dict[int(oi)]=i
-            event_list=data[index].get("event_list",[])
-            concurrence_matrix=torch.zeros((offset.shape[0],offset.shape[0]))
-            label_index=self.event_schema.tokens_to_label_index(text[index],event_list,offset_index_dict,concurrence_matrix)
-            label_tensor=self.from_offset_to_label_tensor(offset,label_index,offset_index_dict)
-            label_tensors.append(label_tensor)
-            concurrence_tensors.append(concurrence_matrix)
-            label_text_index.append([(x[0],x[1]) for x in label_index])
+                offset_index_dict={} # text index to offset index
+                for i,o in enumerate(offset):
+                    if o[-1]==0:
+                        continue
+                    for oi in range(o[0],o[-1]):
+                        offset_index_dict[int(oi)]=i
+                event_list=data[index].get("event_list",[])
+                concurrence_matrix=torch.zeros((offset.shape[0],offset.shape[0]))
+                label_index=self.event_schema.tokens_to_label_index(text[index],event_list,offset_index_dict,concurrence_matrix)
+                label_tensor=self.from_offset_to_label_tensor(offset,label_index,offset_index_dict)
+                label_tensors.append(label_tensor)
+                concurrence_tensors.append(concurrence_matrix)
+                label_text_index.append([(x[0],x[1]) for x in label_index])
 
 
         dataset=Dataset(inputs["input_ids"],

@@ -381,13 +381,17 @@ class NERPredictor:
     
     def generate_k_temp(self):
         device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-        ckpt_name=["val_total_f1=1.472_pf1=0.728cf1=0.744_epoch=10.ckpt"]
+        ckpt_name=["val_total_f1=1.491_pf1=0.729cf1=0.762_epoch=12.ckpt",
+                   "val_total_f1=1.497_pf1=0.728cf1=0.769_epoch=11.ckpt",
+                   "val_total_f1=1.497_pf1=0.723cf1=0.774_epoch=10.ckpt",
+                   "val_total_f1=1.475_pf1=0.715cf1=0.761_epoch=9.ckpt",
+                   "val_total_f1=1.462_pf1=0.714cf1=0.747_epoch=11.ckpt"]
 
         all_offset_maping=[]
-        test_data = self.processor.get_test_data()[:1000]
-        dataloader = self.processor.create_dataloader(test_data, batch_size=self.config.batch_size, shuffle=False)
+        test_data = self.processor.get_test_data()[30000:]
+        dataloader = self.processor.create_dataloader(test_data, batch_size=self.config.batch_size, shuffle=False,is_test=True)
 
-        for kno in range(1):
+        for kno in range(self.config.k):
             model = NERModel.load_from_checkpoint(os.path.join(self.config.ner_save_path,f"k{kno}",ckpt_name[kno]), config=self.config)
             print("The TEST num is:", len(test_data))
             model.to(device)
@@ -414,9 +418,10 @@ class NERPredictor:
             torch.save(all_concurrence_pres_tensor,os.path.join("ktemp",f"concurrence_{kno}.pk"))
 
             print('done--all %d tokens.' % len(test_data))
-        
-        all_offset_mapping_tensor=torch.cat(all_offset_maping,dim=0)
-        torch.save(all_offset_mapping_tensor,os.path.join("ktemp","offset_mapping.pk"))
+
+        if all_offset_maping:        
+            all_offset_mapping_tensor=torch.cat(all_offset_maping,dim=0)
+            torch.save(all_offset_mapping_tensor,os.path.join("ktemp","offset_mapping.pk"))
         
     def generate_k_result(self,outfile_txt):
         integrate_pointer_tensor=None
@@ -441,10 +446,9 @@ class NERPredictor:
         integrate_pointer_tensor/=kpno
         integrate_concurrence_tensor/=kcno
         
-        with open(os.path.join("ktemp","offset_mapping.pk"),"rb") as fin:
-            offset_mapping=torch.load(fin)
+        offset_mapping=torch.load(os.path.join("ktemp","offset_mapping.pk"))
         
-        test_data = self.processor.get_test_data()[:100]
+        test_data = self.processor.get_test_data()[30000:]
 
         concurrence_dict={}
         for offset,pointer,concurrence,item in zip(offset_mapping,integrate_pointer_tensor,integrate_concurrence_tensor,test_data):

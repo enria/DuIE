@@ -16,7 +16,7 @@ import utils
 
 utils.set_random_seed(20200819)
 os.environ["TOKENIZERS_PARALLELISM"] = "True"
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 if __name__ == '__main__':
 
@@ -51,7 +51,7 @@ if __name__ == '__main__':
     parser.add_argument("--pretrained_path", type=str,
                         default="/storage/public/models/chinese-roberta-wwm-ext".format(WORKING_DIR), help="pretrained_path")
 
-    parser.add_argument("--ckpt_name",  type=str, default="dropout+detach+large", help="ckpt save name")
+    parser.add_argument("--ckpt_name",  type=str, default="dropout+detach", help="ckpt save name")
     parser.add_argument("--test_ckpt_name",  type=str, default="val_f1=1.6492_epoch=4_dropout+detach.ckpt", help="ckpt name for test")
 
     args = parser.parse_args()
@@ -102,10 +102,11 @@ if __name__ == '__main__':
         # ============= test 测试模型==============
         print("\n\nstart test model...")
 
-        outfile_txt = os.path.join(config.ner_result_path, config.test_ckpt_name[:-5] + ".json")
+        outfile_txt = os.path.join(config.ner_result_path, "val_total_f1=1.625_pf1=0.812cf1=0.813_epoch=16.ckpt"[:-5] + ".json")
 
         # 开始测试，将结果保存至输出文件
-        checkpoint_path = os.path.join(config.ner_save_path, config.test_ckpt_name)
+        # checkpoint_path = os.path.join(config.ner_save_path, config.test_ckpt_name)
+        checkpoint_path="/home/yadong/workspace/duie/IE/pointer/kweights/k2/val_total_f1=1.625_pf1=0.812cf1=0.813_epoch=16.ckpt"
         predictor = NERPredictor(checkpoint_path, config)
         predictor.generate_result(outfile_txt)
         print('\n', 'outfile_txt name:', outfile_txt)

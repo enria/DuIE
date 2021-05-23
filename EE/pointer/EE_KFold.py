@@ -16,7 +16,7 @@ import utils
 
 utils.set_random_seed(20200819)
 os.environ["TOKENIZERS_PARALLELISM"] = "True"
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
 if __name__ == '__main__':
 
@@ -26,7 +26,7 @@ if __name__ == '__main__':
     # 设置参数
     parser = argparse.ArgumentParser()
     parser.add_argument("--is_train", type=utils.str2bool, default=False, help="train the NER model or not (default: False)")
-    parser.add_argument("--batch_size", type=int, default=4, help="input batch size for training and test (default: 8)")
+    parser.add_argument("--batch_size", type=int, default=8, help="input batch size for training and test (default: 8)")
     parser.add_argument("--max_epochs", type=int, default=15, help="the max epochs for training and test (default: 5)")
     parser.add_argument("--k", type=int, default=5, help="input batch size for training and test (default: 8)")
     parser.add_argument("--lr", type=float, default=2e-5, help="learning rate (default: 2e-5)")
@@ -46,7 +46,7 @@ if __name__ == '__main__':
                         help="dev_path")
     parser.add_argument("--schema_path", type=str, default="{}/duee_event_schema.json".format(DATA_DIR),
                         help="schema_path")
-    parser.add_argument("--test_path", type=str, default="{}/duee_test1.json".format(DATA_DIR),
+    parser.add_argument("--test_path", type=str, default="{}/duee_test2.json".format(DATA_DIR),
                         help="test_path")
     parser.add_argument("--ner_result_path", type=str, default="{}/result".format(WORKING_DIR),
                         help="ner_result_path")
