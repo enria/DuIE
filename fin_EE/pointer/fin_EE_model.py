@@ -256,7 +256,10 @@ class NERPredictor:
         self.use_crf = config.use_crf
         self.config=config
 
-        # self.model = NERModel.load_from_checkpoint(checkpoint_path, config=config)
+        self.model = NERModel.load_from_checkpoint(checkpoint_path, config=config)
+        self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+        self.model.to(self.device)
+        self.model.eval()
 
         # self.origin_test_data = self.model.processor.get_test_data()
         # self.test_data=self.model.processor.process_long_text(self.origin_test_data,512)
@@ -378,6 +381,24 @@ class NERPredictor:
                     fout.write(json.dumps(item,ensure_ascii=False)+"\n")
 
         print('done--all %d tokens.' % cnt)
+    
+    def predict(self,text):
+        self.item_events={}
+        item={"id":"single","title":"","text":text}
+        dataloader = self.processor.create_dataloader([item], batch_size=1, shuffle=False)
+        batch=next(iter(dataloader))
+        for i in range(len(batch)-1):
+            batch[i] = batch[i].to(self.device)
+        input_ids, token_type_ids, attention_mask,offset_mapping, label_tensors,concurrence_tensors,label_text_index = batch
+        pointer,concurrence = self.model(input_ids, token_type_ids, attention_mask)
+        preds=self.model.processor.from_label_tensor_to_label_index(pointer,concurrence,offset_mapping)
+
+        offset,pred_role=offset_mapping[0],preds[0]
+        self.extract_events(item,offset,pred_role[0])
+        events_dict=self.item_events.get(item["id"],{})
+        events=self.cluster_events(events_dict,concurrence[0])
+        print(events)
+        return events
     
     def generate_k_temp(self):
         device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')

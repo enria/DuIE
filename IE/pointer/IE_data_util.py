@@ -367,11 +367,24 @@ def share_argument_stat(data):
                 jfile.write(f"{json.dumps(item,ensure_ascii=False)}\n")
 
 def mutli_events(data):
-    with open("../data/multi_events.json","w") as jfile:
-        for item in data:
-            event_types=[event["event_type"] for event in item.get("event_list",[])]
-            if 1!=len(event_types):
-                jfile.write(f"{json.dumps(item,ensure_ascii=False)}\n")
+    cs=[]
+    for item in data:
+        event_types=[event["predicate"] for event in item.get("spo_list",[])]
+        if len(set(event_types))!=len(event_types) and len(set(event_types))>1 and len(event_types)<=4:
+            flag=False
+            for spo1 in item["spo_list"]:
+                for spo2 in item["spo_list"]:
+                    if spo1["predicate"]==spo2["predicate"] and \
+                        spo1["subject"]!=spo2["subject"] and \
+                            spo1["object"]["@value"]!=spo2["object"]["@value"]:
+                        flag=True
+            if not flag:
+                continue
+            cs.append(item)
+    cs=sorted(cs,key=lambda x:len(x["text"]))
+    with open("../data/multi_rel.json","w") as jfile:
+        for item in cs:
+            jfile.write(f"{json.dumps(item,ensure_ascii=False)}\n")
 
 
 
@@ -383,15 +396,11 @@ if __name__ == '__main__':
     from collections import namedtuple
 
     config_class = namedtuple('config',['train_path','dev_path','test_path','pretrained_path','schema_path'])
-    config = config_class("../data/multi_events.json","../data/duee_fin_dev.json","../data/duee_fin_test1.json","/storage/public/models/bert-base-chinese","../data/duee_fin_event_schema_sub.json")
+    config = config_class("../data/duie_train.json","../data/duie_dev.json","../data/duee_fin_test1.json","/storage/public/models/bert-base-chinese","../data/duie_schema.json")
 
     processor=NERProcessor(config)
     train_data=processor.get_train_data()
-    with open("add_index_train.json","w") as f:
-        for i in train_data:
-            _,add_index_event_list=processor.event_schema.tokens_to_label_index(i["text"],i.get("event_list",[]),None,None)
-            i["index_event_list"]=add_index_event_list
-            f.write(json.dumps(i,ensure_ascii=False)+"\n")
+    mutli_events(train_data)
     # mutli_events(train_data)
     # loader=processor.create_dataloader(train_data,batch_size=8)
     # print(miss_cnt)

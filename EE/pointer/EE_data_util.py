@@ -301,6 +301,25 @@ def overlap_stat(data):
     print(f"events:{contain2event}/{all_event}={contain2event/all_event:.2f},roles={distinct_role_cnt}/{all_role_cnt}={distinct_role_cnt/all_role_cnt:.2f}")
     return overlap_data
 
+def mutli_events(data):
+    cs=[]
+    for item in data:
+        event_types=[event["event_type"] for event in item.get("event_list",[])]
+        if len(set(event_types))!=len(event_types) and len(set(event_types))>1 and len(event_types)<=4:
+            # flag=False
+            # for spo1 in item["spo_list"]:
+            #     for spo2 in item["spo_list"]:
+            #         if spo1["predicate"]==spo2["predicate"] and \
+            #             spo1["subject"]!=spo2["subject"] and \
+            #                 spo1["object"]["@value"]!=spo2["object"]["@value"]:
+            #             flag=True
+            # if not flag:
+            #     continue
+            cs.append(item)
+    cs=sorted(cs,key=lambda x:len(x["text"]))
+    with open("../data/multi_event.json","w") as jfile:
+        for item in cs:
+            jfile.write(f"{json.dumps(item,ensure_ascii=False)}\n")
 
 if __name__ == '__main__':
 
@@ -311,10 +330,11 @@ if __name__ == '__main__':
 
     processor=NERProcessor(config)
     train_data=processor.get_train_data()
-    overlap_data=overlap_stat(train_data)
-    with open("../data/overlap_role.json","w") as jsonf:
-        for item in overlap_data:
-            jsonf.write(json.dumps(item,ensure_ascii=False)+"\n")
+    mutli_events(train_data)
+    # overlap_data=overlap_stat(train_data)
+    # with open("../data/overlap_role.json","w") as jsonf:
+    #     for item in overlap_data:
+    #         jsonf.write(json.dumps(item,ensure_ascii=False)+"\n")
 
     # loader=processor.create_dataloader(train_data,batch_size=8)
     # for batch in loader:

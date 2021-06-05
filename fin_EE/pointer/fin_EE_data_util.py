@@ -139,7 +139,7 @@ class NERProcessor(DataProcessor):
         text = [d["text"] for d in data]
         
         max_length = min(max_length, max([len(s) for s in text]))
-        print("max sentence length: ", max_length)
+        # print("max sentence length: ", max_length)
 
         inputs = tokenizer(     # 得到文本的编码表示（句子前后会加入<cls>和<sep>特殊字符，并且将句子统一补充到最大句子长度
             text,
@@ -195,7 +195,7 @@ class NERProcessor(DataProcessor):
             collate_fn=Dataset.collate_fn
         )
         global miss_cnt
-        print("missing cnt %d"%miss_cnt)
+        # print("missing cnt %d"%miss_cnt)
         miss_cnt=0
         return dataloader
     
@@ -414,11 +414,24 @@ def share_argument_stat(data):
                 jfile.write(f"{json.dumps(item,ensure_ascii=False)}\n")
 
 def mutli_events(data):
-    with open("../data/multi_events.json","w") as jfile:
-        for item in data:
-            event_types=[event["event_type"] for event in item.get("event_list",[])]
-            if 1!=len(event_types):
-                jfile.write(f"{json.dumps(item,ensure_ascii=False)}\n")
+    cs=[]
+    for item in data:
+        event_types=[event["event_type"] for event in item.get("event_list",[])]
+        if len(set(event_types))!=len(event_types) and len(set(event_types))>1 and len(event_types)<=4:
+            # flag=False
+            # for spo1 in item["spo_list"]:
+            #     for spo2 in item["spo_list"]:
+            #         if spo1["predicate"]==spo2["predicate"] and \
+            #             spo1["subject"]!=spo2["subject"] and \
+            #                 spo1["object"]["@value"]!=spo2["object"]["@value"]:
+            #             flag=True
+            # if not flag:
+            #     continue
+            cs.append(item)
+    cs=sorted(cs,key=lambda x:len(x["text"]))
+    with open("../data/multi_event.json","w") as jfile:
+        for item in cs:
+            jfile.write(f"{json.dumps(item,ensure_ascii=False)}\n")
 
 
 
@@ -434,11 +447,12 @@ if __name__ == '__main__':
 
     processor=NERProcessor(config)
     train_data=processor.get_train_data()
-    with open("add_index_train.json","w") as f:
-        for i in train_data:
-            _,add_index_event_list=processor.event_schema.tokens_to_label_index(i["text"],i.get("event_list",[]),None,None)
-            i["index_event_list"]=add_index_event_list
-            f.write(json.dumps(i,ensure_ascii=False)+"\n")
+    mutli_events(train_data)
+    # with open("add_index_train.json","w") as f:
+    #     for i in train_data:
+    #         _,add_index_event_list=processor.event_schema.tokens_to_label_index(i["text"],i.get("event_list",[]),None,None)
+    #         i["index_event_list"]=add_index_event_list
+    #         f.write(json.dumps(i,ensure_ascii=False)+"\n")
     # mutli_events(train_data)
     # loader=processor.create_dataloader(train_data,batch_size=8)
     # print(miss_cnt)

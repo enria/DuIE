@@ -25,7 +25,7 @@ if __name__ == '__main__':
 
     # 设置参数
     parser = argparse.ArgumentParser()
-    parser.add_argument("--is_train", type=utils.str2bool, default=True, help="train the NER model or not (default: False)")
+    parser.add_argument("--is_train", type=utils.str2bool, default=False, help="train the NER model or not (default: False)")
     parser.add_argument("--batch_size", type=int, default=2, help="input batch size for training and test (default: 8)")
     parser.add_argument("--max_epochs", type=int, default=40, help="the max epochs for training and test (default: 5)")
     parser.add_argument("--lr", type=float, default=2e-5, help="learning rate (default: 2e-5)")
@@ -121,6 +121,6 @@ if __name__ == '__main__':
         # 开始测试，将结果保存至输出文件
         checkpoint_path = os.path.join(config.ner_save_path, config.test_ckpt_name)
         predictor = NERPredictor(checkpoint_path, config)
-        predictor.generate_result(outfile_txt)
-        print('\n', 'outfile_txt name:', outfile_txt)
+        predictor.predict("据腾讯美股30日消息，据知情人士透露，理想汽车告诉潜在投资者，计划把美国首次公开募股（IPO）发行价定在招股区间顶端，甚至更高水平。该公司正以每股8-10美元发行9500万股股票。")
+        # print('\n', 'outfile_txt name:', outfile_txt)
 
